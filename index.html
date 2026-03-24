@@ -1,0 +1,2239 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agora — Une communauté, pas une plateforme</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --ink:#1a1714; --ink2:#4a4640; --ink3:#8a8480;
+  --parch:#f7f3ed; --parch2:#ede9e1; --parch3:#ddd8ce;
+  --gold:#b8903c; --gold2:#e6b85a; --ember:#c4543a;
+  --sage:#4a6b58; --lapis:#3a5278;
+  --border:rgba(26,23,20,0.11);
+  --nav-h:58px;
+  --r:6px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--parch);color:var(--ink);font-size:14px;overflow-x:hidden;}
+
+/* ─── NAV ─── */
+nav{position:sticky;top:0;z-index:100;height:var(--nav-h);background:var(--ink);display:flex;align-items:center;justify-content:space-between;padding:0 28px;border-bottom:1px solid rgba(255,255,255,0.06);}
+.nav-logo{font-family:'Playfair Display',serif;font-size:20px;font-weight:600;color:var(--gold2);cursor:pointer;flex-shrink:0;letter-spacing:-.02em;}
+.nav-logo em{font-style:italic;color:var(--parch3);font-weight:400;margin-left:3px;font-size:15px;}
+.nav-links{display:flex;gap:2px;}
+.nav-link{padding:6px 12px;font-size:11px;font-weight:500;color:rgba(255,255,255,0.45);border-radius:20px;cursor:pointer;border:none;background:none;letter-spacing:.06em;text-transform:uppercase;font-family:'DM Sans',sans-serif;transition:color .2s;}
+.nav-link:hover{color:var(--gold2);}
+.nav-link.active{color:var(--ink);background:var(--gold2);}
+.nav-right{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.nav-pts{font-size:12px;color:var(--gold2);font-weight:500;}
+.notif-btn{position:relative;background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.45);font-size:17px;padding:4px;line-height:1;transition:color .2s;}
+.notif-btn:hover{color:var(--gold2);}
+.notif-badge{position:absolute;top:-2px;right:-2px;width:14px;height:14px;background:var(--ember);border-radius:50%;font-size:8px;font-weight:600;color:white;display:flex;align-items:center;justify-content:center;}
+.avatar-wrap{position:relative;}
+.avatar{width:30px;height:30px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:var(--ink);cursor:pointer;overflow:hidden;}
+.avatar-menu{display:none;position:absolute;top:calc(100%+10px);right:0;background:var(--parch);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;min-width:185px;box-shadow:0 6px 28px rgba(0,0,0,0.14);}
+.avatar-menu.open{display:block;}
+.avatar-menu-item{padding:10px 16px;font-size:13px;color:var(--ink2);cursor:pointer;transition:background .15s;white-space:nowrap;border:none;background:none;width:100%;text-align:left;font-family:'DM Sans',sans-serif;}
+.avatar-menu-item:hover{background:var(--parch2);}
+.avatar-menu-item.danger{color:var(--ember);}
+.avatar-menu-sep{height:1px;background:var(--border);}
+.nav-auth-btn{padding:6px 14px;font-size:12px;font-weight:500;border:1px solid rgba(255,255,255,0.18);background:transparent;color:rgba(255,255,255,0.65);border-radius:4px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.nav-auth-btn:hover{border-color:var(--gold2);color:var(--gold2);}
+.burger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px;background:none;border:none;}
+.burger span{display:block;width:22px;height:2px;background:rgba(255,255,255,0.65);border-radius:2px;transition:all .25s;}
+.burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.burger.open span:nth-child(2){opacity:0;transform:scaleX(0);}
+.burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+.mobile-drawer{display:none;position:fixed;top:var(--nav-h);left:0;right:0;bottom:0;z-index:99;background:var(--ink);flex-direction:column;padding:20px 28px 40px;overflow-y:auto;}
+.mobile-drawer.open{display:flex;}
+.mobile-nav-link{padding:14px 0;font-size:17px;font-weight:400;color:rgba(255,255,255,0.5);border:none;background:none;text-align:left;font-family:'DM Sans',sans-serif;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.06);transition:color .15s;width:100%;}
+.mobile-nav-link:hover,.mobile-nav-link.active{color:var(--gold2);}
+.mobile-drawer-bottom{margin-top:32px;display:flex;flex-direction:column;gap:10px;border-top:1px solid rgba(255,255,255,0.08);padding-top:24px;}
+.mobile-pts{font-size:13px;color:var(--gold2);font-weight:500;padding:4px 0;}
+.mobile-auth-btn{padding:13px;background:transparent;color:rgba(255,255,255,0.65);border:1px solid rgba(255,255,255,0.18);border-radius:4px;font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;transition:all .2s;text-align:center;width:100%;}
+.mobile-auth-btn:hover{border-color:var(--gold2);color:var(--gold2);}
+.mobile-auth-btn.logout{border-color:rgba(196,84,58,.35);color:rgba(196,84,58,.8);}
+@media(max-width:820px){.nav-links{display:none;}.burger{display:flex;}.nav-pts{display:none;}}
+
+/* ─── MODAL ─── */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(26,23,20,.72);align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--parch);border-radius:var(--r);padding:36px 32px;width:100%;max-width:420px;position:relative;}
+.modal-close{position:absolute;top:16px;right:16px;background:none;border:none;font-size:18px;cursor:pointer;color:var(--ink3);}
+.modal-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:600;margin-bottom:6px;}
+.modal-sub{font-size:13px;color:var(--ink3);margin-bottom:24px;line-height:1.6;}
+.form-group{margin-bottom:14px;}
+.form-label{font-size:12px;font-weight:500;color:var(--ink2);margin-bottom:5px;display:block;}
+.form-input{width:100%;padding:10px 13px;background:var(--parch2);border:1px solid var(--border);border-radius:4px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);outline:none;transition:border-color .2s;}
+.form-input:focus{border-color:var(--gold);}
+.form-submit{width:100%;padding:12px;background:var(--ink);color:var(--parch);border:none;border-radius:4px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;margin-top:4px;transition:opacity .2s;}
+.form-submit:hover{opacity:.85;}
+.fmsg{font-size:12px;margin-top:10px;padding:10px 12px;border-radius:4px;display:none;}
+.fmsg.success{background:rgba(74,107,88,.12);color:var(--sage);display:block;}
+.fmsg.error{background:rgba(196,84,58,.1);color:var(--ember);display:block;}
+
+/* ─── PAGES ─── */
+.page{display:none;animation:fadeUp .3s ease;}
+.page.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ─── SHARED ─── */
+.page-header{background:var(--ink);padding:44px 28px 48px;position:relative;overflow:hidden;}
+.page-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 80% 40%,rgba(184,144,60,.09),transparent 55%);pointer-events:none;}
+.page-header h2{font-family:'Playfair Display',serif;font-size:30px;font-weight:600;color:var(--parch);margin-bottom:6px;position:relative;}
+.page-header p{font-size:13px;color:rgba(247,243,237,.4);position:relative;max-width:520px;}
+.content-area{max-width:900px;margin:0 auto;padding:32px 24px;}
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px;}
+.filter-chip{padding:5px 14px;border-radius:20px;font-size:12px;border:1px solid var(--border);background:var(--parch);color:var(--ink2);cursor:pointer;transition:all .2s;font-weight:500;}
+.filter-chip:hover,.filter-chip.active{background:var(--ink);color:var(--parch);border-color:var(--ink);}
+.btn-primary{padding:11px 26px;background:var(--ink);color:var(--parch);border:none;border-radius:4px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:opacity .2s;}
+.btn-primary:hover{opacity:.82;}
+.btn-gold{padding:11px 26px;background:var(--gold);color:var(--ink);border:none;border-radius:4px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:background .2s;}
+.btn-gold:hover{background:var(--gold2);}
+.btn-ghost{padding:11px 26px;background:transparent;color:rgba(247,243,237,.6);border:1px solid rgba(247,243,237,.16);border-radius:4px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;}
+.btn-ghost:hover{border-color:var(--gold2);color:var(--gold2);}
+.btn-sm{padding:5px 14px;font-size:12px;font-weight:500;border:1px solid var(--ink);background:transparent;color:var(--ink);border-radius:4px;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.btn-sm:hover{background:var(--ink);color:var(--parch);}
+.btn-sm.sage{border-color:var(--sage);color:var(--sage);}
+.btn-sm.sage:hover{background:var(--sage);color:white;}
+.btn-sm.ember{border-color:var(--ember);color:var(--ember);}
+.btn-sm.ember:hover{background:var(--ember);color:white;}
+.create-btn{display:flex;align-items:center;gap:8px;padding:14px 20px;border:1.5px dashed var(--parch3);border-radius:var(--r);background:transparent;color:var(--ink3);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;width:100%;justify-content:center;transition:all .2s;margin-top:8px;}
+.create-btn:hover{border-color:var(--gold);color:var(--gold);}
+.loading{text-align:center;padding:40px;color:var(--ink3);font-size:13px;}
+.empty{text-align:center;padding:32px;color:var(--ink3);font-size:13px;font-style:italic;}
+.form-field{width:100%;background:var(--parch2);border:1px solid var(--border);border-radius:4px;padding:10px 13px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);outline:none;margin-bottom:10px;transition:border-color .2s;}
+.form-field:focus{border-color:var(--gold);}
+textarea.form-field{resize:vertical;min-height:72px;}
+.tab-bar{display:flex;border-bottom:1px solid var(--border);margin-bottom:28px;overflow-x:auto;}
+.tab-btn{padding:10px 18px;font-size:13px;font-weight:500;color:var(--ink3);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;font-family:'DM Sans',sans-serif;transition:all .2s;white-space:nowrap;}
+.tab-btn.active{color:var(--gold);border-bottom-color:var(--gold);}
+.tab-pane{display:none;}
+.tab-pane.active{display:block;}
+footer{background:var(--ink);padding:28px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(255,255,255,.05);flex-wrap:wrap;gap:12px;}
+.footer-logo{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;color:var(--gold2);}
+.footer-link{font-size:11px;color:rgba(247,243,237,.3);cursor:pointer;letter-spacing:.06em;text-transform:uppercase;transition:color .2s;}
+.footer-link:hover{color:var(--gold2);}
+.footer-copy{font-size:11px;color:rgba(247,243,237,.18);}
+
+/* ─────────────────────────────────────────
+   PAGE PRÉSENTATION
+───────────────────────────────────────── */
+.hero{background:var(--ink);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:100px 28px 100px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 65% 25%,rgba(184,144,60,.13),transparent 55%),radial-gradient(ellipse at 20% 75%,rgba(58,82,120,.16),transparent 55%);pointer-events:none;}
+.hero-eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:28px;position:relative;display:flex;align-items:center;gap:14px;}
+.hero-eyebrow::before,.hero-eyebrow::after{content:'';display:block;width:34px;height:1px;background:var(--gold);opacity:.35;}
+.hero-h1{font-family:'Playfair Display',serif;font-size:clamp(38px,6vw,64px);font-weight:600;color:var(--parch);line-height:1.1;max-width:780px;margin-bottom:28px;position:relative;}
+.hero-h1 em{font-style:italic;color:var(--gold2);}
+.hero-sub{font-size:16px;line-height:1.8;color:rgba(247,243,237,.5);max-width:520px;margin-bottom:52px;position:relative;}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;position:relative;}
+.scroll-hint{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:rgba(247,243,237,.2);font-size:10px;letter-spacing:.14em;text-transform:uppercase;animation:bob 2.4s ease-in-out infinite;}
+.scroll-hint svg{width:16px;height:16px;}
+@keyframes bob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+/* Vision strip */
+.vision-strip{background:var(--parch2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.vision-inner{max-width:900px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);}
+.vision-block{padding:36px 28px;border-right:1px solid var(--border);}
+.vision-block:last-child{border-right:none;}
+.vision-num{font-family:'Playfair Display',serif;font-size:38px;font-weight:600;color:var(--gold);margin-bottom:6px;line-height:1;}
+.vision-label{font-size:13px;color:var(--ink);font-weight:500;margin-bottom:4px;}
+.vision-desc{font-size:12px;color:var(--ink3);line-height:1.65;}
+
+/* Sections */
+.section{padding:52px 28px;max-width:900px;margin:0 auto;}
+.section-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:10px;}
+.section-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:600;color:var(--ink);margin-bottom:12px;line-height:1.2;}
+.section-body{font-size:14px;line-height:1.8;color:var(--ink2);max-width:580px;}
+
+/* How grid */
+.how-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:32px;}
+.how-card{padding:24px 20px;border:1px solid var(--border);border-radius:var(--r);background:var(--parch);}
+.how-n{font-family:'Playfair Display',serif;font-size:32px;font-weight:600;color:var(--parch3);margin-bottom:10px;line-height:1;}
+.how-title{font-weight:500;font-size:14px;color:var(--ink);margin-bottom:6px;}
+.how-desc{font-size:12px;color:var(--ink3);line-height:1.65;}
+
+/* Pillars */
+.pillars-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1px;margin-top:28px;background:var(--border);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
+.pillar-card{background:var(--parch);padding:26px 22px;transition:background .2s;cursor:default;}
+.pillar-card:hover{background:var(--parch2);}
+.pillar-icon{font-size:22px;margin-bottom:12px;}
+.pillar-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;color:var(--ink);margin-bottom:6px;}
+.pillar-desc{font-size:12px;line-height:1.65;color:var(--ink3);}
+.pillar-card.dark{background:var(--ink);}
+.pillar-card.dark:hover{background:#252220;}
+.pillar-name-dark{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;color:var(--gold2);margin-bottom:6px;}
+.pillar-desc-dark{font-size:12px;line-height:1.65;color:rgba(247,243,237,.4);}
+
+/* Manifesto */
+.manifesto{background:var(--ink);padding:52px 40px;border-radius:var(--r);margin-top:0;position:relative;overflow:hidden;}
+.manifesto::before{content:'\201C';position:absolute;top:-10px;left:24px;font-family:'Playfair Display',serif;font-size:150px;color:rgba(184,144,60,.08);line-height:1;pointer-events:none;user-select:none;}
+.manifesto-quote{font-family:'Playfair Display',serif;font-size:22px;font-style:italic;color:var(--parch);line-height:1.55;margin-bottom:16px;max-width:640px;position:relative;}
+.manifesto-source{font-size:12px;color:var(--gold);letter-spacing:.08em;}
+.transp-bar{margin-top:28px;padding:22px 24px;background:rgba(247,243,237,.04);border:1px solid rgba(184,144,60,.2);border-radius:4px;}
+.transp-title{font-size:10px;text-transform:uppercase;letter-spacing:.16em;color:var(--gold);margin-bottom:14px;font-weight:500;}
+.transp-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.transp-row:last-child{border-bottom:none;}
+.transp-key{font-size:12px;color:rgba(247,243,237,.4);}
+.transp-val{font-size:12px;color:rgba(247,243,237,.85);font-weight:500;}
+.sub-calc{margin-top:14px;font-size:11px;color:rgba(247,243,237,.3);font-style:italic;line-height:1.65;}
+
+/* CTA band */
+.cta-band{background:var(--ink);text-align:center;padding:80px 28px;position:relative;overflow:hidden;}
+.cta-band::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(184,144,60,.1),transparent 65%);pointer-events:none;}
+.cta-band h2{font-family:'Playfair Display',serif;font-size:34px;font-weight:600;color:var(--parch);margin-bottom:12px;position:relative;}
+.cta-band h2 em{font-style:italic;color:var(--gold2);}
+.cta-band p{font-size:14px;color:rgba(247,243,237,.4);margin-bottom:36px;position:relative;}
+.cta-band-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative;}
+
+/* ─────────────────────────────────────────
+   PAGE ONBOARDING
+───────────────────────────────────────── */
+.onboard-warning{background:var(--ink);padding:0;}
+.onboard-hero{padding:60px 28px 68px;text-align:center;position:relative;overflow:hidden;}
+.onboard-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 35% 60%,rgba(58,82,120,.2),transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(184,144,60,.1),transparent 50%);pointer-events:none;}
+.onboard-kicker{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--ember);font-weight:500;margin-bottom:20px;position:relative;display:inline-block;padding:5px 14px;border:1px solid rgba(196,84,58,.3);border-radius:20px;}
+.onboard-h2{font-family:'Playfair Display',serif;font-size:clamp(30px,5vw,50px);font-weight:600;color:var(--parch);margin-bottom:18px;line-height:1.15;position:relative;}
+.onboard-h2 em{font-style:italic;color:var(--gold2);}
+.onboard-sub{font-size:15px;color:rgba(247,243,237,.5);max-width:540px;margin:0 auto 30px;line-height:1.8;position:relative;}
+.onboard-disclaimer{display:inline-block;padding:12px 24px;background:rgba(196,84,58,.1);border:1px solid rgba(196,84,58,.25);border-radius:4px;font-size:12px;color:rgba(196,84,58,.85);line-height:1.65;max-width:480px;position:relative;}
+
+.onboard-body{max-width:720px;margin:0 auto;padding:48px 24px 60px;}
+
+/* Step system */
+.step-wrap{padding:36px 0;border-bottom:1px solid var(--border);}
+.step-wrap:last-child{border-bottom:none;}
+.step-kicker{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:6px;}
+.step-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:600;color:var(--ink);margin-bottom:8px;}
+.step-body{font-size:13px;line-height:1.75;color:var(--ink2);margin-bottom:24px;}
+
+/* Pilier selector */
+.pilier-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:10px;margin-bottom:28px;}
+.pilier-sel{padding:16px;border:1.5px solid var(--border);border-radius:var(--r);background:var(--parch);cursor:pointer;transition:all .2s;text-align:left;}
+.pilier-sel:hover{border-color:var(--gold);}
+.pilier-sel.selected{border-color:var(--gold);background:rgba(184,144,60,.06);}
+.pilier-sel.locked{border-color:var(--gold);background:rgba(184,144,60,.07);cursor:default;}
+.pilier-icon{font-size:18px;margin-bottom:8px;}
+.pilier-name{font-weight:500;font-size:13px;color:var(--ink);margin-bottom:3px;}
+.pilier-tag{font-size:11px;color:var(--ink3);}
+.pilier-sel.locked .pilier-tag{color:var(--gold);}
+
+/* Reflexion globale highlight */
+.reflexion-info{margin-top:16px;padding:14px 20px;background:rgba(58,82,120,.06);border:1px solid rgba(58,82,120,.2);border-radius:4px;font-size:13px;color:var(--ink2);line-height:1.65;}
+.reflexion-info strong{color:var(--lapis);}
+
+/* Price options */
+.price-note{padding:16px 20px;background:var(--parch2);border-left:3px solid var(--gold);border-radius:0 4px 4px 0;font-size:13px;line-height:1.65;color:var(--ink2);margin-bottom:20px;}
+.price-note strong{color:var(--ink);}
+.price-options{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:28px;}
+.price-opt{padding:18px;border:1.5px solid var(--border);border-radius:var(--r);cursor:pointer;transition:all .2s;}
+.price-opt:hover,.price-opt.selected{border-color:var(--gold);}
+.price-opt.selected{background:rgba(184,144,60,.05);}
+.price-opt-name{font-weight:500;font-size:14px;color:var(--ink);margin-bottom:4px;}
+.price-opt-desc{font-size:12px;color:var(--ink3);line-height:1.5;}
+.price-opt-amount{font-family:'Playfair Display',serif;font-size:20px;font-weight:600;color:var(--gold);margin-top:10px;}
+
+/* ─────────────────────────────────────────
+   PAGE DÉFIS
+───────────────────────────────────────── */
+.challenge-grid{display:grid;gap:12px;}
+.challenge-card{background:var(--parch);border:1px solid var(--border);border-radius:var(--r);padding:22px;transition:border-color .2s;}
+.challenge-card:hover{border-color:rgba(184,144,60,.4);}
+.ch-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px;}
+.ch-pillar{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--sage);font-weight:500;}
+.ch-pts{font-size:12px;font-weight:500;color:var(--gold);background:rgba(184,144,60,.1);padding:3px 9px;border-radius:10px;white-space:nowrap;}
+.ch-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:600;color:var(--ink);margin-bottom:7px;line-height:1.3;}
+.ch-desc{font-size:13px;color:var(--ink2);line-height:1.65;margin-bottom:16px;}
+.ch-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.ch-meta{display:flex;gap:14px;}
+.ch-stat{font-size:11px;color:var(--ink3);}
+.ch-stat span{color:var(--ink2);font-weight:500;}
+.ch-deadline{font-size:11px;color:var(--ink3);font-style:italic;}
+.ch-permanent{font-size:10px;padding:2px 8px;border-radius:10px;background:rgba(74,107,88,.1);color:var(--sage);font-weight:500;}
+
+/* ─────────────────────────────────────────
+   PAGE COURS
+───────────────────────────────────────── */
+.course-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(245px,1fr));gap:14px;}
+.course-card{background:var(--parch);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;cursor:pointer;transition:all .2s;}
+.course-card:hover{border-color:rgba(184,144,60,.4);transform:translateY(-2px);}
+.course-thumb{height:5px;}
+.course-body{padding:18px;}
+.course-pillar{font-size:10px;text-transform:uppercase;letter-spacing:.12em;font-weight:500;margin-bottom:8px;}
+.course-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;color:var(--ink);margin-bottom:6px;line-height:1.3;}
+.course-author{font-size:12px;color:var(--ink3);margin-bottom:12px;}
+.course-footer{display:flex;justify-content:space-between;align-items:center;}
+.course-stat{font-size:11px;color:var(--ink3);}
+.badge{font-size:10px;font-weight:500;padding:2px 9px;border-radius:10px;letter-spacing:.06em;}
+
+/* ─────────────────────────────────────────
+   PAGE RÉFLEXION / AGORA
+───────────────────────────────────────── */
+.agora-banner{background:var(--ink);padding:28px 28px 32px;border-bottom:1px solid rgba(255,255,255,.06);position:relative;overflow:hidden;}
+.agora-banner::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 50%,rgba(58,82,120,.2),transparent 55%);pointer-events:none;}
+.agora-banner-inner{max-width:900px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;position:relative;}
+.agora-banner-text h3{font-family:'Playfair Display',serif;font-size:20px;font-weight:600;color:var(--parch);margin-bottom:6px;}
+.agora-banner-text p{font-size:13px;color:rgba(247,243,237,.45);line-height:1.65;max-width:480px;}
+.discord-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;background:#5865F2;color:white;border:none;border-radius:4px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;text-decoration:none;}
+.discord-btn svg{width:16px;height:16px;fill:white;}
+.discord-btn:hover{background:#4752c4;}
+
+.questions-list{display:grid;gap:10px;}
+.question-card{background:var(--parch);border:1px solid var(--border);border-radius:var(--r);padding:22px;transition:border-color .2s;}
+.question-card:hover{border-color:rgba(184,144,60,.3);}
+.q-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px;}
+.q-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:600;color:var(--ink);line-height:1.3;flex:1;}
+.q-hot{font-size:10px;font-weight:500;background:rgba(196,84,58,.1);color:var(--ember);padding:3px 9px;border-radius:10px;white-space:nowrap;letter-spacing:.06em;flex-shrink:0;}
+.q-new{font-size:10px;font-weight:500;background:rgba(58,82,120,.1);color:var(--lapis);padding:3px 9px;border-radius:10px;white-space:nowrap;letter-spacing:.06em;flex-shrink:0;}
+.q-desc{font-size:13px;color:var(--ink2);line-height:1.65;margin-bottom:14px;}
+.q-footer{display:flex;gap:14px;align-items:center;flex-wrap:wrap;}
+.q-stat{font-size:11px;color:var(--ink3);}
+.q-stat span{color:var(--ink2);font-weight:500;}
+.q-vote-btn{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;font-size:12px;font-weight:500;border:1px solid var(--border);background:var(--parch);color:var(--ink2);border-radius:20px;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.q-vote-btn:hover,.q-vote-btn.voted{border-color:var(--gold);color:var(--gold);background:rgba(184,144,60,.06);}
+.q-discord-link{font-size:12px;color:var(--lapis);cursor:pointer;text-decoration:underline;text-underline-offset:2px;}
+.propose-box{margin-top:28px;padding:24px;background:var(--parch2);border:1px solid var(--border);border-radius:var(--r);}
+.propose-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:600;color:var(--ink);margin-bottom:4px;}
+.propose-sub{font-size:12px;color:var(--ink3);margin-bottom:16px;line-height:1.6;}
+
+/* ─────────────────────────────────────────
+   PAGE PROGRÈS — OBJECTIFS
+───────────────────────────────────────── */
+.progres-layout{max-width:900px;margin:0 auto;padding:32px 24px;display:grid;grid-template-columns:340px 1fr;gap:24px;}
+@media(max-width:720px){.progres-layout{grid-template-columns:1fr;}}
+.progres-panel{background:var(--parch);border:1px solid var(--border);border-radius:var(--r);padding:22px;}
+.progres-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:600;color:var(--ink);margin-bottom:4px;}
+.progres-sub{font-size:12px;color:var(--ink3);margin-bottom:18px;line-height:1.6;}
+.obj-input{display:flex;gap:8px;margin-bottom:10px;}
+.obj-input input{flex:1;background:var(--parch2);border:1px solid var(--border);border-radius:4px;padding:8px 12px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);outline:none;transition:border-color .2s;}
+.obj-input input:focus{border-color:var(--gold);}
+.obj-input button{padding:8px 14px;background:var(--ink);color:var(--parch);border:none;border-radius:4px;font-size:16px;cursor:pointer;transition:opacity .2s;}
+.obj-input button:hover{opacity:.8;}
+.obj-list{list-style:none;min-height:48px;margin-bottom:8px;}
+.obj-item{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--ink2);}
+.obj-item.done-item > span{text-decoration:line-through;color:var(--ink3);}
+.obj-check{width:16px;height:16px;border:1.5px solid var(--parch3);border-radius:3px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;font-size:10px;color:transparent;}
+.obj-check.done{border-color:var(--sage);background:var(--sage);color:white;}
+.obj-del{margin-left:auto;background:none;border:none;cursor:pointer;color:var(--ink3);font-size:14px;padding:0 4px;opacity:0;transition:opacity .15s;line-height:1;}
+.obj-item:hover .obj-del{opacity:1;}
+.habit-section{margin-top:18px;padding-top:18px;border-top:1px solid var(--border);}
+.habit-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);}
+.habit-name{font-size:13px;color:var(--ink2);}
+.habit-meta{display:flex;align-items:center;gap:10px;}
+.habit-streak{font-size:11px;color:var(--gold);font-weight:500;}
+.habit-toggle{width:30px;height:17px;border-radius:9px;background:var(--parch3);cursor:pointer;position:relative;transition:background .2s;flex-shrink:0;border:none;}
+.habit-toggle.on{background:var(--sage);}
+.habit-toggle::after{content:'';position:absolute;top:2px;left:2px;width:13px;height:13px;border-radius:50%;background:white;transition:left .2s;}
+.habit-toggle.on::after{left:15px;}
+.pub-btn{width:100%;padding:12px;background:var(--ink);color:var(--parch);border:none;border-radius:4px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;margin-top:18px;transition:opacity .2s;}
+.pub-btn:hover{opacity:.82;}
+
+/* Feed (page Progrès) */
+.feed-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:600;color:var(--ink);margin-bottom:16px;}
+.feed-card{background:var(--parch);border:1px solid var(--border);border-radius:var(--r);padding:18px;margin-bottom:10px;}
+.feed-card.mine{border-left:3px solid var(--gold);}
+.feed-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.feed-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:white;flex-shrink:0;}
+.feed-name{font-weight:500;font-size:13px;color:var(--ink);}
+.feed-time{font-size:11px;color:var(--ink3);}
+.feed-obj{list-style:none;font-size:13px;color:var(--ink2);margin-bottom:12px;}
+.feed-obj li{padding:3px 0;display:flex;align-items:flex-start;gap:7px;}
+.feed-done{color:var(--sage);font-weight:500;flex-shrink:0;}
+.feed-wip{color:var(--ink3);flex-shrink:0;}
+.feed-comment-area{border-top:1px solid var(--border);padding-top:12px;}
+.comment-item{display:flex;gap:8px;margin-bottom:8px;}
+.comment-av{width:22px;height:22px;border-radius:50%;background:var(--parch3);display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--ink2);font-weight:500;flex-shrink:0;margin-top:1px;}
+.comment-body{font-size:12px;color:var(--ink2);line-height:1.55;}
+.comment-author{font-weight:500;color:var(--ink);}
+.feed-comment-in{display:flex;gap:8px;margin-top:8px;}
+.feed-comment-in input{flex:1;background:var(--parch2);border:1px solid var(--border);border-radius:20px;padding:6px 14px;font-size:12px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;transition:border-color .2s;}
+.feed-comment-in input:focus{border-color:var(--gold);}
+.feed-comment-in button{padding:6px 14px;background:var(--parch2);border:1px solid var(--border);border-radius:20px;font-size:12px;cursor:pointer;color:var(--ink2);font-family:'DM Sans',sans-serif;transition:all .2s;}
+.feed-comment-in button:hover{background:var(--ink);color:var(--parch);border-color:var(--ink);}
+
+/* ─────────────────────────────────────────
+   PAGE PROFIL
+───────────────────────────────────────── */
+.profile-layout{max-width:900px;margin:0 auto;padding:32px 24px;display:grid;grid-template-columns:270px 1fr;gap:24px;}
+@media(max-width:720px){.profile-layout{grid-template-columns:1fr;}}
+.profile-card{background:var(--parch);border:1px solid var(--border);border-radius:var(--r);padding:26px;text-align:center;}
+.profile-avatar{width:84px;height:84px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:500;color:var(--ink);overflow:hidden;border:3px solid var(--parch2);margin:0 auto 14px;cursor:pointer;}
+.profile-pseudo{font-family:'Playfair Display',serif;font-size:20px;font-weight:600;color:var(--ink);margin-bottom:4px;cursor:pointer;}
+.profile-email{font-size:12px;color:var(--ink3);margin-bottom:14px;}
+.profile-pts{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--gold);background:rgba(184,144,60,.08);padding:5px 14px;border-radius:20px;margin-bottom:18px;}
+.profile-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:14px;}
+.stat-block{background:var(--parch);padding:12px;}
+.stat-num{font-family:'Playfair Display',serif;font-size:20px;font-weight:600;color:var(--ink);margin-bottom:2px;}
+.stat-label{font-size:10px;color:var(--ink3);text-transform:uppercase;letter-spacing:.1em;}
+.profile-bio{font-size:13px;color:var(--ink2);line-height:1.65;text-align:left;min-height:36px;cursor:pointer;}
+.profile-sep{height:1px;background:var(--border);margin:14px 0;}
+.profile-section-label{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--ink3);font-weight:500;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
+.profile-section-label span{font-size:10px;color:var(--gold);cursor:pointer;text-transform:none;letter-spacing:0;font-weight:400;}
+.profile-piliers{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;}
+.pilier-pill{font-size:11px;padding:3px 10px;border-radius:12px;background:var(--parch2);color:var(--ink2);border:1px solid var(--border);}
+
+/* Profile tabs / amis / messagerie */
+.friend-list{display:grid;gap:10px;}
+.friend-card{background:var(--parch);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;display:flex;align-items:center;gap:12px;}
+.friend-av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:white;flex-shrink:0;}
+.friend-info{flex:1;}
+.friend-name{font-weight:500;font-size:14px;color:var(--ink);}
+.friend-sub{font-size:12px;color:var(--ink3);}
+.friend-actions{display:flex;gap:6px;}
+.friends-search{display:flex;gap:8px;margin-bottom:18px;}
+.friends-search input{flex:1;background:var(--parch2);border:1px solid var(--border);border-radius:4px;padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);outline:none;transition:border-color .2s;}
+.friends-search input:focus{border-color:var(--gold);}
+
+/* Messagerie */
+.messaging-layout{display:grid;grid-template-columns:200px 1fr;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;min-height:400px;}
+.conv-list{border-right:1px solid var(--border);background:var(--parch);}
+.conv-list-header{padding:12px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:500;color:var(--ink3);text-transform:uppercase;letter-spacing:.1em;}
+.conv-item{padding:11px 14px;cursor:pointer;transition:background .15s;border-bottom:1px solid var(--border);}
+.conv-item:hover,.conv-item.active{background:var(--parch2);}
+.conv-item-name{font-size:13px;font-weight:500;color:var(--ink);}
+.conv-item-preview{font-size:11px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;}
+.chat-area{display:flex;flex-direction:column;background:var(--parch2);}
+.chat-header{padding:12px 18px;border-bottom:1px solid var(--border);background:var(--parch);display:flex;align-items:center;gap:10px;}
+.chat-header-name{font-weight:500;font-size:14px;color:var(--ink);}
+.chat-messages{flex:1;padding:14px;overflow-y:auto;max-height:280px;display:flex;flex-direction:column;gap:8px;}
+.msg-bubble{max-width:75%;padding:9px 13px;border-radius:10px;font-size:13px;line-height:1.5;}
+.msg-bubble.mine{background:var(--ink);color:var(--parch);align-self:flex-end;border-bottom-right-radius:3px;}
+.msg-bubble.theirs{background:var(--parch);color:var(--ink);align-self:flex-start;border-bottom-left-radius:3px;border:1px solid var(--border);}
+.msg-time{font-size:10px;opacity:.45;margin-top:3px;}
+.chat-input-area{padding:10px 14px;border-top:1px solid var(--border);background:var(--parch);display:flex;gap:8px;}
+.chat-input-area input{flex:1;background:var(--parch2);border:1px solid var(--border);border-radius:20px;padding:7px 13px;font-size:13px;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;transition:border-color .2s;}
+.chat-input-area input:focus{border-color:var(--gold);}
+.chat-send-btn{padding:7px 14px;background:var(--ink);color:var(--parch);border:none;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.chat-empty{display:flex;align-items:center;justify-content:center;flex:1;color:var(--ink3);font-size:13px;font-style:italic;padding:20px;}
+
+/* Activité */
+.activite-list{display:grid;gap:8px;}
+.activite-item{background:var(--parch);border:1px solid var(--border);border-radius:4px;padding:11px 14px;display:flex;align-items:center;gap:10px;}
+.activite-icon{font-size:15px;flex-shrink:0;}
+.activite-body{flex:1;min-width:0;}
+.activite-titre{font-size:13px;font-weight:500;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.activite-time{font-size:11px;color:var(--ink3);}
+.activite-type{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:500;letter-spacing:.06em;flex-shrink:0;}
+
+/* Notif panel */
+.notif-panel{display:none;position:fixed;top:var(--nav-h);right:20px;z-index:150;background:var(--parch);border:1px solid var(--border);border-radius:var(--r);width:330px;max-height:460px;overflow:hidden;box-shadow:0 6px 28px rgba(0,0,0,.14);}
+.notif-panel.open{display:flex;flex-direction:column;}
+.notif-panel-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.notif-panel-title{font-weight:500;font-size:14px;color:var(--ink);}
+.notif-mark-all{font-size:11px;color:var(--gold);cursor:pointer;background:none;border:none;font-family:'DM Sans',sans-serif;}
+.notif-list{overflow-y:auto;flex:1;}
+.notif-item{padding:11px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s;display:flex;gap:10px;}
+.notif-item:hover{background:var(--parch2);}
+.notif-item.unread{background:rgba(184,144,60,.05);}
+.notif-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:5px;}
+.notif-dot.read{background:transparent;}
+.notif-body{flex:1;}
+.notif-titre{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:2px;}
+.notif-corps{font-size:12px;color:var(--ink3);line-height:1.5;}
+.notif-time{font-size:10px;color:var(--ink3);margin-top:3px;}
+.notif-empty{padding:28px;text-align:center;font-size:13px;color:var(--ink3);font-style:italic;}
+
+/* ─────────────────────────────────────────
+   MODALS DE CRÉATION
+───────────────────────────────────────── */
+.creation-modal{display:none;position:fixed;inset:0;z-index:200;background:rgba(26,23,20,.72);align-items:flex-start;justify-content:center;padding:60px 20px 40px;overflow-y:auto;}
+.creation-modal.open{display:flex;}
+.creation-box{background:var(--parch);border-radius:var(--r);padding:36px 32px;width:100%;max-width:560px;position:relative;margin-bottom:40px;}
+.creation-close{position:absolute;top:16px;right:16px;background:none;border:none;font-size:18px;cursor:pointer;color:var(--ink3);}
+.creation-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:600;color:var(--ink);margin-bottom:20px;}
+.creation-label{font-size:12px;font-weight:500;color:var(--ink2);margin-bottom:5px;display:block;margin-top:12px;}
+.creation-label:first-of-type{margin-top:0;}
+.creation-input{width:100%;padding:10px 13px;background:var(--parch2);border:1px solid var(--border);border-radius:4px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);outline:none;transition:border-color .2s;}
+.creation-input:focus{border-color:var(--gold);}
+textarea.creation-input{resize:vertical;min-height:90px;}
+select.creation-input{cursor:pointer;}
+.creation-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.creation-submit{width:100%;padding:13px;background:var(--ink);color:var(--parch);border:none;border-radius:4px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;margin-top:20px;transition:opacity .2s;}
+.creation-submit:hover{opacity:.85;}
+.cmsg{font-size:12px;margin-top:10px;padding:10px 12px;border-radius:4px;display:none;}
+.cmsg.success{background:rgba(74,107,88,.12);color:var(--sage);display:block;}
+.cmsg.error{background:rgba(196,84,58,.1);color:var(--ember);display:block;}
+
+/* Auth wall */
+.auth-wall{text-align:center;padding:80px 28px;}
+.auth-wall-title{font-family:'Playfair Display',serif;font-size:22px;color:var(--ink);margin-bottom:12px;}
+.auth-wall-sub{color:var(--ink3);margin-bottom:24px;font-size:14px;line-height:1.6;}
+
+@media(max-width:560px){
+  .vision-inner{grid-template-columns:1fr;}
+  .vision-block{border-right:none;border-bottom:1px solid var(--border);}
+  .price-options{grid-template-columns:1fr;}
+  .messaging-layout{grid-template-columns:1fr;}
+  .creation-row{grid-template-columns:1fr;}
+  .agora-banner-inner{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     NAV
+══════════════════════════════════════════ -->
+<nav>
+  <div class="nav-logo" onclick="goTo('accueil')">Agora <em>●</em></div>
+  <div class="nav-links">
+    <button class="nav-link active" id="nl-accueil"   onclick="goTo('accueil',this)">Accueil</button>
+    <button class="nav-link"        id="nl-onboarding" onclick="goTo('onboarding',this)">Rejoindre</button>
+    <button class="nav-link"        id="nl-defis"      onclick="goTo('defis',this)">Défis</button>
+    <button class="nav-link"        id="nl-cours"      onclick="goTo('cours',this)">Cours</button>
+    <button class="nav-link"        id="nl-reflexion"  onclick="goTo('reflexion',this)">Réflexion</button>
+    <button class="nav-link"        id="nl-progres"    onclick="goTo('progres',this)" style="display:none">Progrès</button>
+    <button class="nav-link"        id="nl-profil"     onclick="goTo('profil',this)"  style="display:none">Profil</button>
+  </div>
+  <div class="nav-right">
+    <span class="nav-pts" id="nav-pts" style="display:none"></span>
+    <div id="notif-btn-wrap" style="display:none;position:relative">
+      <button class="notif-btn" onclick="toggleNotifPanel()">🔔
+        <span class="notif-badge" id="notif-badge" style="display:none">0</span>
+      </button>
+    </div>
+    <div class="avatar-wrap" id="avatar-wrap" style="display:none">
+      <div class="avatar" id="nav-avatar" onclick="toggleAvatarMenu()">?</div>
+      <div class="avatar-menu" id="avatar-menu">
+        <div class="avatar-menu-item" id="menu-pseudo" style="font-weight:500;color:var(--ink);cursor:default"></div>
+        <div class="avatar-menu-sep"></div>
+        <button class="avatar-menu-item" onclick="goTo('progres',document.getElementById('nl-progres'));closeAvatarMenu()">Mon progrès</button>
+        <button class="avatar-menu-item" onclick="goTo('profil',document.getElementById('nl-profil'));closeAvatarMenu()">Mon profil</button>
+        <button class="avatar-menu-item" onclick="switchProfileTab('messagerie');goTo('profil',document.getElementById('nl-profil'));closeAvatarMenu()">Messages</button>
+        <div class="avatar-menu-sep"></div>
+        <button class="avatar-menu-item danger" onclick="handleLogout()">Se déconnecter</button>
+      </div>
+    </div>
+    <button class="nav-auth-btn" id="nav-login-btn" onclick="openAuthModal()">Connexion</button>
+    <button class="burger" id="burger-btn" onclick="toggleDrawer()"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- MOBILE DRAWER -->
+<div class="mobile-drawer" id="mobile-drawer">
+  <button class="mobile-nav-link active" id="ml-accueil"    onclick="goTo('accueil');closeMobile()">Accueil</button>
+  <button class="mobile-nav-link"        id="ml-onboarding" onclick="goTo('onboarding');closeMobile()">Rejoindre</button>
+  <button class="mobile-nav-link"        id="ml-defis"      onclick="goTo('defis');closeMobile()">Défis</button>
+  <button class="mobile-nav-link"        id="ml-cours"      onclick="goTo('cours');closeMobile()">Cours</button>
+  <button class="mobile-nav-link"        id="ml-reflexion"  onclick="goTo('reflexion');closeMobile()">Réflexion</button>
+  <button class="mobile-nav-link"        id="ml-progres"    onclick="goTo('progres');closeMobile()"  style="display:none">Progrès</button>
+  <button class="mobile-nav-link"        id="ml-profil"     onclick="goTo('profil');closeMobile()"   style="display:none">Profil</button>
+  <div class="mobile-drawer-bottom">
+    <div class="mobile-pts" id="mobile-pts" style="display:none"></div>
+    <button class="mobile-auth-btn" id="mobile-login-btn" onclick="openAuthModal();closeMobile()">Se connecter</button>
+    <button class="mobile-auth-btn logout" id="mobile-logout-btn" style="display:none" onclick="handleLogout();closeMobile()">Se déconnecter</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     NOTIF PANEL
+══════════════════════════════════════════ -->
+<div class="notif-panel" id="notif-panel">
+  <div class="notif-panel-header">
+    <span class="notif-panel-title">Notifications</span>
+    <button class="notif-mark-all" onclick="markAllRead()">Tout marquer lu</button>
+  </div>
+  <div class="notif-list" id="notif-panel-list"><div class="notif-empty">Aucune notification.</div></div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     MODAL CONNEXION
+══════════════════════════════════════════ -->
+<div class="modal-overlay" id="auth-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeAuthModal()">✕</button>
+    <div class="modal-title">Connexion</div>
+    <p class="modal-sub">Content de te revoir dans l'Agora.</p>
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <input class="form-input" type="email" id="login-email" placeholder="ton@email.com">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Mot de passe</label>
+      <input class="form-input" type="password" id="login-pwd" placeholder="••••••••" onkeydown="if(event.key==='Enter')handleLogin()">
+    </div>
+    <button class="form-submit" onclick="handleLogin()">Se connecter</button>
+    <div class="fmsg" id="login-msg"></div>
+    <p style="margin-top:16px;font-size:12px;color:var(--ink3);text-align:center">
+      Pas encore de compte ?
+      <span style="color:var(--gold);cursor:pointer;font-weight:500" onclick="closeAuthModal();goTo('onboarding',document.getElementById('nl-onboarding'))">S'inscrire ici</span>
+    </p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE ACCUEIL
+══════════════════════════════════════════ -->
+<div id="page-accueil" class="page active">
+
+  <div class="hero">
+    <div class="hero-eyebrow">Une communauté. Pas une plateforme.</div>
+    <h1 class="hero-h1">Ici, tu choisis.<br>Tu ne paies que si tu <em>veux</em>.</h1>
+    <p class="hero-sub">Agora n'est pas un abonnement de plus. C'est un espace commun où chaque membre construit quelque chose — pour lui, et pour les autres.</p>
+    <div class="hero-cta">
+      <button class="btn-gold" id="hero-cta-btn" onclick="heroCta()">Rejoindre l'Agora</button>
+      <button class="btn-ghost" onclick="document.getElementById('vision-anchor').scrollIntoView({behavior:'smooth'})">Découvrir la vision ↓</button>
+    </div>
+    <div class="scroll-hint">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+      Défiler
+    </div>
+  </div>
+
+  <div class="vision-strip" id="vision-anchor">
+    <div class="vision-inner">
+      <div class="vision-block">
+        <div class="vision-num">10</div>
+        <div class="vision-label">Membres fondateurs</div>
+        <div class="vision-desc">Un groupe humain, pas une masse d'utilisateurs.</div>
+      </div>
+      <div class="vision-block">
+        <div class="vision-num">0 €</div>
+        <div class="vision-label">Si tu ne veux pas payer</div>
+        <div class="vision-desc">Ta présence vaut plus que ton argent.</div>
+      </div>
+      <div class="vision-block">
+        <div class="vision-num">100%</div>
+        <div class="vision-label">Transparent</div>
+        <div class="vision-desc">Chaque euro dépensé est expliqué ici.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">La vision</div>
+    <div class="section-title">Pas juste un site.<br>Un écosystème vivant.</div>
+    <p class="section-body">La plupart des plateformes cherchent à t'engager. Agora cherche à te libérer. Les contenus sont créés par les membres, pour les membres. Pas d'algorithme. Pas de publicité. Pas de surveillance.</p>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-n">01</div>
+        <div class="how-title">Tu choisis tes piliers</div>
+        <div class="how-desc">Des espaces thématiques qui évoluent avec leurs membres. Rien n'est figé.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-n">02</div>
+        <div class="how-title">Tu contribues librement</div>
+        <div class="how-desc">Cours, défis, débats — tout vient des membres. Bienvenue dans une démocratie.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-n">03</div>
+        <div class="how-title">Tu t'engages au quotidien</div>
+        <div class="how-desc">Objectifs du jour, habitudes, fil de progrès : le vrai moteur du changement.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-n">04</div>
+        <div class="how-title">Tu gouvernes</div>
+        <div class="how-desc">10 personnes tirées au sort chaque mois forment le conseil. Tu peux en faire partie.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" style="padding-top:0">
+    <div class="section-label">Les piliers</div>
+    <div class="section-title">Chaque pilier, un écosystème vivant.</div>
+    <p class="section-body">Tu choisis ceux qui te parlent. La Réflexion Globale appartient à tous dès le premier jour — c'est le cœur démocratique de l'Agora.</p>
+    <div class="pillars-grid">
+      <div class="pillar-card">
+        <div class="pillar-icon">🔥</div>
+        <div class="pillar-name">Corps & Mouvement</div>
+        <div class="pillar-desc">Entraînement, nutrition, récupération. Le corps comme premier outil.</div>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-icon">🧠</div>
+        <div class="pillar-name">Esprit & Connaissance</div>
+        <div class="pillar-desc">Lecture, apprentissage, philosophie pratique. L'esprit en perpétuel mouvement.</div>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-icon">🎨</div>
+        <div class="pillar-name">Création</div>
+        <div class="pillar-desc">Écriture, musique, art. Tout ce que tu construis depuis l'intérieur.</div>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-icon">🌿</div>
+        <div class="pillar-name">Âme & Méditation</div>
+        <div class="pillar-desc">Présence, introspection, rapport à soi. Ralentir pour aller plus loin.</div>
+      </div>
+      <div class="pillar-card dark">
+        <div class="pillar-icon">⚡</div>
+        <div class="pillar-name-dark">Réflexion Globale</div>
+        <div class="pillar-desc-dark">Inclus pour tous. Dialogues qui visent la vérité, la catharsis d'opinions — au sens de l'Agora grecque.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" style="padding-top:0;padding-bottom:0">
+    <div class="manifesto">
+      <div class="manifesto-quote">"Un régime politique où le pouvoir est exercé par ceux à qui il s'applique."</div>
+      <div class="manifesto-source">— Aristote, <em>Politique</em></div>
+      <div class="transp-bar">
+        <div class="transp-title">Transparence totale — Finances du mois</div>
+        <div class="transp-row"><span class="transp-key">Hébergement</span><span class="transp-val">8 € / mois</span></div>
+        <div class="transp-row"><span class="transp-key">Outils</span><span class="transp-val">0 €</span></div>
+        <div class="transp-row"><span class="transp-key">Membres actifs</span><span class="transp-val">10 personnes</span></div>
+        <div class="transp-row"><span class="transp-key">Abonnement suggéré</span><span class="transp-val">0,80 € / mois / personne</span></div>
+        <div class="sub-calc">Le montant s'ajuste automatiquement au nombre de membres. La plateforme n'est pas là pour faire de l'argent — elle est là pour connecter.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Valeurs -->
+  <div class="section">
+    <div class="section-label">Ce en quoi nous croyons</div>
+    <div class="section-title">Les principes qui ne bougent pas.</div>
+    <div class="how-grid" style="margin-top:20px">
+      <div class="how-card" style="border-left:3px solid var(--gold)">
+        <div class="how-title">Gratuité assumée</div>
+        <div class="how-desc">Aucune fonctionnalité cachée derrière un paywall. Si quelque chose devient payant, tu le sauras avant tout le monde et tu auras ton mot à dire.</div>
+      </div>
+      <div class="how-card" style="border-left:3px solid var(--lapis)">
+        <div class="how-title">Bénévolat valorisé</div>
+        <div class="how-desc">L'Agora fonctionne parce que des gens y croient assez pour y donner leur temps. Ce n'est pas une startup, c'est une cause.</div>
+      </div>
+      <div class="how-card" style="border-left:3px solid var(--sage)">
+        <div class="how-title">Points sans compétition</div>
+        <div class="how-desc">Les points ne créent pas de hiérarchie. Ce qu'un autre a accompli t'inspire — pas t'écrase. L'excellence est contagieuse, pas exclusive.</div>
+      </div>
+      <div class="how-card" style="border-left:3px solid var(--ember)">
+        <div class="how-title">Authenticité d'abord</div>
+        <div class="how-desc">Pas de faux profil, pas de personal branding forcé. Juste des gens qui cherchent à grandir et à connecter avec d'autres qui font de même.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-band">
+    <h2>Prêt à construire<br>quelque chose de <em>réel</em> ?</h2>
+    <p>10 membres. Une vision. Beaucoup d'espace pour ce qui vient.</p>
+    <div class="cta-band-btns">
+      <button class="btn-gold" id="cta-band-btn" onclick="heroCta()">Rejoindre l'Agora</button>
+      <button class="btn-ghost" onclick="goTo('reflexion',document.getElementById('nl-reflexion'))">Explorer les débats</button>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">Agora</div>
+    <div style="display:flex;gap:20px">
+      <span class="footer-link" onclick="goTo('accueil')">Accueil</span>
+      <span class="footer-link" onclick="goTo('reflexion')">Réflexion</span>
+      <span class="footer-link" onclick="goTo('progres')">Progrès</span>
+    </div>
+    <div class="footer-copy">Plateforme communautaire · Transparente · Démocratique</div>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE ONBOARDING
+══════════════════════════════════════════ -->
+<div id="page-onboarding" class="page">
+  <div class="onboard-warning">
+    <div class="onboard-hero">
+      <div class="onboard-kicker">⚠ Ce n'est pas un site comme les autres</div>
+      <h2 class="onboard-h2">Tu ne t'inscris pas.<br>Tu <em>choisis</em>.</h2>
+      <p class="onboard-sub">Pas d'algorithme qui décide pour toi. Pas d'abonnement imposé. Pas de contenu dicté par ce qui "performe". Ici, tu définis ton espace — et tu ne paies que si tu en as envie.</p>
+      <div class="onboard-disclaimer">
+        Prends le temps de lire avant de cliquer. Ce que tu vas remplir définit réellement ton expérience ici. Ce n'est pas une formalité.
+      </div>
+    </div>
+  </div>
+
+  <div class="onboard-body" id="onboard-form">
+
+    <!-- Étape 1 : Identité -->
+    <div class="step-wrap">
+      <div class="step-kicker">Étape 1 — Ton identité</div>
+      <div class="step-title">Comment tu veux t'appeler.</div>
+      <p class="step-body">Choisis un pseudo qui te ressemble. Ce sera ton nom dans l'Agora — visible par tous les membres. Ajoute deux initiales pour ton avatar.</p>
+      <div style="display:grid;grid-template-columns:1fr 80px;gap:12px;align-items:end">
+        <div>
+          <label class="form-label">Pseudo</label>
+          <input type="text" id="ob-pseudo" maxlength="30" placeholder="Ton nom dans l'Agora…" class="form-input">
+        </div>
+        <div>
+          <label class="form-label">Initiales</label>
+          <input type="text" id="ob-initiales" maxlength="2" placeholder="AB" class="form-input" style="text-align:center;text-transform:uppercase" oninput="this.value=this.value.toUpperCase()">
+        </div>
+      </div>
+    </div>
+
+    <!-- Étape 2 : Piliers -->
+    <div class="step-wrap">
+      <div class="step-kicker">Étape 2 — Tes piliers</div>
+      <div class="step-title">Choisis tes écosystèmes.</div>
+      <p class="step-body">Les piliers sont des espaces vivants — des communautés dans la communauté. Chacun évolue avec ses membres : les défis, les cours, les discussions y sont créés par ceux qui en font partie. Choisis ceux avec lesquels tu résonnes.</p>
+      <div class="pilier-grid" id="ob-pilier-grid">
+        <div class="pilier-sel locked">
+          <div class="pilier-icon">⚡</div>
+          <div class="pilier-name">Réflexion Globale</div>
+          <div class="pilier-tag">✓ Inclus pour tous</div>
+        </div>
+      </div>
+      <div class="reflexion-info">
+        <strong>La Réflexion Globale</strong> est le cœur de l'Agora — un espace de dialogue ouvert à tous, dès le premier jour. Ici, les grandes questions de la vie, de la vérité, de l'existence. Pas de réponses imposées. Juste des esprits qui cherchent, ensemble.
+      </div>
+    </div>
+
+    <!-- Étape 3 : Contribution -->
+    <div class="step-wrap">
+      <div class="step-kicker">Étape 3 — Contribution</div>
+      <div class="step-title">Donne ce que tu veux. Vraiment.</div>
+      <p class="step-body">Il n'y a pas de "bonne" réponse ici. Ta présence a de la valeur. Si tu as les moyens et l'envie de contribuer financièrement, c'est une façon de permettre à d'autres de participer gratuitement.</p>
+      <div class="price-note">
+        <strong>Comment ça marche :</strong> Le coût réel de la plateforme divisé par le nombre de membres. En ce moment : <strong>0,80 €/mois</strong>. Ce chiffre est mis à jour en temps réel avec les dépenses réelles.
+      </div>
+      <div class="price-options">
+        <div class="price-opt selected" onclick="selectPrice(this)" data-niveau="gratuit" data-montant="0 €">
+          <div class="price-opt-name">Gratuit</div>
+          <div class="price-opt-desc">Tu contribues par ta présence et ton énergie.</div>
+          <div class="price-opt-amount">0 €</div>
+        </div>
+        <div class="price-opt" onclick="selectPrice(this)" data-niveau="contributeur" data-montant="0,80 €/mois">
+          <div class="price-opt-name">Contributeur</div>
+          <div class="price-opt-desc">Tu couvres exactement ta part des frais réels.</div>
+          <div class="price-opt-amount">0,80 €/mois</div>
+        </div>
+        <div class="price-opt" onclick="selectPrice(this)" data-niveau="soutien" data-montant="2 €/mois">
+          <div class="price-opt-name">Soutien</div>
+          <div class="price-opt-desc">Tu permets à d'autres de rejoindre gratuitement.</div>
+          <div class="price-opt-amount">2 €/mois</div>
+        </div>
+        <div class="price-opt" onclick="selectPrice(this)" data-niveau="batisseur" data-montant="5 €/mois">
+          <div class="price-opt-name">Bâtisseur</div>
+          <div class="price-opt-desc">Tu crois au projet et tu accélères sa croissance.</div>
+          <div class="price-opt-amount">5 €/mois</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Étape 4 : Compte -->
+    <div class="step-wrap">
+      <div class="step-kicker">Étape 4 — Ton accès</div>
+      <div class="step-title">Crée ton compte.</div>
+      <p class="step-body">Un email et un mot de passe. C'est tout ce dont on a besoin — pas de numéro de téléphone, pas de vérification d'identité, pas de suivi.</p>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" type="email" id="ob-email" placeholder="ton@email.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Mot de passe</label>
+        <input class="form-input" type="password" id="ob-password" placeholder="8 caractères minimum">
+      </div>
+      <div class="fmsg" id="ob-msg"></div>
+      <button class="btn-primary" style="width:100%;margin-top:8px;padding:14px" onclick="creerCompte()">Rejoindre l'Agora →</button>
+    </div>
+
+  </div>
+
+  <div id="onboard-success" style="display:none;text-align:center;padding:80px 28px">
+    <div style="font-size:52px;margin-bottom:20px">⚡</div>
+    <div style="font-family:'Playfair Display',serif;font-size:28px;font-weight:600;color:var(--ink);margin-bottom:14px">Bienvenue dans l'Agora.</div>
+    <p style="font-size:14px;color:var(--ink3);max-width:420px;margin:0 auto 32px;line-height:1.75">Ton compte est créé. Tout ce que tu viens de choisir est enregistré dans ton profil. La suite t'appartient.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <button class="btn-gold" onclick="goTo('progres',document.getElementById('nl-progres'))">Commencer mes objectifs →</button>
+      <button class="btn-primary" onclick="goTo('reflexion',document.getElementById('nl-reflexion'))">Explorer la Réflexion Globale</button>
+    </div>
+  </div>
+
+  <footer><div class="footer-logo">Agora</div><div class="footer-copy">Plateforme communautaire · Transparente · Démocratique</div></footer>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE DÉFIS
+══════════════════════════════════════════ -->
+<div id="page-defis" class="page">
+  <div class="page-header">
+    <h2>Défis</h2>
+    <p>Créés par des membres, pour tous. Ancrés dans les piliers. Ouverts à qui veut se dépasser.</p>
+  </div>
+  <div class="content-area">
+    <div class="filter-bar" id="defis-filter">
+      <div class="filter-chip active" onclick="filterDefis('',this)">Tous</div>
+    </div>
+    <div class="challenge-grid" id="defis-list">
+      <div class="loading">Chargement…</div>
+    </div>
+    <button class="create-btn" onclick="requireAuth(openModalDefi)">+ Proposer un nouveau défi</button>
+  </div>
+  <footer><div class="footer-logo">Agora</div><div class="footer-copy">Plateforme communautaire · Transparente · Démocratique</div></footer>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE COURS
+══════════════════════════════════════════ -->
+<div id="page-cours" class="page">
+  <div class="page-header">
+    <h2>Cours</h2>
+    <p>Créés par des membres, pour les membres. Le savoir qui circule librement.</p>
+  </div>
+  <div class="content-area">
+    <div class="filter-bar" id="cours-filter">
+      <div class="filter-chip active" onclick="filterCours('',this)">Tous</div>
+    </div>
+    <div class="course-grid" id="cours-list">
+      <div class="loading">Chargement…</div>
+    </div>
+    <button class="create-btn" style="margin-top:16px" onclick="requireAuth(openModalCours)">+ Proposer un cours</button>
+  </div>
+  <footer><div class="footer-logo">Agora</div><div class="footer-copy">Plateforme communautaire · Transparente · Démocratique</div></footer>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE RÉFLEXION GLOBALE
+══════════════════════════════════════════ -->
+<div id="page-reflexion" class="page">
+  <div class="page-header">
+    <h2>Réflexion Globale</h2>
+    <p>Les grandes questions. La vérité comme horizon. Accessible à tous les membres dès le premier jour.</p>
+  </div>
+
+  <div class="agora-banner">
+    <div class="agora-banner-inner">
+      <div class="agora-banner-text">
+        <h3>Les débats vivent sur Discord.</h3>
+        <p>Cette page est le tableau de bord : tu votes pour les questions qui t'interpellent, tu en proposes de nouvelles. Les discussions réelles — profondes, vivantes, sans filtre — se déroulent sur notre serveur Discord, ouvert à tous les membres.</p>
+      </div>
+      <a class="discord-btn" href="https://discord.gg/VotreServeur" target="_blank">
+        <svg viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+        Rejoindre Discord
+      </a>
+    </div>
+  </div>
+
+  <div class="content-area">
+
+    <!-- Comment ça marche -->
+    <div style="padding:20px 22px;background:var(--parch2);border:1px solid var(--border);border-radius:var(--r);margin-bottom:24px;font-size:13px;color:var(--ink2);line-height:1.75">
+      <strong style="color:var(--ink)">Comment fonctionne la Réflexion Globale ?</strong><br>
+      Chaque membre peut proposer une question ci-dessous. Les autres votent pour celles qui les interpellent. Les questions qui obtiennent le plus de votes deviennent des fils de discussion actifs sur Discord. Une façon démocratique de choisir ensemble ce dont on va parler.
+    </div>
+
+    <div class="questions-list" id="questions-list">
+      <div class="loading">Chargement…</div>
+    </div>
+
+    <div class="propose-box">
+      <div class="propose-title">Proposer une question à l'Agora</div>
+      <p class="propose-sub">Elle sera soumise au vote de tous les membres. Si elle résonne suffisamment, elle ouvre un fil de discussion dédié sur Discord.</p>
+      <input type="text" class="form-field" id="q-titre" placeholder="Quelle est ta question pour la communauté ?">
+      <textarea class="form-field" id="q-desc" placeholder="Contexte, précisions, pourquoi cette question maintenant… (optionnel)" style="min-height:80px"></textarea>
+      <button class="btn-primary" style="width:100%" onclick="requireAuth(soumettreQuestion)">Soumettre à l'Agora</button>
+      <div class="fmsg" id="q-msg"></div>
+    </div>
+
+  </div>
+  <footer><div class="footer-logo">Agora</div><div class="footer-copy">Plateforme communautaire · Transparente · Démocratique</div></footer>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE PROGRÈS
+══════════════════════════════════════════ -->
+<div id="page-progres" class="page">
+  <div class="page-header">
+    <h2>Progrès</h2>
+    <p>Pose tes objectifs. Tiens tes habitudes. Publie dans le fil — et reçois les retours de la communauté.</p>
+  </div>
+
+  <div id="progres-auth-wall" class="auth-wall" style="display:none">
+    <div class="auth-wall-title">Connecte-toi pour suivre ton progrès</div>
+    <p class="auth-wall-sub">Objectifs quotidiens, habitudes, fil communautaire.<br>Le cœur vivant d'Agora.</p>
+    <button class="btn-primary" onclick="openAuthModal()">Se connecter</button>
+  </div>
+
+  <div id="progres-content" style="display:none">
+    <div class="progres-layout">
+
+      <!-- Colonne gauche : objectifs + habitudes -->
+      <div>
+        <div class="progres-panel" style="margin-bottom:16px">
+          <div class="progres-title">Objectifs du jour</div>
+          <p class="progres-sub">Ce que tu t'engages à faire aujourd'hui. Concret, réaliste, honnête.</p>
+          <div class="obj-input">
+            <input type="text" id="obj-field" placeholder="Ajouter un objectif…" onkeydown="if(event.key==='Enter')addObj()">
+            <button onclick="addObj()">+</button>
+          </div>
+          <ul class="obj-list" id="obj-list"></ul>
+        </div>
+
+        <div class="progres-panel">
+          <div class="progres-title">Habitudes</div>
+          <p class="progres-sub">Les petites choses quotidiennes qui, accumulées, font tout.</p>
+          <div class="habit-section" id="habitudes-list" style="margin-top:0;padding-top:0;border-top:none">
+            <div class="loading">Chargement…</div>
+          </div>
+          <div style="display:flex;justify-content:flex-end;margin-top:12px">
+            <button class="btn-sm" onclick="ajouterHabitude()">+ Nouvelle habitude</button>
+          </div>
+          <button class="pub-btn" onclick="publierObjectifs()">Publier dans le fil communautaire →</button>
+          <div class="fmsg" id="pub-msg"></div>
+        </div>
+      </div>
+
+      <!-- Colonne droite : fil -->
+      <div>
+        <div class="feed-title">Fil des progrès</div>
+        <div id="feed-dynamic" class="feed-card mine" style="display:none">
+          <div class="feed-header">
+            <div class="feed-av" style="background:var(--gold)" id="feed-my-av">?</div>
+            <div>
+              <div class="feed-name" id="feed-my-name">Moi</div>
+              <div class="feed-time">À l'instant</div>
+            </div>
+          </div>
+          <ul class="feed-obj" id="feed-my-list"></ul>
+          <div class="feed-comment-area">
+            <div style="font-size:12px;color:var(--ink3);font-style:italic">En attente de réactions de la communauté…</div>
+          </div>
+        </div>
+        <div id="feed-list"><div class="loading">Chargement du fil…</div></div>
+      </div>
+
+    </div>
+  </div>
+  <footer><div class="footer-logo">Agora</div><div class="footer-copy">Plateforme communautaire · Transparente · Démocratique</div></footer>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE PROFIL
+══════════════════════════════════════════ -->
+<div id="page-profil" class="page">
+  <div class="page-header"><h2>Mon profil</h2><p>Ton identité dans l'Agora.</p></div>
+
+  <div id="profil-auth-wall" class="auth-wall" style="display:none">
+    <div class="auth-wall-title">Connecte-toi pour accéder à ton profil</div>
+    <p class="auth-wall-sub">Ton profil, tes amis, tes messages t'attendent.</p>
+    <button class="btn-primary" onclick="openAuthModal()">Se connecter</button>
+  </div>
+
+  <div id="profil-content" style="display:none">
+    <div class="profile-layout">
+
+      <!-- Sidebar -->
+      <div>
+        <div class="profile-card">
+          <!-- Avatar -->
+          <div class="profile-avatar" id="profile-avatar-big" onclick="toggleInitialesEdit()" title="Changer les initiales">?</div>
+          <div id="initiales-edit-wrap" style="display:none;margin-bottom:12px">
+            <input type="text" id="initiales-input" maxlength="2" placeholder="AB"
+              style="width:54px;text-align:center;text-transform:uppercase;padding:7px;background:var(--parch2);border:1px solid var(--gold);border-radius:4px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;color:var(--ink);outline:none"
+              oninput="this.value=this.value.toUpperCase()"
+              onkeydown="if(event.key==='Enter')saveInitiales();if(event.key==='Escape')toggleInitialesEdit()">
+            <button class="btn-sm sage" style="margin-left:6px" onclick="saveInitiales()">✓</button>
+            <button class="btn-sm" style="margin-left:4px" onclick="toggleInitialesEdit()">✕</button>
+          </div>
+
+          <!-- Pseudo -->
+          <div id="pseudo-display-wrap" onclick="togglePseudoEdit()" title="Modifier" style="cursor:pointer">
+            <div class="profile-pseudo" id="profile-pseudo-display">—</div>
+          </div>
+          <div id="pseudo-edit-wrap" style="display:none;margin-bottom:8px">
+            <input type="text" id="pseudo-input" maxlength="30"
+              style="width:100%;padding:7px 10px;background:var(--parch2);border:1px solid var(--gold);border-radius:4px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;color:var(--ink);outline:none;text-align:center"
+              onkeydown="if(event.key==='Enter')savePseudo();if(event.key==='Escape')togglePseudoEdit()">
+            <div style="display:flex;gap:6px;justify-content:center;margin-top:6px">
+              <button class="btn-sm sage" onclick="savePseudo()">Enregistrer</button>
+              <button class="btn-sm" onclick="togglePseudoEdit()">Annuler</button>
+            </div>
+          </div>
+
+          <div class="profile-email" id="profile-email-display">—</div>
+          <div class="profile-pts" id="profile-pts-display">✦ 0 pts</div>
+
+          <div class="profile-stats">
+            <div class="stat-block"><div class="stat-num" id="stat-defis">0</div><div class="stat-label">Défis</div></div>
+            <div class="stat-block"><div class="stat-num" id="stat-amis">0</div><div class="stat-label">Amis</div></div>
+            <div class="stat-block"><div class="stat-num" id="stat-questions">0</div><div class="stat-label">Questions</div></div>
+          </div>
+
+          <!-- Bio -->
+          <div class="profile-sep"></div>
+          <div class="profile-section-label">Bio</div>
+          <div id="profile-bio-display" class="profile-bio" onclick="toggleBioEdit()" title="Modifier" style="cursor:pointer"></div>
+          <textarea id="profile-bio-edit" class="form-field" placeholder="Raconte-toi en quelques mots…" maxlength="280"
+            onkeydown="if(event.key==='Escape')toggleBioEdit()" style="display:none;min-height:80px"></textarea>
+          <div id="bio-save-row" style="display:none;margin-top:4px">
+            <button class="btn-sm sage" onclick="saveBio()">Enregistrer</button>
+            <button class="btn-sm" style="margin-left:6px" onclick="toggleBioEdit()">Annuler</button>
+          </div>
+
+          <!-- Piliers -->
+          <div class="profile-sep"></div>
+          <div class="profile-section-label">Mes piliers <span onclick="togglePiliersEdit()">· modifier</span></div>
+          <div class="profile-piliers" id="profile-piliers-display"></div>
+          <div id="piliers-edit-wrap" style="display:none;margin-top:10px">
+            <div class="pilier-grid" id="piliers-edit-grid" style="grid-template-columns:1fr 1fr;gap:8px"></div>
+            <div style="display:flex;gap:6px;margin-top:10px">
+              <button class="btn-sm sage" onclick="savePiliers()">Enregistrer</button>
+              <button class="btn-sm" onclick="togglePiliersEdit()">Annuler</button>
+            </div>
+          </div>
+
+          <!-- Contribution -->
+          <div class="profile-sep"></div>
+          <div class="profile-section-label">Contribution <span onclick="toggleContribEdit()">· modifier</span></div>
+          <div id="contrib-display" style="font-size:13px;color:var(--ink2);text-align:left"></div>
+          <div id="contrib-edit-wrap" style="display:none;margin-top:10px">
+            <div style="display:grid;gap:6px">
+              <div class="price-opt" onclick="selectContrib(this)" data-niveau="gratuit" data-montant="0 €" style="padding:11px"><div style="display:flex;justify-content:space-between"><span style="font-size:13px;font-weight:500">Gratuit</span><span style="font-size:13px;color:var(--gold);font-weight:500">0 €</span></div></div>
+              <div class="price-opt" onclick="selectContrib(this)" data-niveau="contributeur" data-montant="0,80 €/mois" style="padding:11px"><div style="display:flex;justify-content:space-between"><span style="font-size:13px;font-weight:500">Contributeur</span><span style="font-size:13px;color:var(--gold);font-weight:500">0,80 €/mois</span></div></div>
+              <div class="price-opt" onclick="selectContrib(this)" data-niveau="soutien" data-montant="2 €/mois" style="padding:11px"><div style="display:flex;justify-content:space-between"><span style="font-size:13px;font-weight:500">Soutien</span><span style="font-size:13px;color:var(--gold);font-weight:500">2 €/mois</span></div></div>
+              <div class="price-opt" onclick="selectContrib(this)" data-niveau="batisseur" data-montant="5 €/mois" style="padding:11px"><div style="display:flex;justify-content:space-between"><span style="font-size:13px;font-weight:500">Bâtisseur</span><span style="font-size:13px;color:var(--gold);font-weight:500">5 €/mois</span></div></div>
+            </div>
+            <div style="display:flex;gap:6px;margin-top:10px">
+              <button class="btn-sm sage" onclick="saveContrib()">Enregistrer</button>
+              <button class="btn-sm" onclick="toggleContribEdit()">Annuler</button>
+            </div>
+          </div>
+
+          <!-- Supprimer -->
+          <div class="profile-sep"></div>
+          <div style="text-align:left">
+            <span style="font-size:12px;color:var(--ink3);cursor:pointer" onclick="toggleDeleteConfirm()">Supprimer mon compte</span>
+          </div>
+          <div id="delete-confirm-wrap" style="display:none;margin-top:10px;padding:14px;background:rgba(196,84,58,.06);border:1px solid rgba(196,84,58,.2);border-radius:4px">
+            <p style="font-size:12px;color:var(--ink2);line-height:1.6;margin-bottom:10px">Cette action est <strong>irréversible</strong>.</p>
+            <input type="text" id="delete-confirm-input" class="form-field" placeholder="Tape SUPPRIMER pour confirmer" style="margin-bottom:8px;font-size:12px">
+            <div style="display:flex;gap:8px">
+              <button class="btn-sm ember" onclick="supprimerCompte()">Supprimer</button>
+              <button class="btn-sm" onclick="toggleDeleteConfirm()">Annuler</button>
+            </div>
+            <div id="delete-msg" style="font-size:12px;margin-top:8px;display:none"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Onglets -->
+      <div>
+        <div class="tab-bar" id="profile-tab-bar">
+          <button class="tab-btn active" onclick="switchProfileTab('activite',this)">Activité</button>
+          <button class="tab-btn" onclick="switchProfileTab('amis',this)">Amis</button>
+          <button class="tab-btn" onclick="switchProfileTab('messagerie',this)">Messages</button>
+          <button class="tab-btn" onclick="switchProfileTab('notifications',this)">
+            Notifications
+            <span id="notif-tab-badge" style="display:none;background:var(--ember);color:white;font-size:10px;padding:1px 6px;border-radius:10px;margin-left:4px"></span>
+          </button>
+        </div>
+
+        <!-- Activité -->
+        <div class="tab-pane active" id="tab-activite">
+          <div class="activite-list" id="activite-list"><div class="loading">Chargement…</div></div>
+        </div>
+
+        <!-- Amis -->
+        <div class="tab-pane" id="tab-amis">
+          <div class="friends-search">
+            <input type="text" id="friend-search-input" placeholder="Rechercher un membre par pseudo…" oninput="searchMembers(this.value)">
+            <button class="btn-sm" onclick="searchMembers(document.getElementById('friend-search-input').value)">Chercher</button>
+          </div>
+          <div id="friend-search-results" style="margin-bottom:20px;display:none">
+            <div style="font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink3);margin-bottom:10px">Résultats</div>
+            <div class="friend-list" id="search-results-list"></div>
+          </div>
+          <div id="demandes-section" style="margin-bottom:20px;display:none">
+            <div style="font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink3);margin-bottom:10px">Demandes reçues</div>
+            <div class="friend-list" id="demandes-list"></div>
+          </div>
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink3);margin-bottom:10px">Mes amis</div>
+          <div class="friend-list" id="amis-list"><div class="loading">Chargement…</div></div>
+        </div>
+
+        <!-- Messagerie -->
+        <div class="tab-pane" id="tab-messagerie">
+          <div class="messaging-layout">
+            <div class="conv-list">
+              <div class="conv-list-header">Conversations</div>
+              <div id="conv-list-items"><div class="empty" style="padding:20px;font-size:12px">Aucune conversation.</div></div>
+            </div>
+            <div class="chat-area" id="chat-area">
+              <div class="chat-empty">Sélectionne une conversation ou écris à un ami.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notifications -->
+        <div class="tab-pane" id="tab-notifications">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+            <div style="font-size:13px;color:var(--ink2)">Tes dernières notifications.</div>
+            <button class="btn-sm" onclick="markAllRead()">Tout marquer lu</button>
+          </div>
+          <div id="notif-list-page"><div class="loading">Chargement…</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <footer><div class="footer-logo">Agora</div><div class="footer-copy">Plateforme communautaire · Transparente · Démocratique</div></footer>
+</div>
+
+<!-- ═══════════════════════════════════════
+     MODAL CRÉATION DÉFI
+══════════════════════════════════════════ -->
+<div class="creation-modal" id="modal-defi">
+  <div class="creation-box">
+    <button class="creation-close" onclick="closeModalDefi()">✕</button>
+    <div class="creation-title">Proposer un défi</div>
+    <label class="creation-label">Titre</label>
+    <input type="text" class="creation-input" id="defi-titre" placeholder="Ex : 21 jours de mouvement quotidien" maxlength="80">
+    <label class="creation-label">Description</label>
+    <textarea class="creation-input" id="defi-desc" placeholder="Décris le défi, les règles, l'intention derrière…" maxlength="500"></textarea>
+    <div class="creation-row">
+      <div>
+        <label class="creation-label">Pilier</label>
+        <select class="creation-input" id="defi-pilier"></select>
+      </div>
+      <div>
+        <label class="creation-label">Points attribués</label>
+        <input type="number" class="creation-input" id="defi-points" value="50" min="10" max="500">
+      </div>
+    </div>
+    <div class="creation-row">
+      <div>
+        <label class="creation-label">Date de fin (optionnel)</label>
+        <input type="date" class="creation-input" id="defi-date">
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:30px">
+        <input type="checkbox" id="defi-permanent" style="cursor:pointer;width:15px;height:15px">
+        <label for="defi-permanent" style="font-size:13px;color:var(--ink2);cursor:pointer">Défi permanent</label>
+      </div>
+    </div>
+    <div class="cmsg" id="defi-msg"></div>
+    <button class="creation-submit" onclick="soumettreDefi()">Publier le défi →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     MODAL CRÉATION COURS
+══════════════════════════════════════════ -->
+<div class="creation-modal" id="modal-cours">
+  <div class="creation-box">
+    <button class="creation-close" onclick="closeModalCours()">✕</button>
+    <div class="creation-title">Proposer un cours</div>
+    <label class="creation-label">Titre</label>
+    <input type="text" class="creation-input" id="cours-titre" placeholder="Ex : Courir sans se blesser" maxlength="80">
+    <label class="creation-label">Description</label>
+    <textarea class="creation-input" id="cours-desc" placeholder="De quoi parle ce cours ? À qui s'adresse-t-il ?" maxlength="500"></textarea>
+    <div class="creation-row">
+      <div>
+        <label class="creation-label">Pilier</label>
+        <select class="creation-input" id="cours-pilier"></select>
+      </div>
+      <div>
+        <label class="creation-label">Nombre de séances</label>
+        <input type="number" class="creation-input" id="cours-seances" value="1" min="1" max="50">
+      </div>
+    </div>
+    <label class="creation-label">Durée totale estimée (minutes)</label>
+    <input type="number" class="creation-input" id="cours-duree" value="30" min="5" max="600">
+    <div class="cmsg" id="cours-msg"></div>
+    <button class="creation-submit" onclick="soumettreCours()">Publier le cours →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════════════════ -->
+<script>
+// ──────────────────────────────────────────
+// SUPABASE INIT
+// ──────────────────────────────────────────
+const SUPABASE_URL = 'https://qzbmwdldvsgffzjswjyd.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_BKGzEVquiQl0SnbJDGgQqg_M2BUQXXP';
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+let currentUser = null, currentProfile = null;
+
+async function initAuth() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) { currentUser = session.user; await loadProfile(); }
+  updateNavUI();
+  sb.auth.onAuthStateChange(async (_e, session) => {
+    currentUser = session?.user || null;
+    if (currentUser) await loadProfile(); else currentProfile = null;
+    updateNavUI();
+  });
+}
+
+async function loadProfile() {
+  const { data } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
+  currentProfile = data;
+}
+
+function updateNavUI() {
+  const loggedIn = !!(currentUser && currentProfile);
+  const show = v => v.style.display = 'block';
+  const hide = v => v.style.display = 'none';
+  const showI = v => v.style.display = 'inline-block';
+
+  // Nav pts / avatar
+  const pts = document.getElementById('nav-pts');
+  const wrap = document.getElementById('avatar-wrap');
+  const av = document.getElementById('nav-avatar');
+  const btn = document.getElementById('nav-login-btn');
+  const nb = document.getElementById('notif-btn-wrap');
+  const pseudo = document.getElementById('menu-pseudo');
+
+  if (loggedIn) {
+    pts.textContent = '✦ ' + (currentProfile.points || 0) + ' pts'; show(pts);
+    av.textContent = currentProfile.avatar_initiales || '?';
+    show(wrap); show(nb);
+    pseudo.textContent = currentProfile.pseudo || currentUser.email;
+    hide(btn);
+    // Nav links
+    showI(document.getElementById('nl-progres'));
+    showI(document.getElementById('nl-profil'));
+    hide(document.getElementById('nl-onboarding'));
+    // Mobile
+    document.getElementById('mobile-pts').textContent = '✦ ' + (currentProfile.points || 0) + ' pts';
+    show(document.getElementById('mobile-pts'));
+    hide(document.getElementById('mobile-login-btn'));
+    show(document.getElementById('mobile-logout-btn'));
+    show(document.getElementById('ml-progres'));
+    show(document.getElementById('ml-profil'));
+    hide(document.getElementById('ml-onboarding'));
+    loadNotifCount();
+  } else {
+    hide(pts); hide(wrap); hide(nb); show(btn);
+    hide(document.getElementById('nl-progres'));
+    hide(document.getElementById('nl-profil'));
+    showI(document.getElementById('nl-onboarding'));
+    hide(document.getElementById('mobile-pts'));
+    show(document.getElementById('mobile-login-btn'));
+    hide(document.getElementById('mobile-logout-btn'));
+    hide(document.getElementById('ml-progres'));
+    hide(document.getElementById('ml-profil'));
+    show(document.getElementById('ml-onboarding'));
+  }
+  updateCtaBtns();
+}
+
+async function loadNotifCount() {
+  if (!currentUser) return;
+  const { count } = await sb.from('notifications').select('*', { count: 'exact', head: true })
+    .eq('user_id', currentUser.id).eq('lu', false);
+  const badge = document.getElementById('notif-badge');
+  if (count > 0) { badge.textContent = count > 9 ? '9+' : count; badge.style.display = 'flex'; }
+  else badge.style.display = 'none';
+}
+
+// ──────────────────────────────────────────
+// NAV
+// ──────────────────────────────────────────
+const pageLoaders = {
+  defis: loadDefis, cours: loadCours,
+  reflexion: loadQuestions, profil: loadProfil, progres: loadProgres
+};
+
+function goTo(page, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-link, .mobile-nav-link').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  if (btn) btn.classList.add('active');
+  else {
+    const nl = document.getElementById('nl-' + page); if (nl) nl.classList.add('active');
+  }
+  const ml = document.getElementById('ml-' + page); if (ml) ml.classList.add('active');
+  closeMobile(); closeNotifPanel(); closeAvatarMenu();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (pageLoaders[page]) pageLoaders[page]();
+}
+
+// ──────────────────────────────────────────
+// AUTH
+// ──────────────────────────────────────────
+function openAuthModal()  { document.getElementById('auth-modal').classList.add('open'); }
+function closeAuthModal() { document.getElementById('auth-modal').classList.remove('open'); }
+document.getElementById('auth-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeAuthModal(); });
+
+async function handleLogin() {
+  const email = document.getElementById('login-email').value;
+  const pwd   = document.getElementById('login-pwd').value;
+  const msg   = document.getElementById('login-msg');
+  msg.className = 'fmsg'; msg.textContent = 'Connexion…'; msg.style.display = 'block';
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: pwd });
+  if (error) { msg.textContent = 'Erreur : ' + error.message; msg.className = 'fmsg error'; return; }
+  currentUser = data.user;
+  await loadProfile();
+  updateNavUI();
+  closeAuthModal();
+  goTo('profil', document.getElementById('nl-profil'));
+}
+
+async function handleLogout() {
+  await sb.auth.signOut();
+  goTo('accueil', document.getElementById('nl-accueil'));
+}
+
+function requireAuth(fn) {
+  if (!currentUser) { openAuthModal(); return; }
+  fn();
+}
+
+// ──────────────────────────────────────────
+// ONBOARDING
+// ──────────────────────────────────────────
+async function loadPiliers() {
+  const { data } = await sb.from('piliers').select('*').eq('obligatoire', false).order('nom');
+  const grid = document.getElementById('ob-pilier-grid');
+  if (!data) return;
+  data.forEach(p => {
+    const div = document.createElement('div');
+    div.className = 'pilier-sel'; div.dataset.id = p.id;
+    div.innerHTML = `<div class="pilier-icon">${p.emoji}</div><div class="pilier-name">${p.nom}</div><div class="pilier-tag">${p.description ? p.description.slice(0, 45) : ''}</div>`;
+    div.onclick = () => div.classList.toggle('selected');
+    grid.appendChild(div);
+  });
+}
+
+function selectPrice(el) {
+  document.querySelectorAll('#page-onboarding .price-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+async function creerCompte() {
+  const pseudo    = document.getElementById('ob-pseudo').value.trim();
+  const raw_init  = document.getElementById('ob-initiales').value.trim().toUpperCase();
+  const initiales = (raw_init || pseudo.slice(0, 2).toUpperCase()).slice(0, 2);
+  const email     = document.getElementById('ob-email').value.trim();
+  const password  = document.getElementById('ob-password').value;
+  const msg       = document.getElementById('ob-msg');
+  msg.className = 'fmsg';
+
+  if (!pseudo) { msg.textContent = 'Choisis un pseudo.'; msg.className = 'fmsg error'; return; }
+  if (!email || !password) { msg.textContent = 'Email et mot de passe requis.'; msg.className = 'fmsg error'; return; }
+  if (password.length < 8) { msg.textContent = 'Mot de passe trop court (8 caractères minimum).'; msg.className = 'fmsg error'; return; }
+
+  msg.textContent = 'Création en cours…'; msg.style.display = 'block'; msg.className = 'fmsg success';
+
+  const { data, error } = await sb.auth.signUp({ email, password });
+  if (error) {
+    msg.textContent = error.message.includes('already registered')
+      ? 'Cet email est déjà utilisé. Connecte-toi plutôt.'
+      : 'Erreur : ' + error.message;
+    msg.className = 'fmsg error'; return;
+  }
+  if (data.user) {
+    const contrib = document.querySelector('#page-onboarding .price-opt.selected');
+    await sb.from('profiles').update({
+      pseudo, avatar_initiales: initiales,
+      contribution_niveau: contrib?.dataset.niveau || 'gratuit',
+      contribution_montant: contrib?.dataset.montant || '0 €'
+    }).eq('id', data.user.id);
+    const selected = [...document.querySelectorAll('#ob-pilier-grid .pilier-sel.selected')];
+    if (selected.length > 0)
+      await sb.from('user_piliers').insert(selected.map(p => ({ user_id: data.user.id, pilier_id: p.dataset.id })));
+    currentUser = data.user; await loadProfile(); updateNavUI();
+  }
+  document.getElementById('onboard-form').style.display = 'none';
+  document.getElementById('onboard-success').style.display = 'block';
+}
+
+// ──────────────────────────────────────────
+// MENUS
+// ──────────────────────────────────────────
+function heroCta() {
+  if (currentUser) goTo('progres', document.getElementById('nl-progres'));
+  else goTo('onboarding', document.getElementById('nl-onboarding'));
+}
+function updateCtaBtns() {
+  const label = currentUser ? 'Mon progrès' : 'Rejoindre l\'Agora';
+  const h = document.getElementById('hero-cta-btn'); if (h) h.textContent = label;
+  const c = document.getElementById('cta-band-btn'); if (c) c.textContent = label;
+}
+function toggleAvatarMenu()  { document.getElementById('avatar-menu').classList.toggle('open'); }
+function closeAvatarMenu()   { document.getElementById('avatar-menu').classList.remove('open'); }
+function toggleDrawer() {
+  document.getElementById('burger-btn').classList.toggle('open');
+  document.getElementById('mobile-drawer').classList.toggle('open');
+  document.body.style.overflow = document.getElementById('mobile-drawer').classList.contains('open') ? 'hidden' : '';
+}
+function closeMobile() {
+  document.getElementById('burger-btn').classList.remove('open');
+  document.getElementById('mobile-drawer').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function toggleNotifPanel() {
+  document.getElementById('notif-panel').classList.toggle('open');
+  if (document.getElementById('notif-panel').classList.contains('open')) loadNotifsPanel();
+}
+function closeNotifPanel() { document.getElementById('notif-panel').classList.remove('open'); }
+
+document.addEventListener('click', e => {
+  if (!document.getElementById('avatar-wrap')?.contains(e.target)) closeAvatarMenu();
+  if (!document.getElementById('notif-btn-wrap')?.contains(e.target) && !document.getElementById('notif-panel')?.contains(e.target)) closeNotifPanel();
+  if (!document.getElementById('burger-btn')?.contains(e.target) && !document.getElementById('mobile-drawer')?.contains(e.target)) {
+    if (document.getElementById('mobile-drawer').classList.contains('open')) closeMobile();
+  }
+});
+
+// ──────────────────────────────────────────
+// DÉFIS
+// ──────────────────────────────────────────
+let allDefis = [];
+
+async function loadDefis() {
+  document.getElementById('defis-list').innerHTML = '<div class="loading">Chargement…</div>';
+  const { data: piliers } = await sb.from('piliers').select('*');
+  if (piliers) {
+    const bar = document.getElementById('defis-filter');
+    bar.innerHTML = '<div class="filter-chip active" onclick="filterDefis(\'\',this)">Tous</div>';
+    piliers.forEach(p => {
+      const c = document.createElement('div'); c.className = 'filter-chip';
+      c.textContent = p.emoji + ' ' + p.nom; c.onclick = () => filterDefis(p.id, c);
+      bar.appendChild(c);
+    });
+  }
+  const { data } = await sb.from('defis').select('*, piliers(nom,emoji), defi_participations(count)').order('created_at', { ascending: false });
+  allDefis = data || []; renderDefis(allDefis);
+}
+
+function renderDefis(defis) {
+  const list = document.getElementById('defis-list');
+  if (!defis.length) { list.innerHTML = '<div class="empty">Aucun défi pour l\'instant. Sois le premier à en créer un !</div>'; return; }
+  list.innerHTML = defis.map(d => {
+    const deadline = d.date_fin ? `<span class="ch-deadline">Jusqu'au ${new Date(d.date_fin).toLocaleDateString('fr')}</span>` : '';
+    const tag = d.permanent ? `<span class="ch-permanent">Permanent</span>` : deadline;
+    return `<div class="challenge-card">
+      <div class="ch-top">
+        <div class="ch-pillar">${d.piliers ? d.piliers.emoji + ' ' + d.piliers.nom : '—'}</div>
+        <div class="ch-pts">+${d.points} pts</div>
+      </div>
+      <div class="ch-title">${d.titre}</div>
+      <div class="ch-desc">${d.description}</div>
+      <div class="ch-footer">
+        <div class="ch-meta">
+          <span class="ch-stat"><span>${d.defi_participations?.[0]?.count || 0}</span> participants</span>
+          ${tag}
+        </div>
+        <button class="btn-sm" onclick="participerDefi('${d.id}',this)">Participer</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterDefis(id, chip) {
+  document.querySelectorAll('#defis-filter .filter-chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  renderDefis(id ? allDefis.filter(d => d.pilier_id === id) : allDefis);
+}
+
+async function participerDefi(id, btn) {
+  if (!currentUser) { openAuthModal(); return; }
+  const { error } = await sb.from('defi_participations').insert({ defi_id: id, user_id: currentUser.id });
+  if (!error) { btn.textContent = '✓ Inscrit'; btn.disabled = true; }
+  else if (error.code === '23505') { btn.textContent = '✓ Déjà inscrit'; btn.disabled = true; }
+}
+
+// ──────────────────────────────────────────
+// COURS
+// ──────────────────────────────────────────
+let allCours = [];
+const pilierColors = { '🔥': '#c4543a', '🧠': '#3a5278', '🌿': '#4a6b58', '🎨': '#b8903c', '⚡': '#b8903c' };
+
+async function loadCours() {
+  document.getElementById('cours-list').innerHTML = '<div class="loading">Chargement…</div>';
+  const { data: piliers } = await sb.from('piliers').select('*');
+  if (piliers) {
+    const bar = document.getElementById('cours-filter');
+    bar.innerHTML = '<div class="filter-chip active" onclick="filterCours(\'\',this)">Tous</div>';
+    piliers.forEach(p => {
+      const c = document.createElement('div'); c.className = 'filter-chip';
+      c.textContent = p.emoji + ' ' + p.nom; c.onclick = () => filterCours(p.id, c);
+      bar.appendChild(c);
+    });
+  }
+  const { data } = await sb.from('cours').select('*, piliers(nom,emoji), profiles(pseudo)').order('created_at', { ascending: false });
+  allCours = data || []; renderCours(allCours);
+}
+
+function renderCours(cours) {
+  const list = document.getElementById('cours-list');
+  if (!cours.length) { list.innerHTML = '<div class="empty">Aucun cours pour l\'instant. Propose le tien !</div>'; return; }
+  const sl = { ouvert: 'Ouvert', a_venir: 'À venir', archive: 'Archivé' };
+  const sc = { ouvert: 'rgba(74,107,88,0.1)', a_venir: 'rgba(184,144,60,0.1)', archive: 'rgba(138,132,128,0.1)' };
+  const st = { ouvert: '#4a6b58', a_venir: '#b8903c', archive: '#8a8480' };
+  list.innerHTML = cours.map(c => {
+    const color = pilierColors[c.piliers?.emoji] || '#8a8480';
+    return `<div class="course-card">
+      <div class="course-thumb" style="background:${color}"></div>
+      <div class="course-body">
+        <div class="course-pillar" style="color:${color}">${c.piliers ? c.piliers.emoji + ' ' + c.piliers.nom : '—'}</div>
+        <div class="course-title">${c.titre}</div>
+        <div class="course-author">par ${c.profiles?.pseudo || 'Anonyme'} · ${c.nb_seances} séance${c.nb_seances > 1 ? 's' : ''}</div>
+        <div class="course-footer">
+          <span class="course-stat">${c.duree_minutes} min · gratuit</span>
+          <span class="badge" style="background:${sc[c.statut]};color:${st[c.statut]}">${sl[c.statut]}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterCours(id, chip) {
+  document.querySelectorAll('#cours-filter .filter-chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  renderCours(id ? allCours.filter(c => c.pilier_id === id) : allCours);
+}
+
+// ──────────────────────────────────────────
+// RÉFLEXION GLOBALE
+// ──────────────────────────────────────────
+async function loadQuestions() {
+  document.getElementById('questions-list').innerHTML = '<div class="loading">Chargement…</div>';
+  const { data } = await sb.from('questions_agora').select('*, profiles(pseudo)').order('votes', { ascending: false }).limit(30);
+  const list = document.getElementById('questions-list');
+  if (!data || !data.length) {
+    list.innerHTML = '<div class="empty">Aucune question pour l\'instant. Lance le débat !</div>'; return;
+  }
+  list.innerHTML = data.map(q => `<div class="question-card">
+    <div class="q-top">
+      <div class="q-title">${q.titre}</div>
+      <div class="${q.statut === 'actif' ? 'q-hot' : 'q-new'}">${q.statut === 'actif' ? '🔥 Actif' : '💬 Proposée'}</div>
+    </div>
+    ${q.description ? `<div class="q-desc">${q.description}</div>` : ''}
+    <div class="q-footer">
+      <button class="q-vote-btn" onclick="voterQuestion('${q.id}',this)">▲ <span>${q.votes}</span></button>
+      <span class="q-stat">proposée par <span>${q.profiles?.pseudo || 'Anonyme'}</span></span>
+      ${q.statut === 'actif' ? `<a class="q-discord-link" href="https://discord.gg/VotreServeur" target="_blank">→ Discussion sur Discord</a>` : ''}
+    </div>
+  </div>`).join('');
+}
+
+async function soumettreQuestion() {
+  const titre = document.getElementById('q-titre').value.trim();
+  const desc  = document.getElementById('q-desc').value.trim();
+  const msg   = document.getElementById('q-msg'); msg.className = 'fmsg';
+  if (!titre) { msg.textContent = 'Formule d\'abord ta question.'; msg.className = 'fmsg error'; return; }
+  const { error } = await sb.from('questions_agora').insert({ titre, description: desc, user_id: currentUser.id });
+  if (error) { msg.textContent = 'Erreur : ' + error.message; msg.className = 'fmsg error'; }
+  else {
+    msg.textContent = '✓ Question soumise au vote !'; msg.className = 'fmsg success';
+    document.getElementById('q-titre').value = ''; document.getElementById('q-desc').value = '';
+    loadQuestions();
+  }
+}
+
+async function voterQuestion(id, btn) {
+  if (!currentUser) { openAuthModal(); return; }
+  const countEl = btn.querySelector('span');
+  const current = parseInt(countEl.textContent) || 0;
+  if (btn.classList.contains('voted')) {
+    await sb.from('questions_agora').update({ votes: current - 1 }).eq('id', id);
+    countEl.textContent = current - 1; btn.classList.remove('voted');
+  } else {
+    await sb.from('questions_agora').update({ votes: current + 1 }).eq('id', id);
+    countEl.textContent = current + 1; btn.classList.add('voted');
+  }
+}
+
+// ──────────────────────────────────────────
+// PROGRÈS
+// ──────────────────────────────────────────
+let localObjectifs = [];
+
+async function loadProgres() {
+  if (!currentUser) {
+    document.getElementById('progres-auth-wall').style.display = 'block';
+    document.getElementById('progres-content').style.display = 'none';
+    return;
+  }
+  document.getElementById('progres-auth-wall').style.display = 'none';
+  document.getElementById('progres-content').style.display = 'block';
+  if (currentProfile) {
+    document.getElementById('feed-my-av').textContent = currentProfile.avatar_initiales || '?';
+    document.getElementById('feed-my-name').textContent = currentProfile.pseudo || 'Moi';
+  }
+  await loadObjectifs();
+  await loadHabitudes();
+  await loadFeed();
+}
+
+async function loadObjectifs() {
+  const today = new Date().toISOString().split('T')[0];
+  const { data } = await sb.from('objectifs_jour').select('*').eq('user_id', currentUser.id).eq('date', today).order('created_at');
+  localObjectifs = data || [];
+  renderObjectifs();
+}
+
+function renderObjectifs() {
+  const list = document.getElementById('obj-list');
+  if (!localObjectifs.length) {
+    list.innerHTML = `<li style="padding:10px 0;font-size:12px;color:var(--ink3);font-style:italic">Aucun objectif pour aujourd'hui encore.</li>`; return;
+  }
+  list.innerHTML = localObjectifs.map(o => `
+    <li class="obj-item ${o.done ? 'done-item' : ''}" data-id="${o.id}">
+      <div class="obj-check ${o.done ? 'done' : ''}" onclick="toggleObj('${o.id}',this)">${o.done ? '✓' : ''}</div>
+      <span>${o.texte}</span>
+      <button class="obj-del" onclick="supprimerObj('${o.id}')">✕</button>
+    </li>`).join('');
+}
+
+async function addObj() {
+  const field = document.getElementById('obj-field');
+  const val = field.value.trim(); if (!val) return;
+  const today = new Date().toISOString().split('T')[0];
+  const { data, error } = await sb.from('objectifs_jour').insert({ user_id: currentUser.id, texte: val, date: today }).select().single();
+  if (!error && data) { localObjectifs.push(data); renderObjectifs(); }
+  field.value = ''; field.focus();
+}
+
+async function toggleObj(id, el) {
+  el.classList.toggle('done');
+  const done = el.classList.contains('done');
+  el.textContent = done ? '✓' : '';
+  el.closest('.obj-item').classList.toggle('done-item', done);
+  await sb.from('objectifs_jour').update({ done }).eq('id', id);
+  const obj = localObjectifs.find(o => o.id === id); if (obj) obj.done = done;
+}
+
+async function supprimerObj(id) {
+  await sb.from('objectifs_jour').delete().eq('id', id);
+  localObjectifs = localObjectifs.filter(o => o.id !== id);
+  renderObjectifs();
+}
+
+async function loadHabitudes() {
+  const { data } = await sb.from('habitudes').select('*').eq('user_id', currentUser.id).order('created_at');
+  const list = document.getElementById('habitudes-list');
+  if (!data || !data.length) {
+    list.innerHTML = '<div style="font-size:13px;color:var(--ink3);font-style:italic;padding:8px 0">Aucune habitude. Ajoutes-en une !</div>'; return;
+  }
+  list.innerHTML = data.map(h => `
+    <div class="habit-row">
+      <div class="habit-name">${h.emoji || '●'} ${h.nom}</div>
+      <div class="habit-meta">
+        <div class="habit-streak">${h.streak || 0}j${(h.streak || 0) >= 3 ? ' 🔥' : ''}</div>
+        <button class="habit-toggle ${h.checked_today ? 'on' : ''}" onclick="toggleHabitude('${h.id}',this)"></button>
+      </div>
+    </div>`).join('');
+}
+
+async function toggleHabitude(id, el) {
+  el.classList.toggle('on');
+  const on = el.classList.contains('on');
+  const today = new Date().toISOString().split('T')[0];
+  await sb.from('habitudes').update({ checked_today: on, derniere_check: on ? today : null }).eq('id', id);
+}
+
+async function ajouterHabitude() {
+  const nom = prompt("Nom de l'habitude :"); if (!nom) return;
+  const emoji = prompt("Emoji (ex: 📖, 🏃, 📚) :") || '✅';
+  await sb.from('habitudes').insert({ user_id: currentUser.id, nom, emoji });
+  loadHabitudes();
+}
+
+async function publierObjectifs() {
+  const msg = document.getElementById('pub-msg');
+  if (!localObjectifs.length) {
+    msg.textContent = 'Ajoute d\'abord des objectifs !'; msg.className = 'fmsg error'; return;
+  }
+  const ids = localObjectifs.map(o => o.id);
+  await sb.from('objectifs_jour').update({ publie: true }).in('id', ids);
+  const fl = document.getElementById('feed-my-list');
+  fl.innerHTML = localObjectifs.map(o => `<li><span class="${o.done ? 'feed-done' : 'feed-wip'}">${o.done ? '✓' : '○'}</span> ${o.texte}</li>`).join('');
+  document.getElementById('feed-dynamic').style.display = 'block';
+  document.getElementById('feed-dynamic').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  msg.textContent = '✓ Publié dans le fil !'; msg.className = 'fmsg success';
+  loadFeed();
+}
+
+async function loadFeed() {
+  const today = new Date().toISOString().split('T')[0];
+  const { data } = await sb.from('objectifs_jour')
+    .select('*, profiles(pseudo,avatar_initiales)')
+    .eq('publie', true).eq('date', today)
+    .neq('user_id', currentUser.id)
+    .order('created_at', { ascending: false }).limit(20);
+  const list = document.getElementById('feed-list');
+  if (!data || !data.length) {
+    list.innerHTML = `<div class="empty">Personne n'a encore publié ses objectifs aujourd'hui.<br>Sois le premier !</div>`; return;
+  }
+  const avColors = ['#4a6b58', '#3a5278', '#c4543a', '#b8903c', '#7a5a8a'];
+  const grouped = {};
+  data.forEach(e => {
+    const uid = e.user_id;
+    if (!grouped[uid]) grouped[uid] = { profile: e.profiles, items: [] };
+    grouped[uid].items.push(e);
+  });
+  list.innerHTML = Object.values(grouped).map((g, i) => {
+    const color = avColors[i % avColors.length];
+    const initiales = g.profile?.avatar_initiales || '?';
+    const pseudo    = g.profile?.pseudo || 'Membre';
+    return `<div class="feed-card">
+      <div class="feed-header">
+        <div class="feed-av" style="background:${color}">${initiales}</div>
+        <div><div class="feed-name">${pseudo}</div><div class="feed-time">Aujourd'hui</div></div>
+      </div>
+      <ul class="feed-obj">${g.items.map(e => `<li><span class="${e.done ? 'feed-done' : 'feed-wip'}">${e.done ? '✓' : '○'}</span> ${e.texte}</li>`).join('')}</ul>
+      <div class="feed-comment-area" id="feed-comments-${g.items[0].user_id}">
+        <div id="comments-inner-${g.items[0].user_id}"></div>
+        <div class="feed-comment-in">
+          <input type="text" placeholder="Encourage ou questionne…"
+            onkeydown="if(event.key==='Enter')envoyerCommentaire(this,'${g.items[0].user_id}','${pseudo}')">
+          <button onclick="envoyerCommentaire(this.previousElementSibling,'${g.items[0].user_id}','${pseudo}')">→</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  // Load comments for each card
+  Object.keys(grouped).forEach(uid => loadComments(uid));
+}
+
+async function loadComments(targetUserId) {
+  const today = new Date().toISOString().split('T')[0];
+  const { data } = await sb.from('commentaires_progres')
+    .select('*, profiles(pseudo,avatar_initiales)')
+    .eq('target_user_id', targetUserId).eq('date', today)
+    .order('created_at');
+  const inner = document.getElementById('comments-inner-' + targetUserId);
+  if (!inner || !data || !data.length) return;
+  const avColors = ['#4a6b58', '#3a5278', '#c4543a', '#b8903c', '#7a5a8a'];
+  inner.innerHTML = data.map((c, i) => `
+    <div class="comment-item">
+      <div class="comment-av" style="background:${avColors[i % avColors.length]}">${c.profiles?.avatar_initiales || '?'}</div>
+      <div class="comment-body"><span class="comment-author">${c.profiles?.pseudo || 'Membre'}</span> — ${c.contenu}</div>
+    </div>`).join('');
+}
+
+async function envoyerCommentaire(input, targetUserId, targetPseudo) {
+  const val = input.value.trim(); if (!val || !currentUser) return;
+  const today = new Date().toISOString().split('T')[0];
+  input.value = '';
+  const { error } = await sb.from('commentaires_progres').insert({
+    auteur_id: currentUser.id, target_user_id: targetUserId,
+    contenu: val, date: today
+  });
+  if (!error) loadComments(targetUserId);
+}
+
+// ──────────────────────────────────────────
+// PROFIL
+// ──────────────────────────────────────────
+async function loadProfil() {
+  if (!currentUser) {
+    document.getElementById('profil-auth-wall').style.display = 'block';
+    document.getElementById('profil-content').style.display = 'none';
+    return;
+  }
+  document.getElementById('profil-auth-wall').style.display = 'none';
+  document.getElementById('profil-content').style.display = 'block';
+  await loadProfile();
+  renderProfileCard();
+  await loadProfileStats();
+  loadActivite(); loadAmis(); loadConversations(); loadNotifsPage();
+}
+
+function renderProfileCard() {
+  if (!currentProfile) return;
+  document.getElementById('profile-avatar-big').textContent = currentProfile.avatar_initiales || '?';
+  document.getElementById('initiales-input').value = currentProfile.avatar_initiales || '';
+  document.getElementById('profile-pseudo-display').textContent = currentProfile.pseudo || '—';
+  document.getElementById('pseudo-input').value = currentProfile.pseudo || '';
+  document.getElementById('profile-email-display').textContent = currentUser.email;
+  document.getElementById('profile-pts-display').textContent = '✦ ' + (currentProfile.points || 0) + ' pts';
+  const bioEl = document.getElementById('profile-bio-display');
+  if (currentProfile.bio) { bioEl.textContent = currentProfile.bio; bioEl.style.fontStyle = 'normal'; bioEl.style.color = 'var(--ink2)'; }
+  else { bioEl.textContent = 'Clique pour ajouter une bio…'; bioEl.style.fontStyle = 'italic'; bioEl.style.color = 'var(--ink3)'; }
+  const labels = { gratuit: 'Gratuit', contributeur: 'Contributeur', soutien: 'Soutien', batisseur: 'Bâtisseur' };
+  const contrib = document.getElementById('contrib-display');
+  if (currentProfile.contribution_niveau) {
+    contrib.innerHTML = `<span style="font-weight:500">${labels[currentProfile.contribution_niveau] || 'Gratuit'}</span> <span style="color:var(--ink3)">— ${currentProfile.contribution_montant || '0 €'}</span>`;
+  } else contrib.innerHTML = '<span style="color:var(--ink3);font-style:italic">Non renseigné</span>';
+  document.querySelectorAll('#contrib-edit-wrap .price-opt').forEach(o => {
+    o.classList.toggle('selected', o.dataset.niveau === (currentProfile.contribution_niveau || 'gratuit'));
+  });
+  loadProfilePiliers();
+}
+
+async function loadProfilePiliers() {
+  const { data } = await sb.from('user_piliers').select('piliers(id,nom,emoji)').eq('user_id', currentUser.id);
+  const container = document.getElementById('profile-piliers-display');
+  container.innerHTML = '<div class="pilier-pill">⚡ Réflexion Globale</div>';
+  if (data) data.forEach(r => {
+    if (r.piliers) { const d = document.createElement('div'); d.className = 'pilier-pill'; d.textContent = r.piliers.emoji + ' ' + r.piliers.nom; container.appendChild(d); }
+  });
+  const { data: all } = await sb.from('piliers').select('*').eq('obligatoire', false).order('nom');
+  const selected = new Set((data || []).map(r => r.piliers?.id).filter(Boolean));
+  const grid = document.getElementById('piliers-edit-grid');
+  if (grid && all) {
+    grid.innerHTML = all.map(p => `<div class="pilier-sel ${selected.has(p.id) ? 'selected' : ''}" data-id="${p.id}" onclick="this.classList.toggle('selected')"><div class="pilier-icon">${p.emoji}</div><div class="pilier-name">${p.nom}</div></div>`).join('');
+  }
+}
+
+async function loadProfileStats() {
+  const uid = currentUser.id;
+  const [{ count: d }, { count: a }, { count: q }] = await Promise.all([
+    sb.from('defi_participations').select('*', { count: 'exact', head: true }).eq('user_id', uid),
+    sb.from('amis').select('*', { count: 'exact', head: true }).or(`demandeur_id.eq.${uid},receveur_id.eq.${uid}`).eq('statut', 'accepte'),
+    sb.from('questions_agora').select('*', { count: 'exact', head: true }).eq('user_id', uid),
+  ]);
+  document.getElementById('stat-defis').textContent = d || 0;
+  document.getElementById('stat-amis').textContent  = a || 0;
+  document.getElementById('stat-questions').textContent = q || 0;
+}
+
+// Inline edits
+function toggleInitialesEdit() { const w = document.getElementById('initiales-edit-wrap'); w.style.display = w.style.display === 'none' ? 'block' : 'none'; }
+async function saveInitiales() {
+  const val = document.getElementById('initiales-input').value.trim().toUpperCase().slice(0, 2); if (!val) return;
+  await sb.from('profiles').update({ avatar_initiales: val }).eq('id', currentUser.id);
+  currentProfile.avatar_initiales = val;
+  document.getElementById('profile-avatar-big').textContent = val;
+  document.getElementById('nav-avatar').textContent = val;
+  document.getElementById('initiales-edit-wrap').style.display = 'none';
+}
+function togglePseudoEdit() {
+  const dw = document.getElementById('pseudo-display-wrap'), ew = document.getElementById('pseudo-edit-wrap');
+  const open = ew.style.display === 'none'; dw.style.display = open ? 'none' : 'block'; ew.style.display = open ? 'block' : 'none';
+  if (open) setTimeout(() => document.getElementById('pseudo-input').focus(), 50);
+}
+async function savePseudo() {
+  const val = document.getElementById('pseudo-input').value.trim(); if (!val) return;
+  await sb.from('profiles').update({ pseudo: val }).eq('id', currentUser.id);
+  currentProfile.pseudo = val;
+  document.getElementById('profile-pseudo-display').textContent = val;
+  document.getElementById('menu-pseudo').textContent = val;
+  togglePseudoEdit();
+}
+function toggleBioEdit() {
+  const d = document.getElementById('profile-bio-display');
+  const e = document.getElementById('profile-bio-edit');
+  const r = document.getElementById('bio-save-row');
+  const open = e.style.display === 'none' || !e.style.display;
+  d.style.display = open ? 'none' : 'block'; e.style.display = open ? 'block' : 'none'; r.style.display = open ? 'flex' : 'none';
+  if (open) { e.value = currentProfile?.bio || ''; setTimeout(() => e.focus(), 50); }
+}
+async function saveBio() {
+  const bio = document.getElementById('profile-bio-edit').value.trim();
+  await sb.from('profiles').update({ bio }).eq('id', currentUser.id);
+  currentProfile.bio = bio;
+  const el = document.getElementById('profile-bio-display');
+  if (bio) { el.textContent = bio; el.style.fontStyle = 'normal'; el.style.color = 'var(--ink2)'; }
+  else { el.textContent = 'Clique pour ajouter une bio…'; el.style.fontStyle = 'italic'; el.style.color = 'var(--ink3)'; }
+  toggleBioEdit();
+}
+function togglePiliersEdit() { const w = document.getElementById('piliers-edit-wrap'); w.style.display = w.style.display === 'none' ? 'block' : 'none'; }
+async function savePiliers() {
+  const sel = [...document.querySelectorAll('#piliers-edit-grid .pilier-sel.selected')].map(e => e.dataset.id);
+  await sb.from('user_piliers').delete().eq('user_id', currentUser.id);
+  if (sel.length > 0) await sb.from('user_piliers').insert(sel.map(id => ({ user_id: currentUser.id, pilier_id: id })));
+  document.getElementById('piliers-edit-wrap').style.display = 'none'; loadProfilePiliers();
+}
+function toggleContribEdit() { const w = document.getElementById('contrib-edit-wrap'); w.style.display = w.style.display === 'none' ? 'block' : 'none'; }
+function selectContrib(el) { document.querySelectorAll('#contrib-edit-wrap .price-opt').forEach(o => o.classList.remove('selected')); el.classList.add('selected'); }
+async function saveContrib() {
+  const sel = document.querySelector('#contrib-edit-wrap .price-opt.selected'); if (!sel) return;
+  await sb.from('profiles').update({ contribution_niveau: sel.dataset.niveau, contribution_montant: sel.dataset.montant }).eq('id', currentUser.id);
+  currentProfile.contribution_niveau = sel.dataset.niveau; currentProfile.contribution_montant = sel.dataset.montant;
+  document.getElementById('contrib-edit-wrap').style.display = 'none'; renderProfileCard();
+}
+function toggleDeleteConfirm() { const w = document.getElementById('delete-confirm-wrap'); w.style.display = w.style.display === 'none' ? 'block' : 'none'; }
+async function supprimerCompte() {
+  if (document.getElementById('delete-confirm-input').value.trim() !== 'SUPPRIMER') {
+    document.getElementById('delete-msg').textContent = 'Tape exactement SUPPRIMER pour confirmer.';
+    document.getElementById('delete-msg').style.color = 'var(--ember)'; document.getElementById('delete-msg').style.display = 'block'; return;
+  }
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    const res = await fetch('https://qzbmwdldvsgffzjswjyd.supabase.co/functions/v1/delete-user',
+      { method: 'POST', headers: { Authorization: 'Bearer ' + session.access_token, 'Content-Type': 'application/json' } });
+    if (!res.ok) throw new Error('Erreur lors de la suppression.');
+    await sb.auth.signOut(); goTo('accueil', document.getElementById('nl-accueil'));
+  } catch (e) {
+    document.getElementById('delete-msg').textContent = 'Erreur : ' + e.message;
+    document.getElementById('delete-msg').style.color = 'var(--ember)'; document.getElementById('delete-msg').style.display = 'block';
+  }
+}
+
+// ──────────────────────────────────────────
+// ACTIVITÉ
+// ──────────────────────────────────────────
+const actIcons = { objectif: '✓', defi: '🏆', question: '💬' };
+const actColors = { objectif: 'rgba(74,107,88,0.1)', defi: 'rgba(184,144,60,0.1)', question: 'rgba(58,82,120,0.1)' };
+const actTextColors = { objectif: '#4a6b58', defi: '#b8903c', question: '#3a5278' };
+const actLabels = { objectif: 'Objectif', defi: 'Défi', question: 'Question' };
+
+async function loadActivite() {
+  const list = document.getElementById('activite-list'); list.innerHTML = '<div class="loading">Chargement…</div>';
+  const { data } = await sb.from('activite_recente').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false }).limit(20);
+  if (!data || !data.length) { list.innerHTML = '<div class="empty">Aucune activité pour l\'instant.</div>'; return; }
+  list.innerHTML = data.map(a => `<div class="activite-item">
+    <div class="activite-icon">${actIcons[a.type] || '·'}</div>
+    <div class="activite-body"><div class="activite-titre">${a.titre}</div><div class="activite-time">${timeAgo(a.created_at)}</div></div>
+    <div class="activite-type" style="background:${actColors[a.type]};color:${actTextColors[a.type]}">${actLabels[a.type]}</div>
+  </div>`).join('');
+}
+
+// ──────────────────────────────────────────
+// AMIS
+// ──────────────────────────────────────────
+const avColors = ['#4a6b58', '#3a5278', '#c4543a', '#b8903c', '#7a5a8a'];
+function avColor(p) { let h = 0; for (const c of (p || '?')) h += c.charCodeAt(0); return avColors[h % avColors.length]; }
+
+async function loadAmis() {
+  const uid = currentUser.id;
+  const { data: demandes } = await sb.from('amis').select('*, profiles!amis_demandeur_id_fkey(id,pseudo,avatar_initiales)').eq('receveur_id', uid).eq('statut', 'en_attente');
+  const ds = document.getElementById('demandes-section');
+  if (demandes && demandes.length) {
+    ds.style.display = 'block';
+    document.getElementById('demandes-list').innerHTML = demandes.map(d => `<div class="friend-card">
+      <div class="friend-av" style="background:${avColor(d.profiles?.pseudo)}">${d.profiles?.avatar_initiales || '?'}</div>
+      <div class="friend-info"><div class="friend-name">${d.profiles?.pseudo || 'Membre'}</div><div class="friend-sub">Demande en attente</div></div>
+      <div class="friend-actions">
+        <button class="btn-sm sage" onclick="repondreAmi('${d.id}','accepte',this)">Accepter</button>
+        <button class="btn-sm ember" onclick="repondreAmi('${d.id}','refuse',this)">Refuser</button>
+      </div></div>`).join('');
+  } else ds.style.display = 'none';
+  const { data: amisData } = await sb.from('amis').select('*, p1:profiles!amis_demandeur_id_fkey(id,pseudo,avatar_initiales), p2:profiles!amis_receveur_id_fkey(id,pseudo,avatar_initiales)').or(`demandeur_id.eq.${uid},receveur_id.eq.${uid}`).eq('statut', 'accepte');
+  const list = document.getElementById('amis-list');
+  if (!amisData || !amisData.length) { list.innerHTML = '<div class="empty">Aucun ami pour l\'instant. Recherche des membres !</div>'; return; }
+  list.innerHTML = amisData.map(a => {
+    const f = a.demandeur_id === uid ? a.p2 : a.p1;
+    return `<div class="friend-card">
+      <div class="friend-av" style="background:${avColor(f?.pseudo)}">${f?.avatar_initiales || '?'}</div>
+      <div class="friend-info"><div class="friend-name">${f?.pseudo || 'Membre'}</div></div>
+      <div class="friend-actions"><button class="btn-sm" onclick="ouvrirConversation('${f?.id}','${f?.pseudo || 'Membre'}')">Message</button></div>
+    </div>`;
+  }).join('');
+}
+
+async function searchMembers(query) {
+  const results = document.getElementById('friend-search-results');
+  const list    = document.getElementById('search-results-list');
+  if (!query || query.length < 2) { results.style.display = 'none'; return; }
+  const { data } = await sb.from('profiles').select('id,pseudo,avatar_initiales').ilike('pseudo', '%' + query + '%').neq('id', currentUser.id).limit(5);
+  results.style.display = 'block';
+  if (!data || !data.length) { list.innerHTML = '<div class="empty" style="padding:16px">Aucun membre trouvé.</div>'; return; }
+  list.innerHTML = data.map(p => `<div class="friend-card">
+    <div class="friend-av" style="background:${avColor(p.pseudo)}">${p.avatar_initiales || '?'}</div>
+    <div class="friend-info"><div class="friend-name">${p.pseudo}</div></div>
+    <div class="friend-actions"><button class="btn-sm" onclick="envoyerDemandeAmi('${p.id}',this)">+ Ajouter</button></div>
+  </div>`).join('');
+}
+
+async function envoyerDemandeAmi(id, btn) {
+  const { error } = await sb.from('amis').insert({ demandeur_id: currentUser.id, receveur_id: id });
+  if (!error) { btn.textContent = '✓ Envoyé'; btn.disabled = true; }
+  else if (error.code === '23505') { btn.textContent = 'Déjà envoyé'; btn.disabled = true; }
+}
+
+async function repondreAmi(id, statut, btn) {
+  await sb.from('amis').update({ statut }).eq('id', id);
+  btn.closest('.friend-card').remove();
+  loadAmis(); loadProfileStats();
+}
+
+// ──────────────────────────────────────────
+// MESSAGERIE
+// ──────────────────────────────────────────
+let activeConvId = null;
+
+async function loadConversations() {
+  const uid = currentUser.id;
+  const { data } = await sb.from('conversations').select('*, p1:profiles!conversations_participant_1_fkey(id,pseudo,avatar_initiales), p2:profiles!conversations_participant_2_fkey(id,pseudo,avatar_initiales)').or(`participant_1.eq.${uid},participant_2.eq.${uid}`).order('created_at', { ascending: false });
+  const list = document.getElementById('conv-list-items');
+  if (!data || !data.length) { list.innerHTML = '<div class="empty" style="padding:18px;font-size:12px">Aucune conversation.</div>'; return; }
+  list.innerHTML = data.map(c => {
+    const other = c.participant_1 === uid ? c.p2 : c.p1;
+    return `<div class="conv-item ${c.id === activeConvId ? 'active' : ''}" onclick="selectConv('${c.id}','${other?.pseudo || 'Membre'}')">
+      <div class="conv-item-name">${other?.pseudo || 'Membre'}</div>
+      <div class="conv-item-preview">…</div>
+    </div>`;
+  }).join('');
+}
+
+async function ouvrirConversation(otherId, otherName) {
+  switchProfileTab('messagerie');
+  const uid = currentUser.id;
+  let { data: conv } = await sb.from('conversations').select('id').or(`and(participant_1.eq.${uid},participant_2.eq.${otherId}),and(participant_1.eq.${otherId},participant_2.eq.${uid})`).single();
+  if (!conv) { const { data: n } = await sb.from('conversations').insert({ participant_1: uid, participant_2: otherId }).select().single(); conv = n; }
+  await loadConversations();
+  if (conv) selectConv(conv.id, otherName);
+}
+
+async function selectConv(convId, convName) {
+  activeConvId = convId;
+  const area = document.getElementById('chat-area');
+  area.innerHTML = `<div class="chat-header">
+    <div class="friend-av" style="background:${avColor(convName)};width:28px;height:28px;font-size:10px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white">${convName.slice(0, 2).toUpperCase()}</div>
+    <div class="chat-header-name">${convName}</div>
+  </div>
+  <div class="chat-messages" id="chat-messages"></div>
+  <div class="chat-input-area">
+    <input type="text" id="chat-input" placeholder="Ton message…" onkeydown="if(event.key==='Enter')sendMessage()">
+    <button class="chat-send-btn" onclick="sendMessage()">→</button>
+  </div>`;
+  await loadMessages();
+}
+
+async function loadMessages() {
+  if (!activeConvId) return;
+  const { data } = await sb.from('messages').select('*').eq('conversation_id', activeConvId).order('created_at', { ascending: true }).limit(50);
+  const container = document.getElementById('chat-messages'); if (!container) return;
+  if (!data || !data.length) { container.innerHTML = '<div style="text-align:center;color:var(--ink3);font-size:12px;font-style:italic;margin-top:20px">Commencez la conversation…</div>'; return; }
+  container.innerHTML = data.map(m => `<div>
+    <div class="msg-bubble ${m.auteur_id === currentUser.id ? 'mine' : 'theirs'}">${m.contenu}</div>
+    <div class="msg-time" style="text-align:${m.auteur_id === currentUser.id ? 'right' : 'left'};padding:0 4px">${timeAgo(m.created_at)}</div>
+  </div>`).join('');
+  container.scrollTop = container.scrollHeight;
+}
+
+async function sendMessage() {
+  const input = document.getElementById('chat-input');
+  const contenu = input?.value.trim(); if (!contenu || !activeConvId) return;
+  input.value = '';
+  await sb.from('messages').insert({ conversation_id: activeConvId, auteur_id: currentUser.id, contenu });
+  await loadMessages();
+}
+
+// ──────────────────────────────────────────
+// NOTIFICATIONS
+// ──────────────────────────────────────────
+const notifIcons = { ami_demande: '👋', ami_accepte: '🤝', message: '💬', defi: '🏆', commentaire: '💬' };
+
+async function loadNotifsPanel() {
+  const { data } = await sb.from('notifications').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false }).limit(10);
+  const list = document.getElementById('notif-panel-list');
+  if (!data || !data.length) { list.innerHTML = '<div class="notif-empty">Aucune notification.</div>'; return; }
+  list.innerHTML = renderNotifItems(data);
+}
+
+async function loadNotifsPage() {
+  const { data } = await sb.from('notifications').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false }).limit(30);
+  const badge  = document.getElementById('notif-tab-badge');
+  const unread = (data || []).filter(n => !n.lu).length;
+  if (unread > 0) { badge.textContent = unread; badge.style.display = 'inline'; } else badge.style.display = 'none';
+  const list = document.getElementById('notif-list-page');
+  if (!data || !data.length) { list.innerHTML = '<div class="empty">Aucune notification.</div>'; return; }
+  list.innerHTML = renderNotifItems(data, true);
+}
+
+function renderNotifItems(data, withBorder = false) {
+  return data.map(n => `<div class="notif-item ${n.lu ? '' : 'unread'}" onclick="marquerNotifLue('${n.id}',this)" ${withBorder ? 'style="border:1px solid var(--border);border-radius:4px;margin-bottom:8px"' : ''}>
+    <div class="notif-dot ${n.lu ? 'read' : ''}"></div>
+    <div class="notif-body">
+      <div class="notif-titre">${notifIcons[n.type] || '·'} ${n.titre}</div>
+      ${n.corps ? `<div class="notif-corps">${n.corps}</div>` : ''}
+      <div class="notif-time">${timeAgo(n.created_at)}</div>
+    </div>
+  </div>`).join('');
+}
+
+async function marquerNotifLue(id, el) {
+  await sb.from('notifications').update({ lu: true }).eq('id', id);
+  if (el) { el.classList.remove('unread'); el.querySelector('.notif-dot')?.classList.add('read'); }
+  loadNotifCount();
+}
+
+async function markAllRead() {
+  if (!currentUser) return;
+  await sb.from('notifications').update({ lu: true }).eq('user_id', currentUser.id).eq('lu', false);
+  loadNotifCount(); loadNotifsPanel(); loadNotifsPage();
+}
+
+// ──────────────────────────────────────────
+// TABS PROFIL
+// ──────────────────────────────────────────
+function switchProfileTab(name, btn) {
+  document.querySelectorAll('#profile-tab-bar .tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  else {
+    const map = { activite: 0, amis: 1, messagerie: 2, notifications: 3 };
+    const btns = document.querySelectorAll('#profile-tab-bar .tab-btn');
+    if (map[name] !== undefined) btns[map[name]]?.classList.add('active');
+  }
+  if (name === 'notifications') loadNotifsPage();
+  if (name === 'messagerie') loadConversations();
+}
+
+// ──────────────────────────────────────────
+// MODALS CRÉATION
+// ──────────────────────────────────────────
+let cachedPiliers = [];
+
+async function fillPilierSelect(selectId) {
+  const sel = document.getElementById(selectId);
+  if (!cachedPiliers.length) {
+    const { data } = await sb.from('piliers').select('*').order('nom');
+    cachedPiliers = data || [];
+  }
+  sel.innerHTML = '<option value="">— Choisir un pilier —</option>' +
+    cachedPiliers.map(p => `<option value="${p.id}">${p.emoji} ${p.nom}</option>`).join('');
+}
+
+function openModalDefi() {
+  document.getElementById('modal-defi').classList.add('open');
+  document.getElementById('defi-msg').style.display = 'none';
+  ['defi-titre', 'defi-desc', 'defi-date'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('defi-points').value = '50';
+  document.getElementById('defi-permanent').checked = false;
+  fillPilierSelect('defi-pilier');
+}
+function closeModalDefi() { document.getElementById('modal-defi').classList.remove('open'); }
+document.getElementById('modal-defi').addEventListener('click', e => { if (e.target === e.currentTarget) closeModalDefi(); });
+
+async function soumettreDefi() {
+  const titre     = document.getElementById('defi-titre').value.trim();
+  const desc      = document.getElementById('defi-desc').value.trim();
+  const pilier    = document.getElementById('defi-pilier').value;
+  const points    = parseInt(document.getElementById('defi-points').value) || 50;
+  const date      = document.getElementById('defi-date').value || null;
+  const permanent = document.getElementById('defi-permanent').checked;
+  const msg       = document.getElementById('defi-msg'); msg.style.display = 'none';
+  if (!titre) { msg.textContent = 'Donne un titre au défi.'; msg.className = 'cmsg error'; return; }
+  if (!desc)  { msg.textContent = 'Décris le défi.'; msg.className = 'cmsg error'; return; }
+  const { error } = await sb.from('defis').insert({ titre, description: desc, pilier_id: pilier || null, points, auteur_id: currentUser.id, permanent, date_fin: permanent ? null : date });
+  if (error) { msg.textContent = 'Erreur : ' + error.message; msg.className = 'cmsg error'; return; }
+  msg.textContent = '✓ Défi publié !'; msg.className = 'cmsg success';
+  setTimeout(() => { closeModalDefi(); loadDefis(); }, 1000);
+}
+
+function openModalCours() {
+  document.getElementById('modal-cours').classList.add('open');
+  document.getElementById('cours-msg').style.display = 'none';
+  ['cours-titre', 'cours-desc'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('cours-seances').value = '1';
+  document.getElementById('cours-duree').value = '30';
+  fillPilierSelect('cours-pilier');
+}
+function closeModalCours() { document.getElementById('modal-cours').classList.remove('open'); }
+document.getElementById('modal-cours').addEventListener('click', e => { if (e.target === e.currentTarget) closeModalCours(); });
+
+async function soumettreCours() {
+  const titre  = document.getElementById('cours-titre').value.trim();
+  const desc   = document.getElementById('cours-desc').value.trim();
+  const pilier = document.getElementById('cours-pilier').value;
+  const seances = parseInt(document.getElementById('cours-seances').value) || 1;
+  const duree   = parseInt(document.getElementById('cours-duree').value) || 30;
+  const msg     = document.getElementById('cours-msg'); msg.style.display = 'none';
+  if (!titre) { msg.textContent = 'Donne un titre au cours.'; msg.className = 'cmsg error'; return; }
+  if (!desc)  { msg.textContent = 'Décris le cours.'; msg.className = 'cmsg error'; return; }
+  const { error } = await sb.from('cours').insert({ titre, description: desc, pilier_id: pilier || null, auteur_id: currentUser.id, nb_seances: seances, duree_minutes: duree, statut: 'ouvert' });
+  if (error) { msg.textContent = 'Erreur : ' + error.message; msg.className = 'cmsg error'; return; }
+  msg.textContent = '✓ Cours publié !'; msg.className = 'cmsg success';
+  setTimeout(() => { closeModalCours(); loadCours(); }, 1000);
+}
+
+// ──────────────────────────────────────────
+// UTILS
+// ──────────────────────────────────────────
+function timeAgo(d) {
+  const diff = Date.now() - new Date(d).getTime(); const m = Math.floor(diff / 60000);
+  if (m < 1) return 'à l\'instant'; if (m < 60) return `il y a ${m} min`;
+  const h = Math.floor(m / 60); if (h < 24) return `il y a ${h}h`;
+  const j = Math.floor(h / 24); if (j < 7) return `il y a ${j}j`;
+  return new Date(d).toLocaleDateString('fr');
+}
+
+// ──────────────────────────────────────────
+// INIT
+// ──────────────────────────────────────────
+initAuth();
+loadPiliers();
+</script>
+
+</body>
+</html>
