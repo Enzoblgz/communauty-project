@@ -303,8 +303,8 @@ footer{background:var(--ink);padding:28px;display:flex;align-items:center;justif
    PAGE COURS
 ───────────────────────────────────────── */
 .course-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(245px,1fr));gap:14px;}
-.course-card{background:var(--parch);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;cursor:pointer;transition:all .2s;position:relative;}
-.course-card:hover{border-color:rgba(184,144,60,.4);transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.06);}
+.course-card{background:var(--parch);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;cursor:pointer;transition:all .2s;}
+.course-card:hover{border-color:rgba(184,144,60,.4);transform:translateY(-2px);}
 .course-thumb{height:5px;}
 .course-body{padding:18px;}
 .course-pillar{font-size:10px;text-transform:uppercase;letter-spacing:.12em;font-weight:500;margin-bottom:8px;}
@@ -313,6 +313,53 @@ footer{background:var(--ink);padding:28px;display:flex;align-items:center;justif
 .course-footer{display:flex;justify-content:space-between;align-items:center;}
 .course-stat{font-size:11px;color:var(--ink3);}
 .badge{font-size:10px;font-weight:500;padding:2px 9px;border-radius:10px;letter-spacing:.06em;}
+.course-progress-wrap{margin-top:10px;}
+.course-progress-bar{height:3px;background:var(--parch3);border-radius:2px;overflow:hidden;}
+.course-progress-fill{height:100%;background:var(--sage);border-radius:2px;transition:width .3s;}
+.course-progress-text{font-size:10px;color:var(--ink3);margin-top:3px;text-align:right;}
+
+/* Course Detail View */
+.cours-detail{display:none;max-width:900px;margin:0 auto;padding:32px 24px;}
+.cours-detail.active{display:block;}
+.cours-detail-back{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--ink3);cursor:pointer;border:none;background:none;font-family:'DM Sans',sans-serif;margin-bottom:20px;transition:color .2s;padding:0;}
+.cours-detail-back:hover{color:var(--gold);}
+.cours-detail-layout{display:grid;grid-template-columns:1fr 300px;gap:24px;}
+@media(max-width:720px){.cours-detail-layout{grid-template-columns:1fr;}}
+.cours-detail-main{background:var(--parch);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
+.cours-detail-banner{padding:28px 24px;position:relative;overflow:hidden;}
+.cours-detail-banner::before{content:'';position:absolute;inset:0;opacity:.08;pointer-events:none;}
+.cours-detail-banner .course-pillar{margin-bottom:8px;}
+.cours-detail-banner h3{font-family:'Playfair Display',serif;font-size:24px;font-weight:600;color:var(--parch);margin-bottom:6px;position:relative;}
+.cours-detail-banner p{font-size:13px;color:rgba(247,243,237,.5);position:relative;line-height:1.65;}
+.cours-detail-content{padding:24px;}
+.cours-detail-desc{font-size:14px;color:var(--ink2);line-height:1.75;margin-bottom:24px;}
+.cours-lessons-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:600;color:var(--ink);margin-bottom:14px;}
+.cours-lesson-item{display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid var(--border);border-radius:var(--r);margin-bottom:8px;cursor:pointer;transition:all .2s;background:var(--parch);}
+.cours-lesson-item:hover{border-color:var(--gold);background:rgba(184,144,60,.03);}
+.cours-lesson-item.completed{border-color:var(--sage);background:rgba(74,107,88,.04);}
+.cours-lesson-num{width:28px;height:28px;border-radius:50%;background:var(--parch2);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--ink3);flex-shrink:0;transition:all .2s;}
+.cours-lesson-item.completed .cours-lesson-num{background:var(--sage);border-color:var(--sage);color:white;}
+.cours-lesson-info{flex:1;min-width:0;}
+.cours-lesson-name{font-size:14px;font-weight:500;color:var(--ink);}
+.cours-lesson-meta{font-size:11px;color:var(--ink3);margin-top:2px;}
+.cours-lesson-check{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--parch3);display:flex;align-items:center;justify-content:center;font-size:11px;color:transparent;cursor:pointer;transition:all .15s;flex-shrink:0;}
+.cours-lesson-check:hover{border-color:var(--sage);}
+.cours-lesson-item.completed .cours-lesson-check{border-color:var(--sage);background:var(--sage);color:white;}
+.cours-sidebar{display:flex;flex-direction:column;gap:16px;}
+.cours-sidebar-card{background:var(--parch);border:1px solid var(--border);border-radius:var(--r);padding:20px;}
+.cours-sidebar-title{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--ink3);font-weight:500;margin-bottom:12px;}
+.cours-info-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.cours-info-row:last-child{border-bottom:none;}
+.cours-info-key{color:var(--ink3);}
+.cours-info-val{color:var(--ink);font-weight:500;}
+.cours-enroll-btn{width:100%;padding:12px;border:none;border-radius:4px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;margin-top:14px;}
+.cours-enroll-btn.enroll{background:var(--ink);color:var(--parch);}
+.cours-enroll-btn.enroll:hover{opacity:.85;}
+.cours-enroll-btn.enrolled{background:var(--sage);color:white;}
+.cours-sidebar-progress{margin-top:10px;}
+.cours-sidebar-progress-bar{height:6px;background:var(--parch3);border-radius:3px;overflow:hidden;margin-bottom:6px;}
+.cours-sidebar-progress-fill{height:100%;background:var(--sage);border-radius:3px;transition:width .4s;}
+.cours-sidebar-progress-text{font-size:12px;color:var(--ink2);font-weight:500;text-align:center;}
 
 /* ─────────────────────────────────────────
    PAGE RÉFLEXION / AGORA
@@ -1011,7 +1058,8 @@ select.creation-input{cursor:pointer;}
     <h2>Cours</h2>
     <p>Créés par des membres, pour les membres. Le savoir qui circule librement.</p>
   </div>
-  <div class="content-area">
+  <!-- Liste des cours -->
+  <div class="content-area" id="cours-grid-view">
     <div class="filter-bar" id="cours-filter">
       <div class="filter-chip active" onclick="filterCours('',this)">Tous</div>
     </div>
@@ -1019,6 +1067,41 @@ select.creation-input{cursor:pointer;}
       <div class="loading">Chargement…</div>
     </div>
     <button class="create-btn" style="margin-top:16px" onclick="requireAuth(openModalCours)">+ Proposer un cours</button>
+  </div>
+  <!-- Vue détaillée d'un cours -->
+  <div class="cours-detail" id="cours-detail-view">
+    <button class="cours-detail-back" onclick="closeCoursDetail()">&#8592; Retour aux cours</button>
+    <div class="cours-detail-layout">
+      <div class="cours-detail-main">
+        <div class="cours-detail-banner" id="cours-detail-banner">
+          <div class="course-pillar" id="cd-pillar"></div>
+          <h3 id="cd-title"></h3>
+          <p id="cd-author"></p>
+        </div>
+        <div class="cours-detail-content">
+          <div class="cours-detail-desc" id="cd-desc"></div>
+          <div class="cours-lessons-title">Programme des séances</div>
+          <div id="cd-lessons-list"></div>
+        </div>
+      </div>
+      <div class="cours-sidebar">
+        <div class="cours-sidebar-card">
+          <div class="cours-sidebar-title">Informations</div>
+          <div class="cours-info-row"><span class="cours-info-key">Séances</span><span class="cours-info-val" id="cd-seances"></span></div>
+          <div class="cours-info-row"><span class="cours-info-key">Durée</span><span class="cours-info-val" id="cd-duree"></span></div>
+          <div class="cours-info-row"><span class="cours-info-key">Statut</span><span class="cours-info-val" id="cd-statut"></span></div>
+          <div class="cours-info-row"><span class="cours-info-key">Inscrits</span><span class="cours-info-val" id="cd-inscrits">0</span></div>
+          <button class="cours-enroll-btn enroll" id="cd-enroll-btn" onclick="toggleCoursEnroll()">S'inscrire au cours</button>
+        </div>
+        <div class="cours-sidebar-card" id="cd-progress-card" style="display:none">
+          <div class="cours-sidebar-title">Ma progression</div>
+          <div class="cours-sidebar-progress">
+            <div class="cours-sidebar-progress-bar"><div class="cours-sidebar-progress-fill" id="cd-progress-fill"></div></div>
+            <div class="cours-sidebar-progress-text" id="cd-progress-text">0%</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   <footer><div class="footer-logo">Agora</div><div class="footer-copy">Plateforme communautaire · Transparente · Démocratique</div></footer>
 </div>
@@ -1839,14 +1922,12 @@ function closeDefiDetail() {
 // COURS
 // ──────────────────────────────────────────
 let allCours = [];
+let currentCoursId = null;
+let myCoursEnrollments = {};
+let myCoursProgress = {};
 const pilierColors = { '🔥': '#c4543a', '🧠': '#3a5278', '🌿': '#4a6b58', '🎨': '#b8903c', '⚡': '#b8903c' };
-const statutLabels = { ouvert: 'Ouvert', a_venir: 'À venir', archive: 'Archivé' };
-const statutBg = { ouvert: 'rgba(74,107,88,0.1)', a_venir: 'rgba(184,144,60,0.1)', archive: 'rgba(138,132,128,0.1)' };
-const statutColor = { ouvert: '#4a6b58', a_venir: '#b8903c', archive: '#8a8480' };
 
 async function loadCours() {
-  document.getElementById('cours-liste-view').style.display = 'block';
-  document.getElementById('cours-detail-view').classList.remove('active');
   document.getElementById('cours-list').innerHTML = '<div class="loading">Chargement…</div>';
   const { data: piliers } = await sb.from('piliers').select('*');
   if (piliers) {
@@ -1859,27 +1940,44 @@ async function loadCours() {
     });
   }
   const { data } = await sb.from('cours').select('*, piliers(nom,emoji), profiles(pseudo)').order('created_at', { ascending: false });
-  allCours = data || []; renderCours(allCours);
+  allCours = data || [];
+  // Load enrollments
+  if (currentUser) {
+    const { data: enrolls } = await sb.from('cours_inscriptions').select('cours_id').eq('user_id', currentUser.id);
+    myCoursEnrollments = {};
+    (enrolls || []).forEach(e => { myCoursEnrollments[e.cours_id] = true; });
+    // Load progress
+    const { data: prog } = await sb.from('cours_progress').select('cours_id,seance_num').eq('user_id', currentUser.id);
+    myCoursProgress = {};
+    (prog || []).forEach(p => {
+      if (!myCoursProgress[p.cours_id]) myCoursProgress[p.cours_id] = new Set();
+      myCoursProgress[p.cours_id].add(p.seance_num);
+    });
+  }
+  renderCours(allCours);
 }
 
 function renderCours(cours) {
   const list = document.getElementById('cours-list');
   if (!cours.length) { list.innerHTML = '<div class="empty">Aucun cours pour l\'instant. Propose le tien !</div>'; return; }
+  const sl = { ouvert: 'Ouvert', a_venir: 'À venir', archive: 'Archivé' };
+  const sc = { ouvert: 'rgba(74,107,88,0.1)', a_venir: 'rgba(184,144,60,0.1)', archive: 'rgba(138,132,128,0.1)' };
+  const st = { ouvert: '#4a6b58', a_venir: '#b8903c', archive: '#8a8480' };
   list.innerHTML = cours.map(c => {
     const color = pilierColors[c.piliers?.emoji] || '#8a8480';
-    return `<div class="course-card">
+    const isEnrolled = myCoursEnrollments[c.id];
+    const completedSeances = myCoursProgress[c.id]?.size || 0;
+    const totalSeances = c.nb_seances || 1;
+    const pct = Math.round((completedSeances / totalSeances) * 100);
+    return `<div class="course-card" onclick="openCoursDetail('${c.id}')">
       <div class="course-thumb" style="background:${color}"></div>
       <div class="course-body">
-        <div class="course-pillar" style="color:${color}">${c.piliers ? c.piliers.emoji + ' ' + escapeHtml(c.piliers.nom) : '—'}</div>
-        <div class="course-title">${escapeHtml(c.titre)}</div>
-        <div class="course-author">par ${escapeHtml(c.profiles?.pseudo || 'Anonyme')} · ${c.nb_seances} séance${c.nb_seances > 1 ? 's' : ''}</div>
+        <div class="course-pillar" style="color:${color}">${c.piliers ? c.piliers.emoji + ' ' + c.piliers.nom : '—'}</div>
+        <div class="course-title">${c.titre}</div>
+        <div class="course-author">par ${c.profiles?.pseudo || 'Anonyme'} · ${c.nb_seances} séance${c.nb_seances > 1 ? 's' : ''}</div>
         <div class="course-footer">
           <span class="course-stat">${c.duree_minutes} min · gratuit</span>
-          <span class="badge" style="background:${statutBg[c.statut]};color:${statutColor[c.statut]}">${statutLabels[c.statut]}</span>
-        </div>
-        <div class="course-card-meta">
-          <div class="course-card-meta-item">👤 <span>${stats.inscriptions}</span> inscrits</div>
-          ${stats.ratingsCount > 0 ? `<div class="course-card-meta-item">${starsHtml} <span>${stats.avgRating}</span></div>` : ''}
+          <span class="badge" style="background:${sc[c.statut]};color:${st[c.statut]}">${sl[c.statut]}</span>
         </div>
         ${isEnrolled ? `<div class="course-progress-wrap"><div class="course-progress-bar"><div class="course-progress-fill" style="width:${pct}%"></div></div><div class="course-progress-text">${pct}% complété</div></div>` : ''}
       </div>
@@ -1887,16 +1985,146 @@ function renderCours(cours) {
   }).join('');
 }
 
-function renderStarsSmall(avg) {
-  let s = '<span class="course-card-stars">';
-  for (let i = 1; i <= 5; i++) s += `<span class="${i <= Math.round(avg) ? 'star-filled' : 'star-empty'}">★</span>`;
-  return s + '</span>';
-}
-
 function filterCours(id, chip) {
   document.querySelectorAll('#cours-filter .filter-chip').forEach(c => c.classList.remove('active'));
   chip.classList.add('active');
   renderCours(id ? allCours.filter(c => c.pilier_id === id) : allCours);
+}
+
+async function openCoursDetail(id) {
+  const c = allCours.find(x => x.id === id);
+  if (!c) return;
+  currentCoursId = id;
+  const color = pilierColors[c.piliers?.emoji] || '#8a8480';
+  // Hide grid, show detail
+  document.getElementById('cours-grid-view').style.display = 'none';
+  const dv = document.getElementById('cours-detail-view');
+  dv.classList.add('active');
+  // Banner
+  document.getElementById('cours-detail-banner').style.background = color;
+  document.getElementById('cd-pillar').textContent = c.piliers ? c.piliers.emoji + ' ' + c.piliers.nom : '—';
+  document.getElementById('cd-pillar').style.color = 'rgba(255,255,255,.7)';
+  document.getElementById('cd-title').textContent = c.titre;
+  document.getElementById('cd-author').textContent = 'par ' + (c.profiles?.pseudo || 'Anonyme');
+  // Description
+  document.getElementById('cd-desc').textContent = c.description || 'Aucune description détaillée pour ce cours.';
+  // Sidebar info
+  document.getElementById('cd-seances').textContent = c.nb_seances + ' séance' + (c.nb_seances > 1 ? 's' : '');
+  document.getElementById('cd-duree').textContent = c.duree_minutes + ' min';
+  const sl = { ouvert: 'Ouvert', a_venir: 'À venir', archive: 'Archivé' };
+  document.getElementById('cd-statut').textContent = sl[c.statut] || c.statut;
+  // Enrollment count
+  const { count } = await sb.from('cours_inscriptions').select('*', { count: 'exact', head: true }).eq('cours_id', id);
+  document.getElementById('cd-inscrits').textContent = count || 0;
+  // Enrollment button
+  const isEnrolled = myCoursEnrollments[id];
+  const btn = document.getElementById('cd-enroll-btn');
+  updateCoursEnrollBtn(btn, isEnrolled);
+  // Progress card
+  const progCard = document.getElementById('cd-progress-card');
+  if (isEnrolled) {
+    progCard.style.display = 'block';
+    updateCoursProgressUI(c);
+  } else {
+    progCard.style.display = 'none';
+  }
+  // Render lessons
+  renderCoursLessons(c);
+  // Scroll to top
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateCoursEnrollBtn(btn, isEnrolled) {
+  if (isEnrolled) {
+    btn.textContent = '✓ Inscrit';
+    btn.className = 'cours-enroll-btn enrolled';
+  } else {
+    btn.textContent = "S'inscrire au cours";
+    btn.className = 'cours-enroll-btn enroll';
+  }
+}
+
+function updateCoursProgressUI(c) {
+  const completedSeances = myCoursProgress[c.id]?.size || 0;
+  const totalSeances = c.nb_seances || 1;
+  const pct = Math.round((completedSeances / totalSeances) * 100);
+  document.getElementById('cd-progress-fill').style.width = pct + '%';
+  document.getElementById('cd-progress-text').textContent = completedSeances + '/' + totalSeances + ' séances (' + pct + '%)';
+}
+
+function renderCoursLessons(c) {
+  const container = document.getElementById('cd-lessons-list');
+  const total = c.nb_seances || 0;
+  if (total === 0) {
+    container.innerHTML = '<div style="font-size:13px;color:var(--ink3);font-style:italic;padding:12px 0">Aucune séance définie.</div>';
+    return;
+  }
+  const completed = myCoursProgress[c.id] || new Set();
+  const isEnrolled = myCoursEnrollments[c.id];
+  let html = '';
+  for (let i = 1; i <= total; i++) {
+    const isDone = completed.has(i);
+    html += `<div class="cours-lesson-item${isDone ? ' completed' : ''}" ${isEnrolled ? `onclick="toggleCoursLesson('${c.id}',${i},this)"` : ''}>
+      <div class="cours-lesson-num">${isDone ? '✓' : i}</div>
+      <div class="cours-lesson-info">
+        <div class="cours-lesson-name">Séance ${i}</div>
+        <div class="cours-lesson-meta">${Math.round((c.duree_minutes || 0) / total)} min estimées</div>
+      </div>
+      ${isEnrolled ? `<div class="cours-lesson-check">${isDone ? '✓' : ''}</div>` : ''}
+    </div>`;
+  }
+  container.innerHTML = html;
+}
+
+async function toggleCoursEnroll() {
+  if (!currentUser) { openAuthModal(); return; }
+  if (!currentCoursId) return;
+  const isEnrolled = myCoursEnrollments[currentCoursId];
+  const btn = document.getElementById('cd-enroll-btn');
+  if (isEnrolled) {
+    await sb.from('cours_inscriptions').delete().eq('cours_id', currentCoursId).eq('user_id', currentUser.id);
+    delete myCoursEnrollments[currentCoursId];
+    updateCoursEnrollBtn(btn, false);
+    document.getElementById('cd-progress-card').style.display = 'none';
+  } else {
+    const { error } = await sb.from('cours_inscriptions').insert({ cours_id: currentCoursId, user_id: currentUser.id });
+    if (!error || error.code === '23505') {
+      myCoursEnrollments[currentCoursId] = true;
+      updateCoursEnrollBtn(btn, true);
+      document.getElementById('cd-progress-card').style.display = 'block';
+    }
+  }
+  const c = allCours.find(x => x.id === currentCoursId);
+  if (c) { updateCoursProgressUI(c); renderCoursLessons(c); }
+  // Update count
+  const { count } = await sb.from('cours_inscriptions').select('*', { count: 'exact', head: true }).eq('cours_id', currentCoursId);
+  document.getElementById('cd-inscrits').textContent = count || 0;
+}
+
+async function toggleCoursLesson(coursId, seanceNum, el) {
+  if (!currentUser) return;
+  const isDone = el.classList.contains('completed');
+  if (isDone) {
+    await sb.from('cours_progress').delete().eq('cours_id', coursId).eq('user_id', currentUser.id).eq('seance_num', seanceNum);
+    if (myCoursProgress[coursId]) myCoursProgress[coursId].delete(seanceNum);
+  } else {
+    await sb.from('cours_progress').insert({ cours_id: coursId, user_id: currentUser.id, seance_num: seanceNum });
+    if (!myCoursProgress[coursId]) myCoursProgress[coursId] = new Set();
+    myCoursProgress[coursId].add(seanceNum);
+  }
+  el.classList.toggle('completed');
+  el.querySelector('.cours-lesson-num').textContent = isDone ? seanceNum : '✓';
+  const check = el.querySelector('.cours-lesson-check');
+  if (check) check.textContent = isDone ? '' : '✓';
+  const c = allCours.find(x => x.id === coursId);
+  if (c) updateCoursProgressUI(c);
+}
+
+function closeCoursDetail() {
+  document.getElementById('cours-detail-view').classList.remove('active');
+  document.getElementById('cours-grid-view').style.display = '';
+  currentCoursId = null;
+  renderCours(allCours);
 }
 
 // ──────────────────────────────────────────
