@@ -241,20 +241,63 @@ footer{background:var(--ink);padding:28px;display:flex;align-items:center;justif
 /* ─────────────────────────────────────────
    PAGE DÉFIS
 ───────────────────────────────────────── */
+.defis-toolbar{display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap;}
+.defis-search{flex:1;min-width:180px;background:var(--parch2);border:1px solid var(--border);border-radius:4px;padding:8px 12px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);outline:none;transition:border-color .2s;}
+.defis-search:focus{border-color:var(--gold);}
+.defis-sort{background:var(--parch2);border:1px solid var(--border);border-radius:4px;padding:8px 12px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--ink2);cursor:pointer;outline:none;}
 .challenge-grid{display:grid;gap:12px;}
-.challenge-card{background:var(--parch);border:1px solid var(--border);border-radius:var(--r);padding:22px;transition:border-color .2s;}
-.challenge-card:hover{border-color:rgba(184,144,60,.4);}
+.challenge-card{background:var(--parch);border:1px solid var(--border);border-radius:var(--r);padding:22px;transition:border-color .2s;cursor:pointer;}
+.challenge-card:hover{border-color:rgba(184,144,60,.4);box-shadow:0 2px 12px rgba(0,0,0,.04);}
 .ch-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px;}
+.ch-top-left{display:flex;align-items:center;gap:8px;}
 .ch-pillar{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--sage);font-weight:500;}
+.ch-difficulty{font-size:9px;font-weight:600;padding:2px 7px;border-radius:8px;letter-spacing:.05em;text-transform:uppercase;}
+.ch-difficulty.easy{background:rgba(74,107,88,.1);color:var(--sage);}
+.ch-difficulty.medium{background:rgba(184,144,60,.12);color:var(--gold);}
+.ch-difficulty.hard{background:rgba(196,84,58,.1);color:var(--ember);}
 .ch-pts{font-size:12px;font-weight:500;color:var(--gold);background:rgba(184,144,60,.1);padding:3px 9px;border-radius:10px;white-space:nowrap;}
 .ch-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:600;color:var(--ink);margin-bottom:7px;line-height:1.3;}
 .ch-desc{font-size:13px;color:var(--ink2);line-height:1.65;margin-bottom:16px;}
+.ch-progress-bar{height:4px;background:var(--parch3);border-radius:2px;margin-bottom:14px;overflow:hidden;}
+.ch-progress-fill{height:100%;background:var(--sage);border-radius:2px;transition:width .3s;}
 .ch-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
-.ch-meta{display:flex;gap:14px;}
+.ch-meta{display:flex;gap:14px;align-items:center;}
 .ch-stat{font-size:11px;color:var(--ink3);}
 .ch-stat span{color:var(--ink2);font-weight:500;}
 .ch-deadline{font-size:11px;color:var(--ink3);font-style:italic;}
+.ch-countdown{font-size:11px;color:var(--ink3);font-weight:500;}
+.ch-countdown.urgent{color:var(--ember);}
+.ch-progress-wrap{margin-top:10px;}
 .ch-permanent{font-size:10px;padding:2px 8px;border-radius:10px;background:rgba(74,107,88,.1);color:var(--sage);font-weight:500;}
+.ch-actions{display:flex;gap:6px;align-items:center;}
+.btn-sm.joined{background:var(--sage);color:white;border-color:var(--sage);cursor:default;}
+.btn-sm.validated{background:var(--gold);color:var(--ink);border-color:var(--gold);cursor:default;}
+
+/* Défi Detail Modal */
+.defi-detail-modal{display:none;position:fixed;inset:0;z-index:200;background:rgba(26,23,20,.72);align-items:flex-start;justify-content:center;padding:60px 20px 40px;overflow-y:auto;}
+.defi-detail-modal.open{display:flex;}
+.defi-detail-box{background:var(--parch);border-radius:var(--r);width:100%;max-width:620px;position:relative;margin-bottom:40px;overflow:hidden;}
+.defi-detail-header{background:var(--ink);padding:28px 32px;position:relative;overflow:hidden;}
+.defi-detail-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 80% 40%,rgba(184,144,60,.12),transparent 55%);pointer-events:none;}
+.defi-detail-header .ch-pillar{color:rgba(247,243,237,.5);margin-bottom:8px;}
+.defi-detail-header .ch-title{color:var(--parch);font-size:22px;margin-bottom:6px;}
+.defi-detail-header .ch-desc{color:rgba(247,243,237,.55);margin-bottom:0;}
+.defi-detail-body{padding:28px 32px;}
+.defi-detail-close{position:absolute;top:16px;right:16px;background:none;border:none;font-size:18px;cursor:pointer;color:rgba(247,243,237,.4);z-index:1;}
+.defi-detail-close:hover{color:var(--gold2);}
+.defi-stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:20px;}
+.defi-stat-block{background:var(--parch);padding:14px;text-align:center;}
+.defi-stat-num{font-family:'Playfair Display',serif;font-size:22px;font-weight:600;color:var(--ink);}
+.defi-stat-label{font-size:10px;color:var(--ink3);text-transform:uppercase;letter-spacing:.1em;margin-top:2px;}
+.defi-participants-list{margin-top:18px;}
+.defi-participant{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);}
+.defi-participant:last-child{border-bottom:none;}
+.defi-participant-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;color:white;flex-shrink:0;}
+.defi-participant-name{font-size:13px;font-weight:500;color:var(--ink);flex:1;}
+.defi-participant-status{font-size:11px;padding:2px 8px;border-radius:10px;}
+.defi-detail-actions{display:flex;gap:10px;margin-top:20px;}
+.defi-detail-actions .btn-primary{flex:1;text-align:center;}
+.defi-detail-actions .btn-gold{flex:1;text-align:center;}
 
 /* ─────────────────────────────────────────
    PAGE COURS
@@ -270,112 +313,6 @@ footer{background:var(--ink);padding:28px;display:flex;align-items:center;justif
 .course-footer{display:flex;justify-content:space-between;align-items:center;}
 .course-stat{font-size:11px;color:var(--ink3);}
 .badge{font-size:10px;font-weight:500;padding:2px 9px;border-radius:10px;letter-spacing:.06em;}
-.course-card-meta{display:flex;gap:10px;align-items:center;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);}
-.course-card-meta-item{font-size:10px;color:var(--ink3);display:flex;align-items:center;gap:3px;}
-.course-card-meta-item span{color:var(--gold);font-weight:500;}
-.course-card-stars{display:flex;gap:1px;}
-.course-card-stars .star-filled{color:var(--gold);font-size:10px;}
-.course-card-stars .star-empty{color:var(--parch3);font-size:10px;}
-
-/* ─── COURSE DETAIL VIEW ─── */
-.cours-detail-page{display:none;animation:fadeUp .3s ease;}
-.cours-detail-page.active{display:block;}
-.cours-detail-header{background:var(--ink);padding:32px 28px 40px;position:relative;overflow:hidden;}
-.cours-detail-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 80% 40%,rgba(184,144,60,.09),transparent 55%);pointer-events:none;}
-.cours-detail-back{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:rgba(247,243,237,.45);cursor:pointer;margin-bottom:20px;position:relative;background:none;border:none;font-family:'DM Sans',sans-serif;transition:color .2s;padding:0;}
-.cours-detail-back:hover{color:var(--gold2);}
-.cours-detail-top{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;position:relative;flex-wrap:wrap;}
-.cours-detail-info{flex:1;min-width:0;}
-.cours-detail-pillar{font-size:10px;text-transform:uppercase;letter-spacing:.14em;font-weight:500;margin-bottom:10px;}
-.cours-detail-title{font-family:'Playfair Display',serif;font-size:clamp(24px,4vw,34px);font-weight:600;color:var(--parch);line-height:1.2;margin-bottom:10px;}
-.cours-detail-author{font-size:13px;color:rgba(247,243,237,.45);margin-bottom:16px;}
-.cours-detail-author strong{color:rgba(247,243,237,.7);font-weight:500;}
-.cours-detail-metas{display:flex;gap:16px;flex-wrap:wrap;}
-.cours-detail-meta{display:flex;align-items:center;gap:5px;font-size:12px;color:rgba(247,243,237,.4);background:rgba(247,243,237,.06);padding:5px 12px;border-radius:20px;}
-.cours-detail-meta strong{color:rgba(247,243,237,.7);font-weight:500;}
-.cours-detail-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-start;flex-shrink:0;}
-.cours-detail-actions .btn-gold,.cours-detail-actions .btn-ghost,.cours-detail-actions .btn-primary{padding:9px 18px;font-size:12px;}
-
-/* Detail body */
-.cours-detail-body{max-width:900px;margin:0 auto;padding:32px 24px;display:grid;grid-template-columns:1fr 280px;gap:28px;}
-@media(max-width:760px){.cours-detail-body{grid-template-columns:1fr;}}
-
-/* Main content */
-.cours-detail-main{}
-.cours-detail-desc{font-size:14px;color:var(--ink2);line-height:1.8;margin-bottom:28px;padding:20px;background:var(--parch2);border:1px solid var(--border);border-radius:var(--r);}
-.cours-sections-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:600;color:var(--ink);margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;}
-.cours-sections-title .section-count{font-size:12px;color:var(--ink3);font-family:'DM Sans',sans-serif;font-weight:400;}
-.section-item{background:var(--parch);border:1px solid var(--border);border-radius:var(--r);margin-bottom:10px;overflow:hidden;transition:border-color .2s;}
-.section-item:hover{border-color:rgba(184,144,60,.3);}
-.section-header{display:flex;align-items:center;gap:12px;padding:16px 18px;cursor:pointer;user-select:none;}
-.section-number{width:28px;height:28px;border-radius:50%;background:var(--parch2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:var(--ink2);flex-shrink:0;transition:all .2s;}
-.section-item.completed .section-number{background:var(--sage);color:white;}
-.section-name{flex:1;font-size:14px;font-weight:500;color:var(--ink);}
-.section-toggle{font-size:14px;color:var(--ink3);transition:transform .2s;flex-shrink:0;}
-.section-item.open .section-toggle{transform:rotate(180deg);}
-.section-content{display:none;padding:0 18px 18px;border-top:1px solid var(--border);}
-.section-item.open .section-content{display:block;padding-top:16px;}
-.section-text{font-size:13px;color:var(--ink2);line-height:1.8;white-space:pre-wrap;word-break:break-word;}
-.section-complete-btn{display:flex;align-items:center;gap:6px;margin-top:14px;padding:7px 14px;background:transparent;border:1px solid var(--sage);color:var(--sage);border-radius:4px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
-.section-complete-btn:hover{background:var(--sage);color:white;}
-.section-complete-btn.done{background:var(--sage);color:white;cursor:default;}
-
-/* Sidebar */
-.cours-detail-sidebar{}
-.sidebar-card{background:var(--parch);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:14px;}
-.sidebar-card-title{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--ink3);font-weight:500;margin-bottom:12px;}
-
-/* Progress card */
-.progress-bar-wrap{background:var(--parch2);border-radius:10px;height:8px;overflow:hidden;margin-bottom:8px;}
-.progress-bar-fill{height:100%;background:var(--sage);border-radius:10px;transition:width .4s ease;}
-.progress-text{font-size:12px;color:var(--ink3);text-align:right;}
-
-/* Rating card */
-.rating-display{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
-.rating-stars{display:flex;gap:2px;}
-.rating-star{font-size:18px;cursor:pointer;color:var(--parch3);transition:color .15s;background:none;border:none;padding:0;line-height:1;}
-.rating-star.filled{color:var(--gold);}
-.rating-star:hover{color:var(--gold2);}
-.rating-avg{font-size:13px;color:var(--ink2);font-weight:500;}
-.rating-count{font-size:11px;color:var(--ink3);}
-.rating-msg{font-size:11px;margin-top:6px;color:var(--sage);}
-
-/* Info card */
-.sidebar-info-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}
-.sidebar-info-row:last-child{border-bottom:none;}
-.sidebar-info-key{color:var(--ink3);}
-.sidebar-info-val{color:var(--ink);font-weight:500;}
-
-/* Bookmark btn */
-.bookmark-btn{display:flex;align-items:center;gap:6px;width:100%;padding:10px;background:transparent;border:1px solid var(--border);border-radius:4px;font-size:12px;color:var(--ink2);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;justify-content:center;}
-.bookmark-btn:hover{border-color:var(--gold);color:var(--gold);}
-.bookmark-btn.saved{background:rgba(184,144,60,.08);border-color:var(--gold);color:var(--gold);}
-
-/* ─── COURSE EDITOR ─── */
-.cours-editor-bar{background:rgba(184,144,60,.08);border:1px solid rgba(184,144,60,.2);border-radius:var(--r);padding:14px 18px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
-.cours-editor-bar-label{font-size:12px;color:var(--gold);font-weight:500;display:flex;align-items:center;gap:6px;}
-.cours-editor-bar-actions{display:flex;gap:8px;flex-wrap:wrap;}
-.edit-field{width:100%;padding:10px 13px;background:var(--parch2);border:1px solid var(--border);border-radius:4px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);outline:none;transition:border-color .2s;}
-.edit-field:focus{border-color:var(--gold);}
-textarea.edit-field{resize:vertical;min-height:80px;}
-.edit-section-item{background:var(--parch);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:10px;position:relative;}
-.edit-section-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-.edit-section-num{width:24px;height:24px;border-radius:50%;background:var(--parch3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:var(--ink2);flex-shrink:0;}
-.edit-section-actions{margin-left:auto;display:flex;gap:4px;}
-.edit-section-actions button{background:none;border:none;cursor:pointer;font-size:14px;color:var(--ink3);padding:2px 6px;border-radius:3px;transition:all .15s;}
-.edit-section-actions button:hover{background:var(--parch2);color:var(--ink);}
-.edit-section-actions button.danger:hover{color:var(--ember);background:rgba(196,84,58,.08);}
-.add-section-btn{display:flex;align-items:center;gap:8px;padding:12px 16px;border:1.5px dashed var(--parch3);border-radius:var(--r);background:transparent;color:var(--ink3);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;width:100%;justify-content:center;transition:all .2s;margin-top:10px;}
-.add-section-btn:hover{border-color:var(--gold);color:var(--gold);}
-.edit-status-select{padding:6px 12px;background:var(--parch2);border:1px solid var(--border);border-radius:4px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--ink);cursor:pointer;outline:none;}
-.edit-status-select:focus{border-color:var(--gold);}
-.edit-msg{font-size:12px;margin-top:8px;padding:8px 12px;border-radius:4px;display:none;}
-.edit-msg.success{background:rgba(74,107,88,.12);color:var(--sage);display:block;}
-.edit-msg.error{background:rgba(196,84,58,.1);color:var(--ember);display:block;}
-.delete-cours-zone{margin-top:28px;padding:18px;background:rgba(196,84,58,.04);border:1px solid rgba(196,84,58,.15);border-radius:var(--r);}
-.delete-cours-zone p{font-size:12px;color:var(--ink2);margin-bottom:10px;line-height:1.6;}
-.edit-inline-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px;}
-@media(max-width:480px){.edit-inline-row{grid-template-columns:1fr;}}
 
 /* ─────────────────────────────────────────
    PAGE RÉFLEXION / AGORA
@@ -410,7 +347,64 @@ textarea.edit-field{resize:vertical;min-height:80px;}
 /* ─────────────────────────────────────────
    PAGE PROGRÈS — OBJECTIFS
 ───────────────────────────────────────── */
-.progres-layout{max-width:900px;margin:0 auto;padding:32px 24px;display:grid;grid-template-columns:340px 1fr;gap:24px;}
+
+/* Stats Dashboard */
+.progres-dashboard{max-width:900px;margin:0 auto;padding:24px 24px 0;}
+.progres-stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:8px;}
+@media(max-width:720px){.progres-stats-grid{grid-template-columns:repeat(2,1fr);}}
+.progres-stat-card{background:var(--parch);border:1px solid var(--border);border-radius:var(--r);padding:18px;text-align:center;}
+.progres-stat-value{font-family:'Playfair Display',serif;font-size:28px;font-weight:600;color:var(--ink);line-height:1;}
+.progres-stat-value.gold{color:var(--gold);}
+.progres-stat-value.sage{color:var(--sage);}
+.progres-stat-value.ember{color:var(--ember);}
+.progres-stat-label{font-size:10px;color:var(--ink3);text-transform:uppercase;letter-spacing:.1em;margin-top:4px;}
+
+/* Week Calendar */
+.progres-week{max-width:900px;margin:0 auto;padding:16px 24px;}
+.progres-week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;}
+.progres-week-day{background:var(--parch);border:1px solid var(--border);border-radius:var(--r);padding:12px 8px;text-align:center;cursor:pointer;transition:all .2s;}
+.progres-week-day:hover{border-color:var(--gold);}
+.progres-week-day.today{border-color:var(--gold);background:rgba(184,144,60,.06);}
+.progres-week-day.selected{border-color:var(--gold);border-width:2px;}
+.progres-week-day-name{font-size:10px;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;}
+.progres-week-day-num{font-family:'Playfair Display',serif;font-size:18px;font-weight:600;color:var(--ink);margin-bottom:6px;}
+.progres-week-day-dots{display:flex;justify-content:center;gap:3px;}
+.progres-week-dot{width:6px;height:6px;border-radius:50%;}
+.progres-week-dot.done{background:var(--sage);}
+.progres-week-dot.undone{background:var(--parch3);}
+.progres-week-dot.none{background:transparent;border:1px dashed var(--parch3);}
+.progres-week-day-pct{font-size:10px;color:var(--ink3);margin-top:4px;font-weight:500;}
+.progres-week-day-pct.full{color:var(--sage);font-weight:600;}
+
+/* Habit Streaks */
+.habit-streak-section{margin-top:14px;padding-top:14px;border-top:1px solid var(--border);}
+.habit-streak-title{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink3);font-weight:500;margin-bottom:10px;}
+.habit-streak-grid{display:flex;gap:3px;flex-wrap:wrap;margin-bottom:12px;}
+.habit-streak-cell{width:14px;height:14px;border-radius:2px;background:var(--parch2);border:1px solid var(--border);}
+.habit-streak-cell.l1{background:rgba(74,107,88,.15);}
+.habit-streak-cell.l2{background:rgba(74,107,88,.35);}
+.habit-streak-cell.l3{background:rgba(74,107,88,.55);}
+.habit-streak-cell.l4{background:var(--sage);}
+.habit-streak-legend{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--ink3);justify-content:flex-end;}
+
+/* Accountability Summary */
+.accountability-card{background:var(--parch);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:16px;}
+.accountability-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;color:var(--ink);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.accountability-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.accountability-row:last-child{border-bottom:none;}
+.accountability-key{color:var(--ink3);}
+.accountability-val{font-weight:500;color:var(--ink);}
+.accountability-val.good{color:var(--sage);}
+.accountability-val.warn{color:var(--gold);}
+.accountability-val.bad{color:var(--ember);}
+
+/* Feed Reactions */
+.feed-reactions{display:flex;gap:4px;margin-top:8px;margin-bottom:8px;}
+.feed-reaction-btn{padding:3px 8px;border-radius:12px;border:1px solid var(--border);background:var(--parch);cursor:pointer;font-size:12px;transition:all .15s;font-family:'DM Sans',sans-serif;display:inline-flex;align-items:center;gap:3px;}
+.feed-reaction-btn:hover,.feed-reaction-btn.active{border-color:var(--gold);background:rgba(184,144,60,.06);}
+.feed-reaction-btn .count{font-size:11px;color:var(--ink3);font-weight:500;}
+
+.progres-layout{max-width:900px;margin:0 auto;padding:16px 24px 32px;display:grid;grid-template-columns:340px 1fr;gap:24px;}
 @media(max-width:720px){.progres-layout{grid-template-columns:1fr;}}
 .progres-panel{background:var(--parch);border:1px solid var(--border);border-radius:var(--r);padding:22px;}
 .progres-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:600;color:var(--ink);margin-bottom:4px;}
@@ -958,6 +952,15 @@ select.creation-input{cursor:pointer;}
     <div class="filter-bar" id="defis-filter">
       <div class="filter-chip active" onclick="filterDefis('',this)">Tous</div>
     </div>
+    <div class="defis-toolbar">
+      <input type="text" class="defis-search" id="defis-search" placeholder="Rechercher un défi..." oninput="searchDefis(this.value)">
+      <select class="defis-sort" id="defis-sort" onchange="sortDefis(this.value)">
+        <option value="recent">Plus récents</option>
+        <option value="popular">Plus populaires</option>
+        <option value="ending">Fin proche</option>
+        <option value="points">Plus de points</option>
+      </select>
+    </div>
     <div class="challenge-grid" id="defis-list">
       <div class="loading">Chargement…</div>
     </div>
@@ -966,52 +969,58 @@ select.creation-input{cursor:pointer;}
   <footer><div class="footer-logo">Agora</div><div class="footer-copy">Plateforme communautaire · Transparente · Démocratique</div></footer>
 </div>
 
+<!-- Défi Detail Modal -->
+<div class="defi-detail-modal" id="defi-detail-modal">
+  <div class="defi-detail-box">
+    <button class="defi-detail-close" onclick="closeDefiDetail()">&#10005;</button>
+    <div class="defi-detail-header">
+      <div class="ch-pillar" id="dd-pillar"></div>
+      <div class="ch-title" id="dd-title"></div>
+      <div class="ch-desc" id="dd-desc"></div>
+    </div>
+    <div class="defi-detail-body">
+      <div class="defi-stats-row">
+        <div class="defi-stat-block">
+          <div class="defi-stat-num" id="dd-participants">0</div>
+          <div class="defi-stat-label">Participants</div>
+        </div>
+        <div class="defi-stat-block">
+          <div class="defi-stat-num" id="dd-points">0</div>
+          <div class="defi-stat-label">Points</div>
+        </div>
+        <div class="defi-stat-block">
+          <div class="defi-stat-num" id="dd-time"></div>
+          <div class="defi-stat-label" id="dd-time-label">Temps</div>
+        </div>
+      </div>
+      <div id="dd-difficulty-wrap" style="margin-bottom:16px"></div>
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink3);font-weight:500;margin-bottom:10px">Participants</div>
+      <div class="defi-participants-list" id="dd-participants-list">
+        <div style="font-size:13px;color:var(--ink3);font-style:italic;padding:8px 0">Aucun participant pour l'instant.</div>
+      </div>
+      <div class="defi-detail-actions" id="dd-actions"></div>
+    </div>
+  </div>
+</div>
+
 <!-- ═══════════════════════════════════════
      PAGE COURS
 ══════════════════════════════════════════ -->
 <div id="page-cours" class="page">
-
-  <!-- LISTE DES COURS -->
-  <div id="cours-liste-view">
-    <div class="page-header">
-      <h2>Cours</h2>
-      <p>Créés par des membres, pour les membres. Le savoir qui circule librement.</p>
-    </div>
-    <div class="content-area">
-      <div class="filter-bar" id="cours-filter">
-        <div class="filter-chip active" onclick="filterCours('',this)">Tous</div>
-      </div>
-      <div class="course-grid" id="cours-list">
-        <div class="loading">Chargement…</div>
-      </div>
-      <button class="create-btn" style="margin-top:16px" onclick="requireAuth(openModalCours)">+ Proposer un cours</button>
-    </div>
-    <footer><div class="footer-logo">Agora</div><div class="footer-copy">Plateforme communautaire · Transparente · Démocratique</div></footer>
+  <div class="page-header">
+    <h2>Cours</h2>
+    <p>Créés par des membres, pour les membres. Le savoir qui circule librement.</p>
   </div>
-
-  <!-- DÉTAIL D'UN COURS -->
-  <div id="cours-detail-view" class="cours-detail-page">
-    <div class="cours-detail-header">
-      <div style="max-width:900px;margin:0 auto;">
-        <button class="cours-detail-back" onclick="backToCoursListe()">← Retour aux cours</button>
-        <div class="cours-detail-top">
-          <div class="cours-detail-info">
-            <div class="cours-detail-pillar" id="cd-pillar"></div>
-            <h2 class="cours-detail-title" id="cd-title"></h2>
-            <div class="cours-detail-author" id="cd-author"></div>
-            <div class="cours-detail-metas" id="cd-metas"></div>
-          </div>
-          <div class="cours-detail-actions" id="cd-actions"></div>
-        </div>
-      </div>
+  <div class="content-area">
+    <div class="filter-bar" id="cours-filter">
+      <div class="filter-chip active" onclick="filterCours('',this)">Tous</div>
     </div>
-    <div class="cours-detail-body">
-      <div class="cours-detail-main" id="cd-main"></div>
-      <div class="cours-detail-sidebar" id="cd-sidebar"></div>
+    <div class="course-grid" id="cours-list">
+      <div class="loading">Chargement…</div>
     </div>
-    <footer><div class="footer-logo">Agora</div><div class="footer-copy">Plateforme communautaire · Transparente · Démocratique</div></footer>
+    <button class="create-btn" style="margin-top:16px" onclick="requireAuth(openModalCours)">+ Proposer un cours</button>
   </div>
-
+  <footer><div class="footer-logo">Agora</div><div class="footer-copy">Plateforme communautaire · Transparente · Démocratique</div></footer>
 </div>
 
 <!-- ═══════════════════════════════════════
@@ -1067,7 +1076,7 @@ select.creation-input{cursor:pointer;}
 <div id="page-progres" class="page">
   <div class="page-header">
     <h2>Progrès</h2>
-    <p>Pose tes objectifs. Tiens tes habitudes. Publie dans le fil — et reçois les retours de la communauté.</p>
+    <p>Pose tes objectifs. Tiens tes habitudes. Publie dans le fil — et deviens redevable envers toi-même et la communauté.</p>
   </div>
 
   <div id="progres-auth-wall" class="auth-wall" style="display:none">
@@ -1077,14 +1086,42 @@ select.creation-input{cursor:pointer;}
   </div>
 
   <div id="progres-content" style="display:none">
+
+    <!-- Dashboard Stats -->
+    <div class="progres-dashboard">
+      <div class="progres-stats-grid">
+        <div class="progres-stat-card">
+          <div class="progres-stat-value sage" id="ps-streak">0</div>
+          <div class="progres-stat-label">Jours consécutifs</div>
+        </div>
+        <div class="progres-stat-card">
+          <div class="progres-stat-value" id="ps-today-pct">0%</div>
+          <div class="progres-stat-label">Aujourd'hui</div>
+        </div>
+        <div class="progres-stat-card">
+          <div class="progres-stat-value gold" id="ps-week-done">0</div>
+          <div class="progres-stat-label">Obj. cette semaine</div>
+        </div>
+        <div class="progres-stat-card">
+          <div class="progres-stat-value" id="ps-total-pts">0</div>
+          <div class="progres-stat-label">Points totaux</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Semaine calendrier -->
+    <div class="progres-week">
+      <div class="progres-week-grid" id="progres-week-grid"></div>
+    </div>
+
     <div class="progres-layout">
 
       <!-- Colonne gauche : objectifs + habitudes -->
       <div>
         <div class="progres-panel" style="margin-bottom:16px">
-          <div class="progres-title">Objectifs du jour</div>
-          <p class="progres-sub">Ce que tu t'engages à faire aujourd'hui. Concret, réaliste, honnête.</p>
-          <div class="obj-input">
+          <div class="progres-title" id="obj-day-title">Objectifs du jour</div>
+          <p class="progres-sub" id="obj-day-sub">Ce que tu t'engages à faire aujourd'hui. Concret, réaliste, honnête.</p>
+          <div class="obj-input" id="obj-input-wrap">
             <input type="text" id="obj-field" placeholder="Ajouter un objectif…" onkeydown="if(event.key==='Enter')addObj()">
             <button onclick="addObj()">+</button>
           </div>
@@ -1100,8 +1137,34 @@ select.creation-input{cursor:pointer;}
           <div style="display:flex;justify-content:flex-end;margin-top:12px">
             <button class="btn-sm" onclick="ajouterHabitude()">+ Nouvelle habitude</button>
           </div>
+
+          <!-- Streak Heatmap -->
+          <div class="habit-streak-section">
+            <div class="habit-streak-title">Activité des 28 derniers jours</div>
+            <div class="habit-streak-grid" id="habit-streak-grid"></div>
+            <div class="habit-streak-legend">
+              <span>Moins</span>
+              <div class="habit-streak-cell" style="width:10px;height:10px"></div>
+              <div class="habit-streak-cell l1" style="width:10px;height:10px"></div>
+              <div class="habit-streak-cell l2" style="width:10px;height:10px"></div>
+              <div class="habit-streak-cell l3" style="width:10px;height:10px"></div>
+              <div class="habit-streak-cell l4" style="width:10px;height:10px"></div>
+              <span>Plus</span>
+            </div>
+          </div>
+
           <button class="pub-btn" onclick="publierObjectifs()">Publier dans le fil communautaire →</button>
           <div class="fmsg" id="pub-msg"></div>
+        </div>
+
+        <!-- Accountability Card -->
+        <div class="accountability-card" style="margin-top:16px">
+          <div class="accountability-title">Bilan de la semaine</div>
+          <div class="accountability-row"><span class="accountability-key">Objectifs posés</span><span class="accountability-val" id="acc-posed">0</span></div>
+          <div class="accountability-row"><span class="accountability-key">Objectifs complétés</span><span class="accountability-val" id="acc-done">0</span></div>
+          <div class="accountability-row"><span class="accountability-key">Taux de réussite</span><span class="accountability-val" id="acc-rate">—</span></div>
+          <div class="accountability-row"><span class="accountability-key">Habitudes tenues</span><span class="accountability-val" id="acc-habits">—</span></div>
+          <div class="accountability-row"><span class="accountability-key">Publications</span><span class="accountability-val" id="acc-pubs">0</span></div>
         </div>
       </div>
 
@@ -1605,6 +1668,11 @@ document.addEventListener('click', e => {
 // DÉFIS
 // ──────────────────────────────────────────
 let allDefis = [];
+let filteredDefis = [];
+let currentDefiFilter = '';
+let currentDefiSearch = '';
+let currentDefiSort = 'recent';
+let myDefiParticipations = new Set();
 
 async function loadDefis() {
   document.getElementById('defis-list').innerHTML = '<div class="loading">Chargement…</div>';
@@ -1619,29 +1687,82 @@ async function loadDefis() {
     });
   }
   const { data } = await sb.from('defis').select('*, piliers(nom,emoji), defi_participations(count)').order('created_at', { ascending: false });
-  allDefis = data || []; renderDefis(allDefis);
+  allDefis = data || [];
+  // Load user participations
+  if (currentUser) {
+    const { data: parts } = await sb.from('defi_participations').select('defi_id').eq('user_id', currentUser.id);
+    myDefiParticipations = new Set((parts || []).map(p => p.defi_id));
+  }
+  applyDefisFilters();
+}
+
+function applyDefisFilters() {
+  let result = [...allDefis];
+  if (currentDefiFilter) result = result.filter(d => d.pilier_id === currentDefiFilter);
+  if (currentDefiSearch) {
+    const q = currentDefiSearch.toLowerCase();
+    result = result.filter(d => d.titre.toLowerCase().includes(q) || d.description.toLowerCase().includes(q));
+  }
+  switch (currentDefiSort) {
+    case 'popular': result.sort((a, b) => (b.defi_participations?.[0]?.count || 0) - (a.defi_participations?.[0]?.count || 0)); break;
+    case 'ending': result.sort((a, b) => { if (!a.date_fin) return 1; if (!b.date_fin) return -1; return new Date(a.date_fin) - new Date(b.date_fin); }); break;
+    case 'points': result.sort((a, b) => (b.points || 0) - (a.points || 0)); break;
+    default: result.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  }
+  filteredDefis = result;
+  renderDefis(result);
+}
+
+function searchDefis(val) { currentDefiSearch = val; applyDefisFilters(); }
+function sortDefis(val) { currentDefiSort = val; applyDefisFilters(); }
+
+function getDefiDifficulty(d) {
+  const pts = d.points || 0;
+  if (pts <= 10) return { label: 'Facile', cls: 'easy' };
+  if (pts <= 30) return { label: 'Moyen', cls: 'medium' };
+  return { label: 'Difficile', cls: 'hard' };
+}
+
+function getDefiCountdown(dateFin) {
+  if (!dateFin) return null;
+  const now = new Date();
+  const end = new Date(dateFin);
+  const diff = end - now;
+  if (diff <= 0) return { text: 'Terminé', urgent: true };
+  const days = Math.floor(diff / 86400000);
+  const hours = Math.floor((diff % 86400000) / 3600000);
+  if (days > 7) return { text: `${days}j restants`, urgent: false };
+  if (days > 0) return { text: `${days}j ${hours}h`, urgent: days <= 3 };
+  return { text: `${hours}h restantes`, urgent: true };
 }
 
 function renderDefis(defis) {
   const list = document.getElementById('defis-list');
   if (!defis.length) { list.innerHTML = '<div class="empty">Aucun défi pour l\'instant. Sois le premier à en créer un !</div>'; return; }
   list.innerHTML = defis.map(d => {
-    const deadline = d.date_fin ? `<span class="ch-deadline">Jusqu'au ${new Date(d.date_fin).toLocaleDateString('fr')}</span>` : '';
-    const tag = d.permanent ? `<span class="ch-permanent">Permanent</span>` : deadline;
-    return `<div class="challenge-card">
+    const diff = getDefiDifficulty(d);
+    const countdown = getDefiCountdown(d.date_fin);
+    const participantCount = d.defi_participations?.[0]?.count || 0;
+    const isJoined = myDefiParticipations.has(d.id);
+    const tag = d.permanent ? `<span class="ch-permanent">Permanent</span>` : (countdown ? `<span class="ch-countdown${countdown.urgent ? ' urgent' : ''}">${countdown.text}</span>` : '');
+    return `<div class="challenge-card" onclick="openDefiDetail('${d.id}')">
       <div class="ch-top">
         <div class="ch-pillar">${d.piliers ? d.piliers.emoji + ' ' + d.piliers.nom : '—'}</div>
-        <div class="ch-pts">+${d.points} pts</div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span class="ch-difficulty ${diff.cls}">${diff.label}</span>
+          <div class="ch-pts">+${d.points} pts</div>
+        </div>
       </div>
       <div class="ch-title">${d.titre}</div>
       <div class="ch-desc">${d.description}</div>
       <div class="ch-footer">
         <div class="ch-meta">
-          <span class="ch-stat"><span>${d.defi_participations?.[0]?.count || 0}</span> participants</span>
+          <span class="ch-stat"><span>${participantCount}</span> participants</span>
           ${tag}
         </div>
-        <button class="btn-sm" onclick="participerDefi('${d.id}',this)">Participer</button>
+        <button class="btn-sm${isJoined ? ' joined' : ''}" onclick="event.stopPropagation();participerDefi('${d.id}',this)">${isJoined ? '✓ Inscrit' : 'Participer'}</button>
       </div>
+      ${participantCount > 0 ? `<div class="ch-progress-wrap"><div class="ch-progress-bar"><div class="ch-progress-fill" style="width:${Math.min(participantCount * 10, 100)}%"></div></div></div>` : ''}
     </div>`;
   }).join('');
 }
@@ -1649,20 +1770,75 @@ function renderDefis(defis) {
 function filterDefis(id, chip) {
   document.querySelectorAll('#defis-filter .filter-chip').forEach(c => c.classList.remove('active'));
   chip.classList.add('active');
-  renderDefis(id ? allDefis.filter(d => d.pilier_id === id) : allDefis);
+  currentDefiFilter = id;
+  applyDefisFilters();
 }
 
 async function participerDefi(id, btn) {
   if (!currentUser) { openAuthModal(); return; }
+  if (myDefiParticipations.has(id)) return;
   const { error } = await sb.from('defi_participations').insert({ defi_id: id, user_id: currentUser.id });
-  if (!error) { btn.textContent = '✓ Inscrit'; btn.disabled = true; }
-  else if (error.code === '23505') { btn.textContent = '✓ Déjà inscrit'; btn.disabled = true; }
+  if (!error || error.code === '23505') {
+    myDefiParticipations.add(id);
+    btn.textContent = '✓ Inscrit'; btn.classList.add('joined'); btn.disabled = true;
+  }
+}
+
+async function openDefiDetail(id) {
+  const d = allDefis.find(x => x.id === id);
+  if (!d) return;
+  const modal = document.getElementById('defi-detail-modal');
+  document.getElementById('dd-pillar').textContent = d.piliers ? d.piliers.emoji + ' ' + d.piliers.nom : '—';
+  document.getElementById('dd-title').textContent = d.titre;
+  document.getElementById('dd-desc').textContent = d.description;
+  const participantCount = d.defi_participations?.[0]?.count || 0;
+  document.getElementById('dd-participants').textContent = participantCount;
+  document.getElementById('dd-points').textContent = '+' + (d.points || 0);
+  const countdown = getDefiCountdown(d.date_fin);
+  if (d.permanent) {
+    document.getElementById('dd-time').textContent = '∞';
+    document.getElementById('dd-time-label').textContent = 'Permanent';
+  } else if (countdown) {
+    document.getElementById('dd-time').textContent = countdown.text;
+    document.getElementById('dd-time-label').textContent = countdown.urgent ? 'Urgent' : 'Restant';
+  } else {
+    document.getElementById('dd-time').textContent = '—';
+    document.getElementById('dd-time-label').textContent = 'Temps';
+  }
+  const diff = getDefiDifficulty(d);
+  document.getElementById('dd-difficulty-wrap').innerHTML = `<span class="ch-difficulty ${diff.cls}" style="font-size:12px;padding:4px 12px">${diff.label}</span>`;
+  // Load participants
+  const { data: parts } = await sb.from('defi_participations').select('*, profiles(pseudo,avatar_initiales)').eq('defi_id', id).limit(20);
+  const pList = document.getElementById('dd-participants-list');
+  if (parts && parts.length) {
+    pList.innerHTML = parts.map(p => `<div class="defi-participant-row">
+      <div class="defi-participant-av">${p.profiles?.avatar_initiales || '?'}</div>
+      <span>${p.profiles?.pseudo || 'Membre'}</span>
+    </div>`).join('');
+  } else {
+    pList.innerHTML = '<div style="font-size:13px;color:var(--ink3);font-style:italic;padding:8px 0">Aucun participant pour l\'instant.</div>';
+  }
+  // Actions
+  const isJoined = myDefiParticipations.has(id);
+  const actions = document.getElementById('dd-actions');
+  if (isJoined) {
+    actions.innerHTML = '<button class="btn-sm joined" disabled style="padding:10px 24px;font-size:14px">✓ Tu participes à ce défi</button>';
+  } else {
+    actions.innerHTML = `<button class="btn-sm" style="padding:10px 24px;font-size:14px" onclick="participerDefi('${id}',this);this.textContent='✓ Inscrit';this.classList.add('joined');this.disabled=true">Rejoindre ce défi</button>`;
+  }
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeDefiDetail() {
+  document.getElementById('defi-detail-modal').classList.remove('open');
+  document.body.style.overflow = '';
 }
 
 // ──────────────────────────────────────────
 // COURS
 // ──────────────────────────────────────────
-let allCours = [], coursStatsCache = {};
+let allCours = [];
 const pilierColors = { '🔥': '#c4543a', '🧠': '#3a5278', '🌿': '#4a6b58', '🎨': '#b8903c', '⚡': '#b8903c' };
 const statutLabels = { ouvert: 'Ouvert', a_venir: 'À venir', archive: 'Archivé' };
 const statutBg = { ouvert: 'rgba(74,107,88,0.1)', a_venir: 'rgba(184,144,60,0.1)', archive: 'rgba(138,132,128,0.1)' };
@@ -1683,26 +1859,7 @@ async function loadCours() {
     });
   }
   const { data } = await sb.from('cours').select('*, piliers(nom,emoji), profiles(pseudo)').order('created_at', { ascending: false });
-  allCours = data || [];
-  // Load stats for all courses
-  await loadCoursStats();
-  renderCours(allCours);
-}
-
-async function loadCoursStats() {
-  coursStatsCache = {};
-  if (!allCours.length) return;
-  const ids = allCours.map(c => c.id);
-  // Inscriptions count
-  const { data: insc } = await sb.from('cours_inscriptions').select('cours_id').in('cours_id', ids);
-  // Ratings
-  const { data: notes } = await sb.from('cours_notes').select('cours_id,rating').in('cours_id', ids);
-  ids.forEach(id => {
-    const inscCount = (insc || []).filter(i => i.cours_id === id).length;
-    const ratings = (notes || []).filter(n => n.cours_id === id);
-    const avgRating = ratings.length ? (ratings.reduce((s, r) => s + r.rating, 0) / ratings.length) : 0;
-    coursStatsCache[id] = { inscriptions: inscCount, avgRating: Math.round(avgRating * 10) / 10, ratingsCount: ratings.length };
-  });
+  allCours = data || []; renderCours(allCours);
 }
 
 function renderCours(cours) {
@@ -1710,9 +1867,7 @@ function renderCours(cours) {
   if (!cours.length) { list.innerHTML = '<div class="empty">Aucun cours pour l\'instant. Propose le tien !</div>'; return; }
   list.innerHTML = cours.map(c => {
     const color = pilierColors[c.piliers?.emoji] || '#8a8480';
-    const stats = coursStatsCache[c.id] || { inscriptions: 0, avgRating: 0, ratingsCount: 0 };
-    const starsHtml = renderStarsSmall(stats.avgRating);
-    return `<div class="course-card" onclick="openCoursDetail('${c.id}')">
+    return `<div class="course-card">
       <div class="course-thumb" style="background:${color}"></div>
       <div class="course-body">
         <div class="course-pillar" style="color:${color}">${c.piliers ? c.piliers.emoji + ' ' + escapeHtml(c.piliers.nom) : '—'}</div>
@@ -1726,6 +1881,7 @@ function renderCours(cours) {
           <div class="course-card-meta-item">👤 <span>${stats.inscriptions}</span> inscrits</div>
           ${stats.ratingsCount > 0 ? `<div class="course-card-meta-item">${starsHtml} <span>${stats.avgRating}</span></div>` : ''}
         </div>
+        ${isEnrolled ? `<div class="course-progress-wrap"><div class="course-progress-bar"><div class="course-progress-fill" style="width:${pct}%"></div></div><div class="course-progress-text">${pct}% complété</div></div>` : ''}
       </div>
     </div>`;
   }).join('');
@@ -1741,485 +1897,6 @@ function filterCours(id, chip) {
   document.querySelectorAll('#cours-filter .filter-chip').forEach(c => c.classList.remove('active'));
   chip.classList.add('active');
   renderCours(id ? allCours.filter(c => c.pilier_id === id) : allCours);
-}
-
-// ──────────────────────────────────────────
-// COURS — DETAIL VIEW
-// ──────────────────────────────────────────
-let currentCoursDetail = null, currentCoursSections = [], currentCoursIsAuthor = false;
-let currentCoursInscrit = false, currentCoursFavori = false, currentCoursUserRating = 0;
-let currentCoursProgres = [];
-
-function backToCoursListe() {
-  document.getElementById('cours-liste-view').style.display = 'block';
-  document.getElementById('cours-detail-view').classList.remove('active');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  loadCours();
-}
-
-async function openCoursDetail(coursId) {
-  document.getElementById('cours-liste-view').style.display = 'none';
-  const dv = document.getElementById('cours-detail-view');
-  dv.classList.add('active');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-
-  // Load course data
-  const { data: cours } = await sb.from('cours').select('*, piliers(id,nom,emoji), profiles(id,pseudo,avatar_initiales)').eq('id', coursId).single();
-  if (!cours) { backToCoursListe(); return; }
-  currentCoursDetail = cours;
-  currentCoursIsAuthor = !!(currentUser && cours.auteur_id === currentUser.id);
-
-  // Load sections
-  const { data: sections } = await sb.from('cours_sections').select('*').eq('cours_id', coursId).order('ordre');
-  currentCoursSections = sections || [];
-
-  // Load user-specific data if logged in
-  currentCoursInscrit = false; currentCoursFavori = false; currentCoursUserRating = 0; currentCoursProgres = [];
-  if (currentUser) {
-    const [inscRes, favRes, noteRes, progRes] = await Promise.all([
-      sb.from('cours_inscriptions').select('id').eq('cours_id', coursId).eq('user_id', currentUser.id).maybeSingle(),
-      sb.from('cours_favoris').select('id').eq('cours_id', coursId).eq('user_id', currentUser.id).maybeSingle(),
-      sb.from('cours_notes').select('rating').eq('cours_id', coursId).eq('user_id', currentUser.id).maybeSingle(),
-      sb.from('cours_progres').select('*').eq('cours_id', coursId).eq('user_id', currentUser.id),
-    ]);
-    currentCoursInscrit = !!inscRes.data;
-    currentCoursFavori = !!favRes.data;
-    currentCoursUserRating = noteRes.data?.rating || 0;
-    currentCoursProgres = progRes.data || [];
-  }
-
-  // Load stats
-  const [{ data: inscAll }, { data: notesAll }] = await Promise.all([
-    sb.from('cours_inscriptions').select('id', { count: 'exact' }).eq('cours_id', coursId),
-    sb.from('cours_notes').select('rating').eq('cours_id', coursId),
-  ]);
-  const inscCount = inscAll?.length || 0;
-  const ratings = notesAll || [];
-  const avgR = ratings.length ? (ratings.reduce((s, r) => s + r.rating, 0) / ratings.length) : 0;
-
-  renderCoursDetail(cours, inscCount, avgR, ratings.length);
-}
-
-function renderCoursDetail(c, inscCount, avgRating, ratingsCount) {
-  const color = pilierColors[c.piliers?.emoji] || '#8a8480';
-  // Header
-  document.getElementById('cd-pillar').innerHTML = `<span style="color:${color}">${c.piliers ? c.piliers.emoji + ' ' + escapeHtml(c.piliers.nom) : '—'}</span>`;
-  document.getElementById('cd-title').textContent = c.titre;
-  document.getElementById('cd-author').innerHTML = `par <strong>${escapeHtml(c.profiles?.pseudo || 'Anonyme')}</strong> · publié le ${new Date(c.created_at).toLocaleDateString('fr')}`;
-  document.getElementById('cd-metas').innerHTML = `
-    <div class="cours-detail-meta">📚 <strong>${c.nb_seances}</strong> séance${c.nb_seances > 1 ? 's' : ''}</div>
-    <div class="cours-detail-meta">⏱ <strong>${c.duree_minutes}</strong> min</div>
-    <div class="cours-detail-meta">👤 <strong>${inscCount}</strong> inscrit${inscCount > 1 ? 's' : ''}</div>
-    <div class="cours-detail-meta" style="background:${statutBg[c.statut]};color:${statutColor[c.statut]};border:1px solid ${statutColor[c.statut]}20">${statutLabels[c.statut]}</div>`;
-
-  // Actions
-  let actionsHtml = '';
-  if (currentUser) {
-    if (!currentCoursInscrit && !currentCoursIsAuthor) {
-      actionsHtml += `<button class="btn-gold" onclick="inscrireCours()">S'inscrire</button>`;
-    } else if (currentCoursInscrit) {
-      actionsHtml += `<button class="btn-ghost" style="color:var(--sage);border-color:var(--sage);cursor:default">✓ Inscrit</button>`;
-    }
-    if (currentCoursIsAuthor) {
-      actionsHtml += `<button class="btn-gold" onclick="toggleEditMode()">✎ Éditer</button>`;
-    }
-  } else {
-    actionsHtml += `<button class="btn-gold" onclick="openAuthModal()">Se connecter pour s'inscrire</button>`;
-  }
-  document.getElementById('cd-actions').innerHTML = actionsHtml;
-
-  // Main content
-  let mainHtml = '';
-
-  // Editor bar (only for author)
-  if (currentCoursIsAuthor) {
-    mainHtml += `<div class="cours-editor-bar" id="cd-editor-bar" style="display:none">
-      <div class="cours-editor-bar-label">✎ Mode édition</div>
-      <div class="cours-editor-bar-actions">
-        <select class="edit-status-select" id="edit-cours-statut" onchange="updateCoursStatut(this.value)">
-          <option value="ouvert" ${c.statut === 'ouvert' ? 'selected' : ''}>Ouvert</option>
-          <option value="a_venir" ${c.statut === 'a_venir' ? 'selected' : ''}>À venir</option>
-          <option value="archive" ${c.statut === 'archive' ? 'selected' : ''}>Archivé</option>
-        </select>
-        <button class="btn-sm sage" onclick="saveCoursEdits()">Sauvegarder</button>
-        <button class="btn-sm" onclick="toggleEditMode()">Fermer l'éditeur</button>
-      </div>
-    </div>`;
-
-    // Edit fields (hidden by default)
-    mainHtml += `<div id="cd-edit-fields" style="display:none">
-      <label style="font-size:12px;font-weight:500;color:var(--ink2);margin-bottom:4px;display:block">Titre</label>
-      <input type="text" class="edit-field" id="edit-cours-titre" value="${escapeAttr(c.titre)}" maxlength="80" style="margin-bottom:10px">
-      <label style="font-size:12px;font-weight:500;color:var(--ink2);margin-bottom:4px;display:block">Description</label>
-      <textarea class="edit-field" id="edit-cours-desc" maxlength="800" style="min-height:100px;margin-bottom:10px">${escapeHtml(c.description)}</textarea>
-      <div class="edit-inline-row">
-        <div>
-          <label style="font-size:12px;font-weight:500;color:var(--ink2);margin-bottom:4px;display:block">Pilier</label>
-          <select class="edit-field" id="edit-cours-pilier"></select>
-        </div>
-        <div>
-          <label style="font-size:12px;font-weight:500;color:var(--ink2);margin-bottom:4px;display:block">Nombre de séances</label>
-          <input type="number" class="edit-field" id="edit-cours-seances" value="${c.nb_seances}" min="1" max="50">
-        </div>
-      </div>
-      <div class="edit-inline-row">
-        <div>
-          <label style="font-size:12px;font-weight:500;color:var(--ink2);margin-bottom:4px;display:block">Durée totale (min)</label>
-          <input type="number" class="edit-field" id="edit-cours-duree" value="${c.duree_minutes}" min="5" max="600">
-        </div>
-        <div></div>
-      </div>
-      <div class="edit-msg" id="edit-cours-msg"></div>
-    </div>`;
-  }
-
-  // Description (view mode)
-  mainHtml += `<div class="cours-detail-desc" id="cd-desc-view">${escapeHtml(c.description)}</div>`;
-
-  // Sections
-  mainHtml += `<div class="cours-sections-title">Contenu du cours <span class="section-count">${currentCoursSections.length} section${currentCoursSections.length > 1 ? 's' : ''}</span></div>`;
-
-  if (currentCoursSections.length === 0) {
-    mainHtml += `<div class="empty" style="padding:40px 20px;background:var(--parch);border:1px solid var(--border);border-radius:var(--r)">
-      ${currentCoursIsAuthor ? 'Aucune section encore. Ajoute du contenu à ton cours !' : 'Le contenu de ce cours n\'a pas encore été ajouté par le créateur.'}
-    </div>`;
-  } else {
-    mainHtml += `<div id="cd-sections-list">`;
-    currentCoursSections.forEach((sec, i) => {
-      const completed = currentCoursProgres.some(p => p.section_id === sec.id && p.completed);
-      mainHtml += renderSectionItem(sec, i, completed);
-    });
-    mainHtml += `</div>`;
-  }
-
-  // Editor: section management (only for author)
-  if (currentCoursIsAuthor) {
-    mainHtml += `<div id="cd-edit-sections" style="display:none">
-      <div class="cours-sections-title" style="margin-top:28px">Gérer les sections</div>
-      <div id="cd-edit-sections-list"></div>
-      <button class="add-section-btn" onclick="addNewSection()">+ Ajouter une section</button>
-      <div class="delete-cours-zone">
-        <p><strong>Zone dangereuse</strong> — Supprimer ce cours est irréversible. Toutes les sections, inscriptions et notes seront perdues.</p>
-        <button class="btn-sm ember" onclick="deleteCours()">Supprimer ce cours</button>
-      </div>
-    </div>`;
-  }
-
-  document.getElementById('cd-main').innerHTML = mainHtml;
-
-  // Sidebar
-  let sidebarHtml = '';
-
-  // Progress card (if enrolled)
-  if (currentCoursInscrit && currentCoursSections.length > 0) {
-    const completedCount = currentCoursProgres.filter(p => p.completed).length;
-    const totalSections = currentCoursSections.length;
-    const pct = totalSections > 0 ? Math.round((completedCount / totalSections) * 100) : 0;
-    sidebarHtml += `<div class="sidebar-card">
-      <div class="sidebar-card-title">Ta progression</div>
-      <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
-      <div class="progress-text">${completedCount}/${totalSections} sections · ${pct}%</div>
-    </div>`;
-  }
-
-  // Rating card
-  sidebarHtml += `<div class="sidebar-card">
-    <div class="sidebar-card-title">Note</div>
-    <div class="rating-display">
-      <div class="rating-avg">${avgRating > 0 ? (Math.round(avgRating * 10) / 10) + '/5' : '—'}</div>
-      <div class="rating-count">${ratingsCount} avis</div>
-    </div>
-    ${currentUser && !currentCoursIsAuthor ? `
-      <div style="font-size:11px;color:var(--ink3);margin-bottom:6px">Ta note :</div>
-      <div class="rating-stars" id="cd-rating-stars">
-        ${[1,2,3,4,5].map(i => `<button class="rating-star ${i <= currentCoursUserRating ? 'filled' : ''}" onclick="rateCours(${i})" onmouseenter="hoverStars(${i})" onmouseleave="resetStars()">★</button>`).join('')}
-      </div>
-      <div class="rating-msg" id="cd-rating-msg"></div>
-    ` : ''}
-  </div>`;
-
-  // Bookmark
-  if (currentUser) {
-    sidebarHtml += `<button class="bookmark-btn ${currentCoursFavori ? 'saved' : ''}" id="cd-bookmark-btn" onclick="toggleCoursFavori()">
-      ${currentCoursFavori ? '★ Enregistré' : '☆ Enregistrer ce cours'}
-    </button>`;
-  }
-
-  // Info card
-  sidebarHtml += `<div class="sidebar-card" style="margin-top:14px">
-    <div class="sidebar-card-title">Informations</div>
-    <div class="sidebar-info-row"><span class="sidebar-info-key">Séances</span><span class="sidebar-info-val">${c.nb_seances}</span></div>
-    <div class="sidebar-info-row"><span class="sidebar-info-key">Durée</span><span class="sidebar-info-val">${c.duree_minutes} min</span></div>
-    <div class="sidebar-info-row"><span class="sidebar-info-key">Inscrits</span><span class="sidebar-info-val">${inscCount}</span></div>
-    <div class="sidebar-info-row"><span class="sidebar-info-key">Statut</span><span class="sidebar-info-val">${statutLabels[c.statut]}</span></div>
-    <div class="sidebar-info-row"><span class="sidebar-info-key">Publié</span><span class="sidebar-info-val">${new Date(c.created_at).toLocaleDateString('fr')}</span></div>
-  </div>`;
-
-  document.getElementById('cd-sidebar').innerHTML = sidebarHtml;
-
-  // Fill pilier select if author
-  if (currentCoursIsAuthor) fillEditPilierSelect(c.pilier_id);
-}
-
-function renderSectionItem(sec, index, completed) {
-  return `<div class="section-item ${completed ? 'completed' : ''}" id="section-${sec.id}">
-    <div class="section-header" onclick="toggleSection('${sec.id}')">
-      <div class="section-number">${completed ? '✓' : (index + 1)}</div>
-      <div class="section-name">${escapeHtml(sec.titre)}</div>
-      <div class="section-toggle">▼</div>
-    </div>
-    <div class="section-content">
-      <div class="section-text">${escapeHtml(sec.contenu || 'Pas de contenu pour cette section.')}</div>
-      ${currentCoursInscrit ? `<button class="section-complete-btn ${completed ? 'done' : ''}" onclick="toggleSectionComplete('${sec.id}',this)" ${completed ? '' : ''}>
-        ${completed ? '✓ Terminée' : 'Marquer comme terminée'}
-      </button>` : ''}
-    </div>
-  </div>`;
-}
-
-function toggleSection(secId) {
-  const el = document.getElementById('section-' + secId);
-  if (el) el.classList.toggle('open');
-}
-
-// ── Inscription ──
-async function inscrireCours() {
-  if (!currentUser || !currentCoursDetail) return;
-  const { error } = await sb.from('cours_inscriptions').insert({ cours_id: currentCoursDetail.id, user_id: currentUser.id });
-  if (!error || (error && error.code === '23505')) {
-    currentCoursInscrit = true;
-    openCoursDetail(currentCoursDetail.id);
-  }
-}
-
-// ── Favori ──
-async function toggleCoursFavori() {
-  if (!currentUser || !currentCoursDetail) return;
-  const btn = document.getElementById('cd-bookmark-btn');
-  if (currentCoursFavori) {
-    await sb.from('cours_favoris').delete().eq('cours_id', currentCoursDetail.id).eq('user_id', currentUser.id);
-    currentCoursFavori = false;
-    btn.classList.remove('saved');
-    btn.innerHTML = '☆ Enregistrer ce cours';
-  } else {
-    await sb.from('cours_favoris').insert({ cours_id: currentCoursDetail.id, user_id: currentUser.id });
-    currentCoursFavori = true;
-    btn.classList.add('saved');
-    btn.innerHTML = '★ Enregistré';
-  }
-}
-
-// ── Rating ──
-function hoverStars(n) {
-  document.querySelectorAll('#cd-rating-stars .rating-star').forEach((s, i) => {
-    s.classList.toggle('filled', i < n);
-  });
-}
-function resetStars() {
-  document.querySelectorAll('#cd-rating-stars .rating-star').forEach((s, i) => {
-    s.classList.toggle('filled', i < currentCoursUserRating);
-  });
-}
-async function rateCours(rating) {
-  if (!currentUser || !currentCoursDetail) return;
-  const msg = document.getElementById('cd-rating-msg');
-  // Upsert rating
-  if (currentCoursUserRating > 0) {
-    await sb.from('cours_notes').update({ rating }).eq('cours_id', currentCoursDetail.id).eq('user_id', currentUser.id);
-  } else {
-    await sb.from('cours_notes').insert({ cours_id: currentCoursDetail.id, user_id: currentUser.id, rating });
-  }
-  currentCoursUserRating = rating;
-  resetStars();
-  if (msg) { msg.textContent = '✓ Note enregistrée !'; msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 2000); }
-}
-
-// ── Section progress ──
-async function toggleSectionComplete(sectionId, btn) {
-  if (!currentUser || !currentCoursDetail || !currentCoursInscrit) return;
-  const existing = currentCoursProgres.find(p => p.section_id === sectionId);
-  if (existing && existing.completed) {
-    await sb.from('cours_progres').update({ completed: false, completed_at: null }).eq('id', existing.id);
-    existing.completed = false;
-    btn.classList.remove('done');
-    btn.textContent = 'Marquer comme terminée';
-    const secEl = document.getElementById('section-' + sectionId);
-    if (secEl) { secEl.classList.remove('completed'); const numEl = secEl.querySelector('.section-number'); if (numEl) numEl.textContent = Array.from(secEl.parentElement.children).indexOf(secEl) + 1; }
-  } else if (existing) {
-    await sb.from('cours_progres').update({ completed: true, completed_at: new Date().toISOString() }).eq('id', existing.id);
-    existing.completed = true;
-    btn.classList.add('done');
-    btn.textContent = '✓ Terminée';
-    const secEl = document.getElementById('section-' + sectionId);
-    if (secEl) { secEl.classList.add('completed'); const numEl = secEl.querySelector('.section-number'); if (numEl) numEl.textContent = '✓'; }
-  } else {
-    const { data } = await sb.from('cours_progres').insert({ cours_id: currentCoursDetail.id, section_id: sectionId, user_id: currentUser.id, completed: true, completed_at: new Date().toISOString() }).select().single();
-    if (data) currentCoursProgres.push(data);
-    btn.classList.add('done');
-    btn.textContent = '✓ Terminée';
-    const secEl = document.getElementById('section-' + sectionId);
-    if (secEl) { secEl.classList.add('completed'); const numEl = secEl.querySelector('.section-number'); if (numEl) numEl.textContent = '✓'; }
-  }
-  // Update progress bar
-  updateProgressBar();
-}
-
-function updateProgressBar() {
-  const completedCount = currentCoursProgres.filter(p => p.completed).length;
-  const totalSections = currentCoursSections.length;
-  const pct = totalSections > 0 ? Math.round((completedCount / totalSections) * 100) : 0;
-  const bar = document.querySelector('.progress-bar-fill');
-  const text = document.querySelector('.progress-text');
-  if (bar) bar.style.width = pct + '%';
-  if (text) text.textContent = `${completedCount}/${totalSections} sections · ${pct}%`;
-}
-
-// ──────────────────────────────────────────
-// COURS — EDITOR MODE
-// ──────────────────────────────────────────
-let editMode = false, editSections = [];
-
-function toggleEditMode() {
-  editMode = !editMode;
-  const bar = document.getElementById('cd-editor-bar');
-  const fields = document.getElementById('cd-edit-fields');
-  const descView = document.getElementById('cd-desc-view');
-  const editSec = document.getElementById('cd-edit-sections');
-  const secList = document.getElementById('cd-sections-list');
-
-  if (editMode) {
-    if (bar) bar.style.display = 'flex';
-    if (fields) fields.style.display = 'block';
-    if (descView) descView.style.display = 'none';
-    if (editSec) editSec.style.display = 'block';
-    if (secList) secList.style.display = 'none';
-    editSections = currentCoursSections.map(s => ({ ...s }));
-    renderEditSections();
-  } else {
-    if (bar) bar.style.display = 'none';
-    if (fields) fields.style.display = 'none';
-    if (descView) descView.style.display = 'block';
-    if (editSec) editSec.style.display = 'none';
-    if (secList) secList.style.display = 'block';
-  }
-}
-
-async function fillEditPilierSelect(currentPilierId) {
-  if (!cachedPiliers.length) {
-    const { data } = await sb.from('piliers').select('*').order('nom');
-    cachedPiliers = data || [];
-  }
-  const sel = document.getElementById('edit-cours-pilier');
-  if (sel) {
-    sel.innerHTML = '<option value="">— Choisir —</option>' +
-      cachedPiliers.map(p => `<option value="${p.id}" ${p.id === currentPilierId ? 'selected' : ''}>${p.emoji} ${p.nom}</option>`).join('');
-  }
-}
-
-function renderEditSections() {
-  const list = document.getElementById('cd-edit-sections-list');
-  if (!list) return;
-  if (!editSections.length) {
-    list.innerHTML = '<div class="empty" style="padding:20px">Aucune section. Clique sur « + Ajouter une section » pour commencer.</div>';
-    return;
-  }
-  list.innerHTML = editSections.map((s, i) => `<div class="edit-section-item" data-idx="${i}">
-    <div class="edit-section-header">
-      <div class="edit-section-num">${i + 1}</div>
-      <input type="text" class="edit-field" value="${escapeAttr(s.titre)}" placeholder="Titre de la section" oninput="editSections[${i}].titre=this.value" style="flex:1;margin-bottom:0">
-      <div class="edit-section-actions">
-        ${i > 0 ? `<button title="Monter" onclick="moveSection(${i},-1)">↑</button>` : ''}
-        ${i < editSections.length - 1 ? `<button title="Descendre" onclick="moveSection(${i},1)">↓</button>` : ''}
-        <button class="danger" title="Supprimer" onclick="removeSection(${i})">✕</button>
-      </div>
-    </div>
-    <textarea class="edit-field" placeholder="Contenu de la section… (texte libre)" oninput="editSections[${i}].contenu=this.value" style="min-height:100px">${escapeHtml(s.contenu || '')}</textarea>
-  </div>`).join('');
-}
-
-function addNewSection() {
-  editSections.push({ id: null, cours_id: currentCoursDetail.id, titre: '', contenu: '', ordre: editSections.length });
-  renderEditSections();
-  // Scroll to bottom
-  const list = document.getElementById('cd-edit-sections-list');
-  if (list) list.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-}
-
-function moveSection(idx, dir) {
-  const target = idx + dir;
-  if (target < 0 || target >= editSections.length) return;
-  [editSections[idx], editSections[target]] = [editSections[target], editSections[idx]];
-  renderEditSections();
-}
-
-function removeSection(idx) {
-  if (!confirm('Supprimer cette section ?')) return;
-  editSections.splice(idx, 1);
-  renderEditSections();
-}
-
-async function saveCoursEdits() {
-  const msg = document.getElementById('edit-cours-msg');
-  const titre = document.getElementById('edit-cours-titre').value.trim();
-  const desc = document.getElementById('edit-cours-desc').value.trim();
-  const pilier = document.getElementById('edit-cours-pilier').value;
-  const seances = parseInt(document.getElementById('edit-cours-seances').value) || 1;
-  const duree = parseInt(document.getElementById('edit-cours-duree').value) || 30;
-  const statut = document.getElementById('edit-cours-statut').value;
-
-  if (!titre) { if (msg) { msg.textContent = 'Le titre est requis.'; msg.className = 'edit-msg error'; } return; }
-
-  // Update course
-  const { error } = await sb.from('cours').update({
-    titre, description: desc, pilier_id: pilier || null,
-    nb_seances: seances, duree_minutes: duree, statut
-  }).eq('id', currentCoursDetail.id);
-
-  if (error) { if (msg) { msg.textContent = 'Erreur : ' + error.message; msg.className = 'edit-msg error'; } return; }
-
-  // Save sections: delete all existing, re-insert
-  await sb.from('cours_sections').delete().eq('cours_id', currentCoursDetail.id);
-  if (editSections.length > 0) {
-    const inserts = editSections.map((s, i) => ({
-      cours_id: currentCoursDetail.id, titre: s.titre || `Section ${i + 1}`,
-      contenu: s.contenu || '', ordre: i
-    }));
-    await sb.from('cours_sections').insert(inserts);
-  }
-
-  if (msg) { msg.textContent = '✓ Cours mis à jour !'; msg.className = 'edit-msg success'; }
-  setTimeout(() => {
-    editMode = false;
-    openCoursDetail(currentCoursDetail.id);
-  }, 800);
-}
-
-async function updateCoursStatut(statut) {
-  await sb.from('cours').update({ statut }).eq('id', currentCoursDetail.id);
-  currentCoursDetail.statut = statut;
-}
-
-async function deleteCours() {
-  if (!confirm('Supprimer définitivement ce cours ? Cette action est irréversible.')) return;
-  if (!confirm('Dernière confirmation : tout le contenu, les inscriptions et les notes seront supprimés.')) return;
-  // Delete related data then course
-  await sb.from('cours_sections').delete().eq('cours_id', currentCoursDetail.id);
-  await sb.from('cours_inscriptions').delete().eq('cours_id', currentCoursDetail.id);
-  await sb.from('cours_progres').delete().eq('cours_id', currentCoursDetail.id);
-  await sb.from('cours_notes').delete().eq('cours_id', currentCoursDetail.id);
-  await sb.from('cours_favoris').delete().eq('cours_id', currentCoursDetail.id);
-  await sb.from('cours').delete().eq('id', currentCoursDetail.id);
-  backToCoursListe();
-}
-
-// ── HTML escape helpers ──
-function escapeHtml(str) {
-  if (!str) return '';
-  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
-}
-function escapeAttr(str) {
-  if (!str) return '';
-  return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 // ──────────────────────────────────────────
@@ -2277,6 +1954,12 @@ async function voterQuestion(id, btn) {
 // PROGRÈS
 // ──────────────────────────────────────────
 let localObjectifs = [];
+let weekObjectifs = {};
+let selectedProgresDate = null;
+let allHabitudes = [];
+
+function getDateStr(d) { return d.toISOString().split('T')[0]; }
+function getMonday(d) { const dt = new Date(d); const day = dt.getDay(); const diff = dt.getDate() - day + (day === 0 ? -6 : 1); dt.setDate(diff); dt.setHours(0,0,0,0); return dt; }
 
 async function loadProgres() {
   if (!currentUser) {
@@ -2290,13 +1973,195 @@ async function loadProgres() {
     document.getElementById('feed-my-av').textContent = currentProfile.avatar_initiales || '?';
     document.getElementById('feed-my-name').textContent = currentProfile.pseudo || 'Moi';
   }
-  await loadObjectifs();
-  await loadHabitudes();
-  await loadFeed();
+  selectedProgresDate = getDateStr(new Date());
+  await Promise.all([loadWeekData(), loadHabitudes(), loadFeed()]);
+  renderWeekCalendar();
+  renderStreakHeatmap();
+  await loadAccountability();
+}
+
+async function loadWeekData() {
+  const monday = getMonday(new Date());
+  const sunday = new Date(monday); sunday.setDate(sunday.getDate() + 6);
+  const { data } = await sb.from('objectifs_jour').select('*').eq('user_id', currentUser.id)
+    .gte('date', getDateStr(monday)).lte('date', getDateStr(sunday)).order('created_at');
+  weekObjectifs = {};
+  (data || []).forEach(o => {
+    if (!weekObjectifs[o.date]) weekObjectifs[o.date] = [];
+    weekObjectifs[o.date].push(o);
+  });
+  // Load today's objectives
+  const today = getDateStr(new Date());
+  localObjectifs = weekObjectifs[today] || [];
+  renderObjectifs();
+  updateDashboardStats();
+}
+
+function updateDashboardStats() {
+  // Today's completion
+  const todayObjs = localObjectifs;
+  const todayDone = todayObjs.filter(o => o.done).length;
+  const todayTotal = todayObjs.length;
+  const todayPct = todayTotal > 0 ? Math.round((todayDone / todayTotal) * 100) : 0;
+  document.getElementById('ps-today-pct').textContent = todayPct + '%';
+  // Week objectives done
+  let weekDone = 0;
+  Object.values(weekObjectifs).forEach(objs => { weekDone += objs.filter(o => o.done).length; });
+  document.getElementById('ps-week-done').textContent = weekDone;
+  // Streak
+  const streakEl = document.getElementById('ps-streak');
+  computeStreak().then(s => { streakEl.textContent = s; });
+  // Points
+  const ptsEl = document.getElementById('ps-total-pts');
+  computeTotalPoints().then(p => { ptsEl.textContent = p; });
+}
+
+async function computeStreak() {
+  const { data } = await sb.from('objectifs_jour').select('date,done').eq('user_id', currentUser.id).eq('done', true).order('date', { ascending: false }).limit(60);
+  if (!data || !data.length) return 0;
+  const dates = [...new Set(data.map(o => o.date))].sort().reverse();
+  let streak = 0;
+  const today = getDateStr(new Date());
+  let checkDate = new Date(today);
+  for (let i = 0; i < 60; i++) {
+    const ds = getDateStr(checkDate);
+    if (dates.includes(ds)) { streak++; } else if (ds !== today) { break; } else { /* today not done yet, skip */ }
+    checkDate.setDate(checkDate.getDate() - 1);
+  }
+  return streak;
+}
+
+async function computeTotalPoints() {
+  const { count: objsDone } = await sb.from('objectifs_jour').select('*', { count: 'exact', head: true }).eq('user_id', currentUser.id).eq('done', true);
+  const { data: parts } = await sb.from('defi_participations').select('defi_id, defis(points)').eq('user_id', currentUser.id);
+  let defiPts = 0;
+  (parts || []).forEach(p => { defiPts += p.defis?.points || 0; });
+  return (objsDone || 0) * 2 + defiPts;
+}
+
+function renderWeekCalendar() {
+  const monday = getMonday(new Date());
+  const today = getDateStr(new Date());
+  const jours = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+  const grid = document.getElementById('progres-week-grid');
+  let html = '';
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday);
+    d.setDate(d.getDate() + i);
+    const ds = getDateStr(d);
+    const objs = weekObjectifs[ds] || [];
+    const done = objs.filter(o => o.done).length;
+    const total = objs.length;
+    const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+    const isToday = ds === today;
+    const isSelected = ds === selectedProgresDate;
+    let dots = '';
+    if (total > 0) {
+      const maxDots = Math.min(total, 5);
+      for (let j = 0; j < maxDots; j++) {
+        dots += `<div class="progres-week-dot ${j < done ? 'done' : 'undone'}"></div>`;
+      }
+    } else {
+      dots = '<div class="progres-week-dot none"></div>';
+    }
+    html += `<div class="progres-week-day${isToday ? ' today' : ''}${isSelected ? ' selected' : ''}" onclick="selectProgresDay('${ds}')">
+      <div class="progres-week-day-name">${jours[i]}</div>
+      <div class="progres-week-day-num">${d.getDate()}</div>
+      <div class="progres-week-day-dots">${dots}</div>
+      ${total > 0 ? `<div class="progres-week-day-pct${pct === 100 ? ' full' : ''}">${pct}%</div>` : ''}
+    </div>`;
+  }
+  grid.innerHTML = html;
+}
+
+async function selectProgresDay(dateStr) {
+  selectedProgresDate = dateStr;
+  const today = getDateStr(new Date());
+  const isToday = dateStr === today;
+  // Update title
+  const titleEl = document.getElementById('obj-day-title');
+  const subEl = document.getElementById('obj-day-sub');
+  const inputWrap = document.getElementById('obj-input-wrap');
+  if (isToday) {
+    titleEl.textContent = "Objectifs du jour";
+    subEl.textContent = "Ce que tu t'engages à faire aujourd'hui. Concret, réaliste, honnête.";
+    inputWrap.style.display = '';
+  } else {
+    const d = new Date(dateStr);
+    titleEl.textContent = 'Objectifs du ' + d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+    subEl.textContent = 'Historique de tes objectifs pour cette journée.';
+    inputWrap.style.display = 'none';
+  }
+  // Load objectives for that day
+  if (weekObjectifs[dateStr]) {
+    localObjectifs = weekObjectifs[dateStr];
+  } else {
+    const { data } = await sb.from('objectifs_jour').select('*').eq('user_id', currentUser.id).eq('date', dateStr).order('created_at');
+    localObjectifs = data || [];
+    weekObjectifs[dateStr] = localObjectifs;
+  }
+  renderObjectifs();
+  renderWeekCalendar();
+}
+
+async function renderStreakHeatmap() {
+  const grid = document.getElementById('habit-streak-grid');
+  const endDate = new Date();
+  const startDate = new Date(); startDate.setDate(startDate.getDate() - 27);
+  const { data } = await sb.from('objectifs_jour').select('date,done').eq('user_id', currentUser.id)
+    .gte('date', getDateStr(startDate)).lte('date', getDateStr(endDate));
+  const dayMap = {};
+  (data || []).forEach(o => {
+    if (!dayMap[o.date]) dayMap[o.date] = { total: 0, done: 0 };
+    dayMap[o.date].total++;
+    if (o.done) dayMap[o.date].done++;
+  });
+  let html = '';
+  for (let i = 0; i < 28; i++) {
+    const d = new Date(startDate);
+    d.setDate(d.getDate() + i);
+    const ds = getDateStr(d);
+    const info = dayMap[ds];
+    let lvl = '';
+    if (info) {
+      const pct = info.done / info.total;
+      if (pct >= 1) lvl = 'l4';
+      else if (pct >= 0.7) lvl = 'l3';
+      else if (pct >= 0.4) lvl = 'l2';
+      else if (pct > 0) lvl = 'l1';
+    }
+    html += `<div class="habit-streak-cell ${lvl}" title="${ds}"></div>`;
+  }
+  grid.innerHTML = html;
+}
+
+async function loadAccountability() {
+  const monday = getMonday(new Date());
+  const sunday = new Date(monday); sunday.setDate(sunday.getDate() + 6);
+  // Week objectives
+  let totalPosed = 0, totalDone = 0;
+  Object.values(weekObjectifs).forEach(objs => { totalPosed += objs.length; totalDone += objs.filter(o => o.done).length; });
+  document.getElementById('acc-posed').textContent = totalPosed;
+  document.getElementById('acc-done').textContent = totalDone;
+  const rate = totalPosed > 0 ? Math.round((totalDone / totalPosed) * 100) : 0;
+  const rateEl = document.getElementById('acc-rate');
+  rateEl.textContent = rate + '%';
+  rateEl.className = 'accountability-val ' + (rate >= 70 ? 'good' : rate >= 40 ? 'warn' : 'bad');
+  // Habits
+  const habitsChecked = allHabitudes.filter(h => h.checked_today).length;
+  const habitsTotal = allHabitudes.length;
+  const habEl = document.getElementById('acc-habits');
+  habEl.textContent = habitsTotal > 0 ? habitsChecked + '/' + habitsTotal : '—';
+  if (habitsTotal > 0) habEl.className = 'accountability-val ' + (habitsChecked === habitsTotal ? 'good' : habitsChecked > 0 ? 'warn' : 'bad');
+  // Publications
+  const { count: pubCount } = await sb.from('objectifs_jour').select('*', { count: 'exact', head: true })
+    .eq('user_id', currentUser.id).eq('publie', true)
+    .gte('date', getDateStr(monday)).lte('date', getDateStr(sunday));
+  document.getElementById('acc-pubs').textContent = pubCount || 0;
 }
 
 async function loadObjectifs() {
-  const today = new Date().toISOString().split('T')[0];
+  const today = getDateStr(new Date());
   const { data } = await sb.from('objectifs_jour').select('*').eq('user_id', currentUser.id).eq('date', today).order('created_at');
   localObjectifs = data || [];
   renderObjectifs();
@@ -2305,22 +2170,31 @@ async function loadObjectifs() {
 function renderObjectifs() {
   const list = document.getElementById('obj-list');
   if (!localObjectifs.length) {
-    list.innerHTML = `<li style="padding:10px 0;font-size:12px;color:var(--ink3);font-style:italic">Aucun objectif pour aujourd'hui encore.</li>`; return;
+    list.innerHTML = `<li style="padding:10px 0;font-size:12px;color:var(--ink3);font-style:italic">Aucun objectif pour cette journée.</li>`; return;
   }
+  const today = getDateStr(new Date());
+  const isToday = selectedProgresDate === today || !selectedProgresDate;
   list.innerHTML = localObjectifs.map(o => `
     <li class="obj-item ${o.done ? 'done-item' : ''}" data-id="${o.id}">
-      <div class="obj-check ${o.done ? 'done' : ''}" onclick="toggleObj('${o.id}',this)">${o.done ? '✓' : ''}</div>
+      <div class="obj-check ${o.done ? 'done' : ''}" onclick="${isToday ? `toggleObj('${o.id}',this)` : ''}">${o.done ? '✓' : ''}</div>
       <span>${o.texte}</span>
-      <button class="obj-del" onclick="supprimerObj('${o.id}')">✕</button>
+      ${isToday ? `<button class="obj-del" onclick="supprimerObj('${o.id}')">✕</button>` : ''}
     </li>`).join('');
 }
 
 async function addObj() {
   const field = document.getElementById('obj-field');
   const val = field.value.trim(); if (!val) return;
-  const today = new Date().toISOString().split('T')[0];
+  const today = getDateStr(new Date());
   const { data, error } = await sb.from('objectifs_jour').insert({ user_id: currentUser.id, texte: val, date: today }).select().single();
-  if (!error && data) { localObjectifs.push(data); renderObjectifs(); }
+  if (!error && data) {
+    localObjectifs.push(data);
+    if (!weekObjectifs[today]) weekObjectifs[today] = [];
+    weekObjectifs[today].push(data);
+    renderObjectifs();
+    updateDashboardStats();
+    renderWeekCalendar();
+  }
   field.value = ''; field.focus();
 }
 
@@ -2331,21 +2205,28 @@ async function toggleObj(id, el) {
   el.closest('.obj-item').classList.toggle('done-item', done);
   await sb.from('objectifs_jour').update({ done }).eq('id', id);
   const obj = localObjectifs.find(o => o.id === id); if (obj) obj.done = done;
+  updateDashboardStats();
+  renderWeekCalendar();
 }
 
 async function supprimerObj(id) {
   await sb.from('objectifs_jour').delete().eq('id', id);
   localObjectifs = localObjectifs.filter(o => o.id !== id);
+  const today = getDateStr(new Date());
+  if (weekObjectifs[today]) weekObjectifs[today] = weekObjectifs[today].filter(o => o.id !== id);
   renderObjectifs();
+  updateDashboardStats();
+  renderWeekCalendar();
 }
 
 async function loadHabitudes() {
   const { data } = await sb.from('habitudes').select('*').eq('user_id', currentUser.id).order('created_at');
+  allHabitudes = data || [];
   const list = document.getElementById('habitudes-list');
-  if (!data || !data.length) {
+  if (!allHabitudes.length) {
     list.innerHTML = '<div style="font-size:13px;color:var(--ink3);font-style:italic;padding:8px 0">Aucune habitude. Ajoutes-en une !</div>'; return;
   }
-  list.innerHTML = data.map(h => `
+  list.innerHTML = allHabitudes.map(h => `
     <div class="habit-row">
       <div class="habit-name">${h.emoji || '●'} ${h.nom}</div>
       <div class="habit-meta">
@@ -2358,8 +2239,11 @@ async function loadHabitudes() {
 async function toggleHabitude(id, el) {
   el.classList.toggle('on');
   const on = el.classList.contains('on');
-  const today = new Date().toISOString().split('T')[0];
+  const today = getDateStr(new Date());
   await sb.from('habitudes').update({ checked_today: on, derniere_check: on ? today : null }).eq('id', id);
+  const h = allHabitudes.find(x => x.id === id);
+  if (h) h.checked_today = on;
+  loadAccountability();
 }
 
 async function ajouterHabitude() {
@@ -2382,6 +2266,7 @@ async function publierObjectifs() {
   document.getElementById('feed-dynamic').scrollIntoView({ behavior: 'smooth', block: 'start' });
   msg.textContent = '✓ Publié dans le fil !'; msg.className = 'fmsg success';
   loadFeed();
+  loadAccountability();
 }
 
 async function loadFeed() {
