@@ -362,6 +362,40 @@ footer{background:var(--ink);padding:28px;display:flex;align-items:center;justif
 .cours-sidebar-progress-fill{height:100%;background:var(--sage);border-radius:3px;transition:width .4s;}
 .cours-sidebar-progress-text{font-size:12px;color:var(--ink2);font-weight:500;text-align:center;}
 
+/* Course lessons — expandable */
+.cours-lesson-item{border:1px solid var(--border);border-radius:var(--r);margin-bottom:8px;background:var(--parch);transition:all .2s;overflow:hidden;}
+.cours-lesson-item.completed{border-color:var(--sage);}
+.cours-lesson-header{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;user-select:none;}
+.cours-lesson-header:hover{background:rgba(184,144,60,.03);}
+.cours-lesson-item.completed .cours-lesson-header{background:rgba(74,107,88,.04);}
+.cours-lesson-num{width:28px;height:28px;border-radius:50%;background:var(--parch2);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--ink3);flex-shrink:0;transition:all .2s;}
+.cours-lesson-item.completed .cours-lesson-num{background:var(--sage);border-color:var(--sage);color:white;}
+.cours-lesson-info{flex:1;min-width:0;}
+.cours-lesson-name{font-size:14px;font-weight:500;color:var(--ink);}
+.cours-lesson-meta{font-size:11px;color:var(--ink3);margin-top:2px;}
+.cours-lesson-chevron{font-size:12px;color:var(--ink3);transition:transform .25s;flex-shrink:0;}
+.cours-lesson-item.expanded .cours-lesson-chevron{transform:rotate(180deg);}
+.cours-lesson-body{display:none;padding:0 16px 16px 56px;border-top:1px solid var(--border);}
+.cours-lesson-item.expanded .cours-lesson-body{display:block;}
+.cours-lesson-content{font-size:14px;color:var(--ink2);line-height:1.75;white-space:pre-wrap;margin-top:14px;}
+.cours-lesson-content-empty{font-size:13px;color:var(--ink3);font-style:italic;margin-top:14px;}
+.cours-lesson-edit-btn{margin-top:10px;display:inline-flex;align-items:center;gap:5px;padding:5px 12px;font-size:11px;font-weight:500;border:1px solid var(--border);background:transparent;color:var(--ink3);border-radius:4px;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.cours-lesson-edit-btn:hover{border-color:var(--gold);color:var(--gold);}
+.cours-lesson-edit-area{margin-top:12px;display:none;}
+.cours-lesson-edit-area.open{display:block;}
+.cours-lesson-edit-name{width:100%;padding:8px 10px;background:var(--parch2);border:1px solid var(--border);border-radius:4px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--ink);outline:none;margin-bottom:8px;transition:border-color .2s;}
+.cours-lesson-edit-name:focus{border-color:var(--gold);}
+.cours-lesson-edit-content{width:100%;min-height:120px;padding:10px;background:var(--parch2);border:1px solid var(--border);border-radius:4px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);line-height:1.7;resize:vertical;outline:none;transition:border-color .2s;}
+.cours-lesson-edit-content:focus{border-color:var(--gold);}
+.cours-lesson-edit-actions{display:flex;gap:8px;margin-top:8px;}
+.cours-lesson-complete-btn{margin-top:16px;width:100%;padding:11px;border:none;border-radius:4px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;background:var(--ink);color:var(--parch);}
+.cours-lesson-complete-btn:hover{opacity:.85;}
+.cours-lesson-complete-btn.done{background:var(--sage);color:white;}
+.cours-lesson-complete-btn.done:hover{background:#3d5a48;}
+.cours-sidebar-progress{margin-top:10px;}
+.cours-sidebar-progress-bar{height:6px;background:var(--parch3);border-radius:3px;overflow:hidden;margin-bottom:6px;}
+.cours-sidebar-progress-fill{height:100%;background:var(--sage);border-radius:3px;transition:width .4s;}
+.cours-sidebar-progress-text{font-size:12px;color:var(--ink2);font-weight:500;text-align:center;}
 /* ─────────────────────────────────────────
    PAGE RÉFLEXION / AGORA
 ───────────────────────────────────────── */
@@ -2049,7 +2083,11 @@ async function openCoursDetail(id) {
   } else {
     progCard.style.display = 'none';
   }
-  // Render lessons
+  // Load lesson data
+  try {
+    const { data: lessonsData } = await sb.from('cours_lessons').select('*').eq('cours_id', id).order('seance_num');
+    c.lessons_data = lessonsData || [];
+  } catch(e) { c.lessons_data = []; }
   renderCoursLessons(c);
   // Scroll to top
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -2111,20 +2149,110 @@ function renderCoursLessons(c) {
   }
   const completed = myCoursProgress[c.id] || new Set();
   const isEnrolled = myCoursEnrollments[c.id];
+  const isAuthor = currentUser && c.auteur_id === currentUser.id;
+
+  // Build lessons from cached data or defaults
+  const lessons = c.lessons_data || [];
+
   let html = '';
   for (let i = 1; i <= total; i++) {
     const isDone = completed.has(i);
-    const clickAttr = isEnrolled ? `onclick="toggleCoursLesson('${c.id}',${i},this)"` : '';
-    html += `<div class="cours-lesson-item${isDone ? ' completed' : ''}" ${clickAttr}>
-      <div class="cours-lesson-num">${isDone ? '✓' : i}</div>
-      <div class="cours-lesson-info">
-        <div class="cours-lesson-name">Séance ${i}</div>
-        <div class="cours-lesson-meta">${Math.round((c.duree_minutes || 0) / total)} min estimées</div>
+    const lessonData = lessons.find(l => l.seance_num === i) || {};
+    const lessonName = lessonData.nom || `Séance ${i}`;
+    const lessonContent = lessonData.contenu || '';
+    const dureePerSeance = Math.round((c.duree_minutes || 0) / total);
+
+    html += `<div class="cours-lesson-item${isDone ? ' completed' : ''}" id="lesson-item-${c.id}-${i}">
+      <div class="cours-lesson-header" onclick="toggleLesson('${c.id}',${i})">
+        <div class="cours-lesson-num">${isDone ? '✓' : i}</div>
+        <div class="cours-lesson-info">
+          <div class="cours-lesson-name" id="lesson-name-${c.id}-${i}">${lessonName}</div>
+          <div class="cours-lesson-meta">${dureePerSeance} min estimées</div>
+        </div>
+        <span class="cours-lesson-chevron">▼</span>
       </div>
-      ${isEnrolled ? `<div class="cours-lesson-check">${isDone ? '✓' : ''}</div>` : ''}
+      <div class="cours-lesson-body">
+        <div class="cours-lesson-content${lessonContent ? '' : '-empty'}" id="lesson-content-${c.id}-${i}">
+          ${lessonContent ? lessonContent.replace(/\n/g,'<br>') : 'Aucun contenu pour cette séance.'}
+        </div>
+        ${isAuthor ? `
+        <button class="cours-lesson-edit-btn" onclick="toggleLessonEdit('${c.id}',${i})">✎ Modifier cette séance</button>
+        <div class="cours-lesson-edit-area" id="lesson-edit-${c.id}-${i}">
+          <input class="cours-lesson-edit-name" id="lesson-edit-name-${c.id}-${i}" placeholder="Nom de la séance" value="${lessonName.replace(/"/g,'&quot;')}">
+          <textarea class="cours-lesson-edit-content" id="lesson-edit-content-${c.id}-${i}" placeholder="Décris le contenu de cette séance — objectifs, exercices, points clés…">${lessonContent}</textarea>
+          <div class="cours-lesson-edit-actions">
+            <button class="btn-sm sage" onclick="saveLessonEdit('${c.id}',${i})">Enregistrer</button>
+            <button class="btn-sm" onclick="toggleLessonEdit('${c.id}',${i})">Annuler</button>
+          </div>
+          <div id="lesson-edit-msg-${c.id}-${i}" style="font-size:11px;margin-top:6px;display:none"></div>
+        </div>` : ''}
+        ${isEnrolled ? `
+        <button class="cours-lesson-complete-btn${isDone ? ' done' : ''}" id="lesson-btn-${c.id}-${i}" onclick="toggleCoursLesson('${c.id}',${i},document.getElementById('lesson-item-${c.id}-${i}'))">
+          ${isDone ? '✓ Séance complétée' : 'Marquer comme complétée'}
+        </button>` : ''}
+      </div>
     </div>`;
   }
   container.innerHTML = html;
+}
+
+function toggleLesson(coursId, num) {
+  const item = document.getElementById(`lesson-item-${coursId}-${num}`);
+  if (!item) return;
+  item.classList.toggle('expanded');
+}
+
+function toggleLessonEdit(coursId, num) {
+  const editArea = document.getElementById(`lesson-edit-${coursId}-${num}`);
+  if (!editArea) return;
+  editArea.classList.toggle('open');
+  if (editArea.classList.contains('open')) {
+    editArea.querySelector('input')?.focus();
+  }
+}
+
+async function saveLessonEdit(coursId, num) {
+  const nameEl = document.getElementById(`lesson-edit-name-${coursId}-${num}`);
+  const contentEl = document.getElementById(`lesson-edit-content-${coursId}-${num}`);
+  const msgEl = document.getElementById(`lesson-edit-msg-${coursId}-${num}`);
+  const nom = nameEl?.value.trim() || `Séance ${num}`;
+  const contenu = contentEl?.value.trim() || '';
+
+  msgEl.textContent = 'Enregistrement…'; msgEl.style.color = 'var(--ink3)'; msgEl.style.display = 'block';
+
+  // Upsert into cours_lessons table
+  const { error } = await sb.from('cours_lessons').upsert(
+    { cours_id: coursId, seance_num: num, nom, contenu },
+    { onConflict: 'cours_id,seance_num' }
+  );
+
+  if (error) {
+    msgEl.textContent = 'Erreur : ' + error.message; msgEl.style.color = 'var(--ember)'; return;
+  }
+
+  // Update cached data
+  const c = allCours.find(x => x.id === coursId);
+  if (c) {
+    if (!c.lessons_data) c.lessons_data = [];
+    const existing = c.lessons_data.find(l => l.seance_num === num);
+    if (existing) { existing.nom = nom; existing.contenu = contenu; }
+    else c.lessons_data.push({ seance_num: num, nom, contenu });
+  }
+
+  // Update UI in place
+  const nameDisplay = document.getElementById(`lesson-name-${coursId}-${num}`);
+  const contentDisplay = document.getElementById(`lesson-content-${coursId}-${num}`);
+  if (nameDisplay) nameDisplay.textContent = nom;
+  if (contentDisplay) {
+    contentDisplay.className = contenu ? 'cours-lesson-content' : 'cours-lesson-content-empty';
+    contentDisplay.innerHTML = contenu ? contenu.replace(/\n/g,'<br>') : 'Aucun contenu pour cette séance.';
+  }
+
+  msgEl.textContent = '✓ Enregistré !'; msgEl.style.color = 'var(--sage)';
+  setTimeout(() => {
+    msgEl.style.display = 'none';
+    toggleLessonEdit(coursId, num);
+  }, 800);
 }
 
 async function toggleCoursEnroll() {
@@ -2166,9 +2294,15 @@ async function toggleCoursLesson(coursId, seanceNum, el) {
       myCoursProgress[coursId].add(seanceNum);
     }
     el.classList.toggle('completed');
-    el.querySelector('.cours-lesson-num').textContent = isDone ? seanceNum : '✓';
-    const check = el.querySelector('.cours-lesson-check');
-    if (check) check.textContent = isDone ? '' : '✓';
+    // Update num circle
+    const numCircle = el.querySelector('.cours-lesson-num');
+    if (numCircle) numCircle.textContent = isDone ? seanceNum : '✓';
+    // Update complete button
+    const btn = document.getElementById(`lesson-btn-${coursId}-${seanceNum}`);
+    if (btn) {
+      btn.classList.toggle('done', !isDone);
+      btn.textContent = isDone ? 'Marquer comme complétée' : '✓ Séance complétée';
+    }
     const c = allCours.find(x => x.id === coursId);
     if (c) updateCoursProgressUI(c);
   } catch(e) { console.warn('Progress table not available yet'); }
