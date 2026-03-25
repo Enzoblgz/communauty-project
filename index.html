@@ -332,7 +332,8 @@ footer{background:var(--ink);padding:28px;display:flex;align-items:center;justif
 .cours-detail-banner h3{font-family:'Playfair Display',serif;font-size:24px;font-weight:600;color:var(--parch);margin-bottom:6px;position:relative;}
 .cours-detail-banner p{font-size:13px;color:rgba(247,243,237,.5);position:relative;line-height:1.65;}
 .cours-detail-content{padding:24px;}
-.cours-detail-desc{font-size:14px;color:var(--ink2);line-height:1.75;margin-bottom:24px;}
+.cours-detail-desc{font-size:14px;color:var(--ink2);line-height:1.75;margin-bottom:24px;white-space:pre-wrap;}
+.cours-edit-textarea{width:100%;min-height:180px;padding:12px;border:1px solid var(--border);border-radius:var(--r);font-family:'DM Sans',sans-serif;font-size:14px;color:var(--ink);line-height:1.7;resize:vertical;background:var(--parch);}
 .cours-lessons-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:600;color:var(--ink);margin-bottom:14px;}
 .cours-lesson-item{display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid var(--border);border-radius:var(--r);margin-bottom:8px;cursor:pointer;transition:all .2s;background:var(--parch);}
 .cours-lesson-item:hover{border-color:var(--gold);background:rgba(184,144,60,.03);}
@@ -1080,6 +1081,7 @@ select.creation-input{cursor:pointer;}
         </div>
         <div class="cours-detail-content">
           <div class="cours-detail-desc" id="cd-desc"></div>
+          <div id="cd-edit-wrap" style="display:none"></div>
           <div class="cours-lessons-title">Programme des séances</div>
           <div id="cd-lessons-list"></div>
         </div>
@@ -1941,18 +1943,21 @@ async function loadCours() {
   }
   const { data } = await sb.from('cours').select('*, piliers(nom,emoji), profiles(pseudo)').order('created_at', { ascending: false });
   allCours = data || [];
-  // Load enrollments
+  // Load enrollments & progress (graceful — tables may not exist yet)
+  myCoursEnrollments = {};
+  myCoursProgress = {};
   if (currentUser) {
-    const { data: enrolls } = await sb.from('cours_inscriptions').select('cours_id').eq('user_id', currentUser.id);
-    myCoursEnrollments = {};
-    (enrolls || []).forEach(e => { myCoursEnrollments[e.cours_id] = true; });
-    // Load progress
-    const { data: prog } = await sb.from('cours_progress').select('cours_id,seance_num').eq('user_id', currentUser.id);
-    myCoursProgress = {};
-    (prog || []).forEach(p => {
-      if (!myCoursProgress[p.cours_id]) myCoursProgress[p.cours_id] = new Set();
-      myCoursProgress[p.cours_id].add(p.seance_num);
-    });
+    try {
+      const { data: enrolls, error: eErr } = await sb.from('cours_inscriptions').select('cours_id').eq('user_id', currentUser.id);
+      if (!eErr && enrolls) enrolls.forEach(e => { myCoursEnrollments[e.cours_id] = true; });
+    } catch(e) {}
+    try {
+      const { data: prog, error: pErr } = await sb.from('cours_progress').select('cours_id,seance_num').eq('user_id', currentUser.id);
+      if (!pErr && prog) prog.forEach(p => {
+        if (!myCoursProgress[p.cours_id]) myCoursProgress[p.cours_id] = new Set();
+        myCoursProgress[p.cours_id].add(p.seance_num);
+      });
+    } catch(e) {}
   }
   renderCours(allCours);
 }
@@ -1996,6 +2001,7 @@ async function openCoursDetail(id) {
   if (!c) return;
   currentCoursId = id;
   const color = pilierColors[c.piliers?.emoji] || '#8a8480';
+  const isAuthor = currentUser && c.auteur_id === currentUser.id;
   // Hide grid, show detail
   document.getElementById('cours-grid-view').style.display = 'none';
   const dv = document.getElementById('cours-detail-view');
@@ -2006,16 +2012,31 @@ async function openCoursDetail(id) {
   document.getElementById('cd-pillar').style.color = 'rgba(255,255,255,.7)';
   document.getElementById('cd-title').textContent = c.titre;
   document.getElementById('cd-author').textContent = 'par ' + (c.profiles?.pseudo || 'Anonyme');
-  // Description
-  document.getElementById('cd-desc').textContent = c.description || 'Aucune description détaillée pour ce cours.';
+  // Description — show as readable content
+  const descEl = document.getElementById('cd-desc');
+  const descText = c.description || '';
+  descEl.innerHTML = descText ? descText.replace(/\n/g, '<br>') : '<span style="color:var(--ink3);font-style:italic">Aucune description pour ce cours.</span>';
+  // Edit button for author
+  const editWrap = document.getElementById('cd-edit-wrap');
+  if (isAuthor) {
+    editWrap.style.display = 'block';
+    editWrap.innerHTML = '<button class="btn-sm" onclick="startEditCours()" style="margin-top:10px;font-size:12px">✎ Modifier le cours</button>';
+  } else {
+    editWrap.style.display = 'none';
+    editWrap.innerHTML = '';
+  }
   // Sidebar info
   document.getElementById('cd-seances').textContent = c.nb_seances + ' séance' + (c.nb_seances > 1 ? 's' : '');
   document.getElementById('cd-duree').textContent = c.duree_minutes + ' min';
   const sl = { ouvert: 'Ouvert', a_venir: 'À venir', archive: 'Archivé' };
   document.getElementById('cd-statut').textContent = sl[c.statut] || c.statut;
-  // Enrollment count
-  const { count } = await sb.from('cours_inscriptions').select('*', { count: 'exact', head: true }).eq('cours_id', id);
-  document.getElementById('cd-inscrits').textContent = count || 0;
+  // Enrollment count (graceful)
+  let enrollCount = 0;
+  try {
+    const { count } = await sb.from('cours_inscriptions').select('*', { count: 'exact', head: true }).eq('cours_id', id);
+    enrollCount = count || 0;
+  } catch(e) {}
+  document.getElementById('cd-inscrits').textContent = enrollCount;
   // Enrollment button
   const isEnrolled = myCoursEnrollments[id];
   const btn = document.getElementById('cd-enroll-btn');
@@ -2032,6 +2053,35 @@ async function openCoursDetail(id) {
   renderCoursLessons(c);
   // Scroll to top
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function startEditCours() {
+  const c = allCours.find(x => x.id === currentCoursId);
+  if (!c) return;
+  const descEl = document.getElementById('cd-desc');
+  const editWrap = document.getElementById('cd-edit-wrap');
+  descEl.innerHTML = `<textarea id="cd-edit-desc" class="cours-edit-textarea" placeholder="Décris le contenu de ton cours…">${c.description || ''}</textarea>`;
+  editWrap.innerHTML = `<div style="display:flex;gap:8px;margin-top:10px">
+    <button class="btn-sm" onclick="saveEditCours()" style="font-size:12px;background:var(--sage);color:white;border-color:var(--sage)">Enregistrer</button>
+    <button class="btn-sm" onclick="cancelEditCours()" style="font-size:12px">Annuler</button>
+  </div>
+  <div id="cd-edit-msg" style="margin-top:6px;font-size:12px"></div>`;
+}
+
+async function saveEditCours() {
+  const c = allCours.find(x => x.id === currentCoursId);
+  if (!c) return;
+  const desc = document.getElementById('cd-edit-desc').value.trim();
+  const msg = document.getElementById('cd-edit-msg');
+  const { error } = await sb.from('cours').update({ description: desc }).eq('id', currentCoursId);
+  if (error) { msg.textContent = 'Erreur : ' + error.message; msg.style.color = 'var(--ember)'; return; }
+  c.description = desc;
+  msg.textContent = '✓ Enregistré'; msg.style.color = 'var(--sage)';
+  setTimeout(() => openCoursDetail(currentCoursId), 600);
+}
+
+function cancelEditCours() {
+  openCoursDetail(currentCoursId);
 }
 
 function updateCoursEnrollBtn(btn, isEnrolled) {
@@ -2064,7 +2114,8 @@ function renderCoursLessons(c) {
   let html = '';
   for (let i = 1; i <= total; i++) {
     const isDone = completed.has(i);
-    html += `<div class="cours-lesson-item${isDone ? ' completed' : ''}" ${isEnrolled ? `onclick="toggleCoursLesson('${c.id}',${i},this)"` : ''}>
+    const clickAttr = isEnrolled ? `onclick="toggleCoursLesson('${c.id}',${i},this)"` : '';
+    html += `<div class="cours-lesson-item${isDone ? ' completed' : ''}" ${clickAttr}>
       <div class="cours-lesson-num">${isDone ? '✓' : i}</div>
       <div class="cours-lesson-info">
         <div class="cours-lesson-name">Séance ${i}</div>
@@ -2081,43 +2132,46 @@ async function toggleCoursEnroll() {
   if (!currentCoursId) return;
   const isEnrolled = myCoursEnrollments[currentCoursId];
   const btn = document.getElementById('cd-enroll-btn');
-  if (isEnrolled) {
-    await sb.from('cours_inscriptions').delete().eq('cours_id', currentCoursId).eq('user_id', currentUser.id);
-    delete myCoursEnrollments[currentCoursId];
-    updateCoursEnrollBtn(btn, false);
-    document.getElementById('cd-progress-card').style.display = 'none';
-  } else {
-    const { error } = await sb.from('cours_inscriptions').insert({ cours_id: currentCoursId, user_id: currentUser.id });
-    if (!error || error.code === '23505') {
-      myCoursEnrollments[currentCoursId] = true;
-      updateCoursEnrollBtn(btn, true);
-      document.getElementById('cd-progress-card').style.display = 'block';
+  try {
+    if (isEnrolled) {
+      await sb.from('cours_inscriptions').delete().eq('cours_id', currentCoursId).eq('user_id', currentUser.id);
+      delete myCoursEnrollments[currentCoursId];
+      updateCoursEnrollBtn(btn, false);
+      document.getElementById('cd-progress-card').style.display = 'none';
+    } else {
+      const { error } = await sb.from('cours_inscriptions').insert({ cours_id: currentCoursId, user_id: currentUser.id });
+      if (!error || error.code === '23505') {
+        myCoursEnrollments[currentCoursId] = true;
+        updateCoursEnrollBtn(btn, true);
+        document.getElementById('cd-progress-card').style.display = 'block';
+      }
     }
-  }
-  const c = allCours.find(x => x.id === currentCoursId);
-  if (c) { updateCoursProgressUI(c); renderCoursLessons(c); }
-  // Update count
-  const { count } = await sb.from('cours_inscriptions').select('*', { count: 'exact', head: true }).eq('cours_id', currentCoursId);
-  document.getElementById('cd-inscrits').textContent = count || 0;
+    const c = allCours.find(x => x.id === currentCoursId);
+    if (c) { updateCoursProgressUI(c); renderCoursLessons(c); }
+    const { count } = await sb.from('cours_inscriptions').select('*', { count: 'exact', head: true }).eq('cours_id', currentCoursId);
+    document.getElementById('cd-inscrits').textContent = count || 0;
+  } catch(e) { console.warn('Inscription tables not available yet'); }
 }
 
 async function toggleCoursLesson(coursId, seanceNum, el) {
   if (!currentUser) return;
   const isDone = el.classList.contains('completed');
-  if (isDone) {
-    await sb.from('cours_progress').delete().eq('cours_id', coursId).eq('user_id', currentUser.id).eq('seance_num', seanceNum);
-    if (myCoursProgress[coursId]) myCoursProgress[coursId].delete(seanceNum);
-  } else {
-    await sb.from('cours_progress').insert({ cours_id: coursId, user_id: currentUser.id, seance_num: seanceNum });
-    if (!myCoursProgress[coursId]) myCoursProgress[coursId] = new Set();
-    myCoursProgress[coursId].add(seanceNum);
-  }
-  el.classList.toggle('completed');
-  el.querySelector('.cours-lesson-num').textContent = isDone ? seanceNum : '✓';
-  const check = el.querySelector('.cours-lesson-check');
-  if (check) check.textContent = isDone ? '' : '✓';
-  const c = allCours.find(x => x.id === coursId);
-  if (c) updateCoursProgressUI(c);
+  try {
+    if (isDone) {
+      await sb.from('cours_progress').delete().eq('cours_id', coursId).eq('user_id', currentUser.id).eq('seance_num', seanceNum);
+      if (myCoursProgress[coursId]) myCoursProgress[coursId].delete(seanceNum);
+    } else {
+      await sb.from('cours_progress').insert({ cours_id: coursId, user_id: currentUser.id, seance_num: seanceNum });
+      if (!myCoursProgress[coursId]) myCoursProgress[coursId] = new Set();
+      myCoursProgress[coursId].add(seanceNum);
+    }
+    el.classList.toggle('completed');
+    el.querySelector('.cours-lesson-num').textContent = isDone ? seanceNum : '✓';
+    const check = el.querySelector('.cours-lesson-check');
+    if (check) check.textContent = isDone ? '' : '✓';
+    const c = allCours.find(x => x.id === coursId);
+    if (c) updateCoursProgressUI(c);
+  } catch(e) { console.warn('Progress table not available yet'); }
 }
 
 function closeCoursDetail() {
