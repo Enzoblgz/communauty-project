@@ -1225,7 +1225,16 @@ select.creation-input{cursor:pointer;}
   <!-- Top bar -->
   <div class="cfp-topbar">
     <button class="cfp-sidebar-toggle" id="cfp-sidebar-toggle" onclick="toggleCfpSidebar()">☰</button>
-    <button class="cfp-back" onclick="closeCoursFP()">← Retour aux cours</button>
+    <div class="cfp-topbar">
+  <button class="cfp-sidebar-toggle" id="cfp-sidebar-toggle" onclick="toggleCfpSidebar()">☰</button>
+  <button class="cfp-back" onclick="closeCoursFP()">← Cours</button>
+  <div class="cfp-course-title" id="cfp-course-title">—</div>
+  <div class="cfp-progress-pill">
+    <div class="cfp-progress-bar-mini"><div class="cfp-progress-bar-mini-fill" id="cfp-mini-fill" style="width:0%"></div></div>
+    <span class="cfp-progress-text" id="cfp-mini-text">0%</span>
+  </div>
+  <button onclick="closeCoursFP()" style="padding:0 20px;height:100%;background:none;border:none;border-left:1px solid rgba(255,255,255,.07);color:rgba(255,255,255,.4);font-size:20px;cursor:pointer;transition:color .2s;flex-shrink:0" title="Quitter le cours" onmouseover="this.style.color='#e6b85a'" onmouseout="this.style.color='rgba(255,255,255,.4)'">✕</button>
+</div>
     <div class="cfp-course-title" id="cfp-course-title">—</div>
     <div class="cfp-progress-pill">
       <div class="cfp-progress-bar-mini"><div class="cfp-progress-bar-mini-fill" id="cfp-mini-fill" style="width:0%"></div></div>
