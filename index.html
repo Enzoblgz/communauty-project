@@ -371,7 +371,7 @@ footer{background:var(--ink);padding:28px;display:flex;align-items:center;justif
 .cours-sidebar-progress-fill{height:100%;background:var(--sage);border-radius:3px;transition:width .4s;}
 .cours-sidebar-progress-text{font-size:12px;color:var(--ink2);font-weight:500;text-align:center;}
 
-.cours-fullpage { display:none; position:fixed; inset:0; z-index:90; background:var(--parch); overflow:hidden; flex-direction:column; }
+.cours-fullpage { display:none; position:fixed; inset:0; z-index:110; background:var(--parch); overflow:hidden; flex-direction:column; }
 .cours-fullpage.open { display:flex; }
 
 /* Top bar */
@@ -2436,37 +2436,52 @@ function cfpProcessFile(file) {
   const isVideo = file.type.startsWith('video/');
 
   if (!isImage && !isVideo) {
-    status.textContent = 'Format non supporté. Utilise une image ou une vidéo.';
+    status.textContent = 'Format non supporté.';
     status.style.color = 'var(--ember)';
     return;
   }
 
-  status.textContent = 'Lecture du fichier…';
+  status.textContent = 'Insertion…';
   status.style.color = 'var(--ink3)';
 
-  const reader = new FileReader();
-  reader.onload = (ev) => {
-    const dataUrl = ev.target.result;
-    const body = document.getElementById('cfp-content-body');
-    body.focus();
+  const body = document.getElementById('cfp-content-body');
+  body.focus();
 
-    if (isImage) {
-      document.execCommand('insertHTML', false,
-        `<img src="${dataUrl}" alt="${file.name}" style="max-width:100%;border-radius:6px;margin:16px 0;display:block">`);
-    } else {
-      document.execCommand('insertHTML', false,
-        `<video controls style="max-width:100%;border-radius:6px;margin:16px 0;display:block"><source src="${dataUrl}" type="${file.type}">Ton navigateur ne supporte pas la vidéo.</video>`);
-    }
-
+  if (isVideo) {
+    // createObjectURL — jamais encodé en base64, pas de crash mémoire
+    const objectUrl = URL.createObjectURL(file);
+    document.execCommand('insertHTML', false,
+      `<video controls style="max-width:100%;border-radius:6px;margin:16px 0;display:block" src="${objectUrl}">Ton navigateur ne supporte pas la vidéo.</video>`);
     cfpEditDirty = true;
     closeCfpMediaPanel();
+
+    // Avertissement : objectURL ne survit pas à un rechargement
     status.textContent = '';
-  };
-  reader.onerror = () => {
-    status.textContent = 'Erreur lors de la lecture du fichier.';
-    status.style.color = 'var(--ember)';
-  };
-  reader.readAsDataURL(file);
+    const statusSave = document.getElementById('cfp-save-status');
+    statusSave.textContent = '⚠ Vidéo locale : enregistre maintenant';
+    statusSave.className = 'cfp-save-status saving';
+  } else {
+    // Image : readAsDataURL OK (taille raisonnable)
+    const MAX = 5 * 1024 * 1024; // 5 MB
+    if (file.size > MAX) {
+      status.textContent = 'Image trop lourde (max 5 Mo).';
+      status.style.color = 'var(--ember)';
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      document.execCommand('insertHTML', false,
+        `<img src="${ev.target.result}" alt="${file.name}" style="max-width:100%;border-radius:6px;margin:16px 0;display:block">`);
+      cfpEditDirty = true;
+      closeCfpMediaPanel();
+      status.textContent = '';
+    };
+    reader.onerror = () => {
+      status.textContent = 'Erreur lecture fichier.';
+      status.style.color = 'var(--ember)';
+    };
+    reader.readAsDataURL(file);
+  }
 }
 
 function cfpInsertVideoFromUrl() {
@@ -3426,27 +3441,62 @@ async function soumettreCours() {
 async function cfpDeleteSeance() {
   const c = allCours.find(x => x.id === currentCoursId);
   if (!c) return;
-  const nom = document.getElementById('cfp-seance-title').textContent || `Séance ${currentSeanceNum}`;
+  const total = c.nb_seances || 1;
+  if (total <= 1) {
+    alert('Un cours doit avoir au moins une séance.');
+    return;
+  }
+  const nom = document.getElementById('cfp-seance-title').textContent.trim() || `Séance ${currentSeanceNum}`;
   if (!confirm(`Supprimer "${nom}" ? Cette action est irréversible.`)) return;
 
-  // Delete from DB
+  const statusEl = document.getElementById('cfp-save-status');
+  statusEl.textContent = 'Suppression…'; statusEl.className = 'cfp-save-status saving';
+
+  const delNum = currentSeanceNum;
+
+  // 1. Supprimer cette séance dans cours_lessons
   await sb.from('cours_lessons')
     .delete()
     .eq('cours_id', currentCoursId)
-    .eq('seance_num', currentSeanceNum);
+    .eq('seance_num', delNum);
 
-  // Remove from cache
-  c.lessons_data = (c.lessons_data || []).filter(l => l.seance_num !== currentSeanceNum);
+  // 2. Renuméroter les séances suivantes (delNum+1 → delNum, etc.)
+  const seancesApres = (c.lessons_data || []).filter(l => l.seance_num > delNum);
+  for (const l of seancesApres) {
+    await sb.from('cours_lessons')
+      .update({ seance_num: l.seance_num - 1 })
+      .eq('cours_id', currentCoursId)
+      .eq('seance_num', l.seance_num);
+  }
 
-  // Clear content in UI
-  document.getElementById('cfp-seance-title').textContent = `Séance ${currentSeanceNum}`;
-  document.getElementById('cfp-content-body').innerHTML = '';
+  // 3. Décrémenter nb_seances dans cours
+  const newTotal = total - 1;
+  await sb.from('cours').update({ nb_seances: newTotal }).eq('id', currentCoursId);
 
-  const statusEl = document.getElementById('cfp-save-status');
+  // 4. Mettre à jour le cache local
+  c.nb_seances = newTotal;
+  c.lessons_data = (c.lessons_data || [])
+    .filter(l => l.seance_num !== delNum)
+    .map(l => l.seance_num > delNum ? { ...l, seance_num: l.seance_num - 1 } : l);
+
+  // 5. Mettre à jour la progression (retirer la séance supprimée, renuméroter)
+  if (myCoursProgress[currentCoursId]) {
+    const newSet = new Set();
+    myCoursProgress[currentCoursId].forEach(n => {
+      if (n < delNum) newSet.add(n);
+      else if (n > delNum) newSet.add(n - 1);
+      // n === delNum : supprimé
+    });
+    myCoursProgress[currentCoursId] = newSet;
+  }
+
   statusEl.textContent = '✓ Séance supprimée'; statusEl.className = 'cfp-save-status saved';
   setTimeout(() => { statusEl.textContent = ''; }, 2000);
 
-  renderCfpSidebar(c);
+  // 6. Naviguer vers la bonne séance
+  const goTo = Math.min(delNum, newTotal);
+  currentSeanceNum = goTo;
+  cfpLoadSeance(goTo);
 }
 // ──────────────────────────────────────────
 // UTILS
