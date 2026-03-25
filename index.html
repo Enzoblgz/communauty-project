@@ -299,68 +299,118 @@ footer{background:var(--ink);padding:28px;display:flex;align-items:center;justif
 .defi-detail-actions .btn-primary{flex:1;text-align:center;}
 .defi-detail-actions .btn-gold{flex:1;text-align:center;}
 
-/* ─────────────────────────────────────────
-   PAGE COURS
-───────────────────────────────────────── */
-.course-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(245px,1fr));gap:14px;}
-.course-card{background:var(--parch);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;cursor:pointer;transition:all .2s;}
-.course-card:hover{border-color:rgba(184,144,60,.4);transform:translateY(-2px);}
-.course-thumb{height:5px;}
-.course-body{padding:18px;}
-.course-pillar{font-size:10px;text-transform:uppercase;letter-spacing:.12em;font-weight:500;margin-bottom:8px;}
-.course-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;color:var(--ink);margin-bottom:6px;line-height:1.3;}
-.course-author{font-size:12px;color:var(--ink3);margin-bottom:12px;}
-.course-footer{display:flex;justify-content:space-between;align-items:center;}
-.course-stat{font-size:11px;color:var(--ink3);}
-.badge{font-size:10px;font-weight:500;padding:2px 9px;border-radius:10px;letter-spacing:.06em;}
-.course-progress-wrap{margin-top:10px;}
-.course-progress-bar{height:3px;background:var(--parch3);border-radius:2px;overflow:hidden;}
-.course-progress-fill{height:100%;background:var(--sage);border-radius:2px;transition:width .3s;}
-.course-progress-text{font-size:10px;color:var(--ink3);margin-top:3px;text-align:right;}
+/* ─── COURS PLEINE PAGE ─── */
+.cours-fullpage { display:none; position:fixed; inset:0; z-index:90; background:var(--parch); overflow:hidden; flex-direction:column; }
+.cours-fullpage.open { display:flex; }
 
-/* Course Detail View */
-.cours-detail{display:none;max-width:900px;margin:0 auto;padding:32px 24px;}
-.cours-detail.active{display:block;}
-.cours-detail-back{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--ink3);cursor:pointer;border:none;background:none;font-family:'DM Sans',sans-serif;margin-bottom:20px;transition:color .2s;padding:0;}
-.cours-detail-back:hover{color:var(--gold);}
-.cours-detail-layout{display:grid;grid-template-columns:1fr 300px;gap:24px;}
-@media(max-width:720px){.cours-detail-layout{grid-template-columns:1fr;}}
-.cours-detail-main{background:var(--parch);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
-.cours-detail-banner{padding:28px 24px;position:relative;overflow:hidden;}
-.cours-detail-banner::before{content:'';position:absolute;inset:0;opacity:.08;pointer-events:none;}
-.cours-detail-banner .course-pillar{margin-bottom:8px;}
-.cours-detail-banner h3{font-family:'Playfair Display',serif;font-size:24px;font-weight:600;color:var(--parch);margin-bottom:6px;position:relative;}
-.cours-detail-banner p{font-size:13px;color:rgba(247,243,237,.5);position:relative;line-height:1.65;}
-.cours-detail-content{padding:24px;}
-.cours-detail-desc{font-size:14px;color:var(--ink2);line-height:1.75;margin-bottom:24px;white-space:pre-wrap;}
-.cours-edit-textarea{width:100%;min-height:180px;padding:12px;border:1px solid var(--border);border-radius:var(--r);font-family:'DM Sans',sans-serif;font-size:14px;color:var(--ink);line-height:1.7;resize:vertical;background:var(--parch);}
-.cours-lessons-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:600;color:var(--ink);margin-bottom:14px;}
-.cours-lesson-item{display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid var(--border);border-radius:var(--r);margin-bottom:8px;cursor:pointer;transition:all .2s;background:var(--parch);}
-.cours-lesson-item:hover{border-color:var(--gold);background:rgba(184,144,60,.03);}
-.cours-lesson-item.completed{border-color:var(--sage);background:rgba(74,107,88,.04);}
-.cours-lesson-num{width:28px;height:28px;border-radius:50%;background:var(--parch2);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--ink3);flex-shrink:0;transition:all .2s;}
-.cours-lesson-item.completed .cours-lesson-num{background:var(--sage);border-color:var(--sage);color:white;}
-.cours-lesson-info{flex:1;min-width:0;}
-.cours-lesson-name{font-size:14px;font-weight:500;color:var(--ink);}
-.cours-lesson-meta{font-size:11px;color:var(--ink3);margin-top:2px;}
-.cours-lesson-check{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--parch3);display:flex;align-items:center;justify-content:center;font-size:11px;color:transparent;cursor:pointer;transition:all .15s;flex-shrink:0;}
-.cours-lesson-check:hover{border-color:var(--sage);}
-.cours-lesson-item.completed .cours-lesson-check{border-color:var(--sage);background:var(--sage);color:white;}
-.cours-sidebar{display:flex;flex-direction:column;gap:16px;}
-.cours-sidebar-card{background:var(--parch);border:1px solid var(--border);border-radius:var(--r);padding:20px;}
-.cours-sidebar-title{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--ink3);font-weight:500;margin-bottom:12px;}
-.cours-info-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}
-.cours-info-row:last-child{border-bottom:none;}
-.cours-info-key{color:var(--ink3);}
-.cours-info-val{color:var(--ink);font-weight:500;}
-.cours-enroll-btn{width:100%;padding:12px;border:none;border-radius:4px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;margin-top:14px;}
-.cours-enroll-btn.enroll{background:var(--ink);color:var(--parch);}
-.cours-enroll-btn.enroll:hover{opacity:.85;}
-.cours-enroll-btn.enrolled{background:var(--sage);color:white;}
-.cours-sidebar-progress{margin-top:10px;}
-.cours-sidebar-progress-bar{height:6px;background:var(--parch3);border-radius:3px;overflow:hidden;margin-bottom:6px;}
-.cours-sidebar-progress-fill{height:100%;background:var(--sage);border-radius:3px;transition:width .4s;}
-.cours-sidebar-progress-text{font-size:12px;color:var(--ink2);font-weight:500;text-align:center;}
+/* Top bar */
+.cfp-topbar { height:52px; background:var(--ink); display:flex; align-items:center; gap:0; flex-shrink:0; border-bottom:1px solid rgba(255,255,255,.07); }
+.cfp-back { display:flex; align-items:center; gap:8px; padding:0 20px; height:100%; font-size:13px; color:rgba(255,255,255,.5); cursor:pointer; border:none; background:none; font-family:'DM Sans',sans-serif; border-right:1px solid rgba(255,255,255,.07); transition:color .2s; white-space:nowrap; }
+.cfp-back:hover { color:var(--gold2); }
+.cfp-course-title { font-family:'Playfair Display',serif; font-size:14px; font-weight:600; color:rgba(255,255,255,.8); padding:0 20px; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.cfp-progress-pill { display:flex; align-items:center; gap:8px; padding:0 20px; border-left:1px solid rgba(255,255,255,.07); white-space:nowrap; }
+.cfp-progress-bar-mini { width:80px; height:4px; background:rgba(255,255,255,.12); border-radius:2px; overflow:hidden; }
+.cfp-progress-bar-mini-fill { height:100%; background:var(--sage); border-radius:2px; transition:width .4s; }
+.cfp-progress-text { font-size:11px; color:rgba(255,255,255,.4); }
+
+/* Layout */
+.cfp-layout { display:flex; flex:1; overflow:hidden; }
+
+/* Sidebar séances */
+.cfp-sidebar { width:280px; flex-shrink:0; background:var(--parch2); border-right:1px solid var(--border); display:flex; flex-direction:column; overflow:hidden; }
+.cfp-sidebar-header { padding:20px 18px 14px; border-bottom:1px solid var(--border); }
+.cfp-sidebar-label { font-size:10px; text-transform:uppercase; letter-spacing:.14em; color:var(--ink3); font-weight:500; margin-bottom:10px; }
+.cfp-sidebar-progress { height:3px; background:var(--parch3); border-radius:2px; overflow:hidden; }
+.cfp-sidebar-progress-fill { height:100%; background:var(--sage); border-radius:2px; transition:width .4s; }
+.cfp-seances-list { flex:1; overflow-y:auto; padding:10px 10px; }
+.cfp-seance-item { display:flex; align-items:center; gap:10px; padding:11px 12px; border-radius:5px; cursor:pointer; transition:all .15s; margin-bottom:3px; border:1px solid transparent; }
+.cfp-seance-item:hover { background:var(--parch); border-color:var(--border); }
+.cfp-seance-item.active { background:var(--parch); border-color:rgba(184,144,60,.35); box-shadow:0 1px 6px rgba(0,0,0,.06); }
+.cfp-seance-item.completed { background:rgba(74,107,88,.06); border-color:rgba(74,107,88,.2); }
+.cfp-seance-num { width:26px; height:26px; border-radius:50%; background:var(--parch3); border:1.5px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:600; color:var(--ink3); flex-shrink:0; transition:all .2s; }
+.cfp-seance-item.completed .cfp-seance-num { background:var(--sage); border-color:var(--sage); color:white; }
+.cfp-seance-item.active .cfp-seance-num { background:var(--gold); border-color:var(--gold); color:var(--ink); }
+.cfp-seance-info { flex:1; min-width:0; }
+.cfp-seance-name { font-size:12px; font-weight:500; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.cfp-seance-meta { font-size:10px; color:var(--ink3); margin-top:1px; }
+.cfp-seance-check { font-size:12px; color:var(--sage); flex-shrink:0; }
+
+/* Main content area */
+.cfp-main { flex:1; overflow-y:auto; display:flex; flex-direction:column; }
+.cfp-content-wrap { max-width:780px; margin:0 auto; padding:48px 48px 80px; width:100%; }
+
+/* Séance header */
+.cfp-seance-header { margin-bottom:36px; }
+.cfp-seance-kicker { font-size:10px; text-transform:uppercase; letter-spacing:.16em; color:var(--gold); font-weight:500; margin-bottom:10px; }
+.cfp-seance-title { font-family:'Playfair Display',serif; font-size:32px; font-weight:600; color:var(--ink); line-height:1.2; margin-bottom:6px; outline:none; min-width:10px; }
+.cfp-seance-title[contenteditable="true"] { border-bottom:2px solid var(--gold); padding-bottom:4px; }
+.cfp-seance-duration { font-size:13px; color:var(--ink3); }
+
+/* Rich content blocks */
+.cfp-content-body { font-size:15px; line-height:1.8; color:var(--ink2); min-height:200px; outline:none; }
+.cfp-content-body[contenteditable="true"] { background:rgba(184,144,60,.03); border-radius:var(--r); padding:16px; border:1px dashed rgba(184,144,60,.3); }
+.cfp-content-body[contenteditable="true"]:empty:before { content:attr(data-placeholder); color:var(--ink3); font-style:italic; pointer-events:none; }
+.cfp-content-body img { max-width:100%; border-radius:var(--r); margin:16px 0; display:block; box-shadow:0 2px 16px rgba(0,0,0,.1); }
+.cfp-content-body .embed-video { position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:var(--r); margin:16px 0; background:var(--ink); }
+.cfp-content-body .embed-video iframe { position:absolute; top:0; left:0; width:100%; height:100%; border:none; }
+.cfp-content-body h2 { font-family:'Playfair Display',serif; font-size:22px; font-weight:600; color:var(--ink); margin:28px 0 10px; }
+.cfp-content-body h3 { font-family:'Playfair Display',serif; font-size:18px; font-weight:600; color:var(--ink); margin:22px 0 8px; }
+.cfp-content-body p { margin-bottom:14px; }
+.cfp-content-body ul, .cfp-content-body ol { padding-left:22px; margin-bottom:14px; }
+.cfp-content-body li { margin-bottom:5px; }
+.cfp-content-body blockquote { border-left:3px solid var(--gold); padding:8px 0 8px 18px; margin:18px 0; color:var(--ink3); font-style:italic; }
+
+/* Editor toolbar */
+.cfp-editor-bar { display:none; align-items:center; gap:4px; padding:10px 14px; background:var(--parch2); border:1px solid var(--border); border-radius:var(--r); margin-bottom:12px; flex-wrap:wrap; }
+.cfp-editor-bar.visible { display:flex; }
+.cfp-ed-btn { padding:5px 10px; background:transparent; border:1px solid transparent; border-radius:3px; font-size:12px; cursor:pointer; color:var(--ink2); font-family:'DM Sans',sans-serif; transition:all .15s; }
+.cfp-ed-btn:hover { background:var(--parch3); border-color:var(--border); }
+.cfp-ed-sep { width:1px; height:18px; background:var(--border); margin:0 2px; }
+.cfp-ed-input { padding:4px 10px; background:var(--parch2); border:1px solid var(--border); border-radius:3px; font-size:12px; color:var(--ink); outline:none; font-family:'DM Sans',sans-serif; min-width:180px; }
+.cfp-ed-input:focus { border-color:var(--gold); }
+
+/* Media insert zone */
+.cfp-media-zone { border:1.5px dashed var(--parch3); border-radius:var(--r); padding:24px; text-align:center; margin:16px 0; transition:all .2s; cursor:pointer; }
+.cfp-media-zone:hover { border-color:var(--gold); background:rgba(184,144,60,.03); }
+.cfp-media-zone-icon { font-size:24px; margin-bottom:8px; }
+.cfp-media-zone-text { font-size:13px; color:var(--ink3); }
+
+/* Actions bottom */
+.cfp-seance-actions { display:flex; align-items:center; justify-content:space-between; margin-top:48px; padding-top:24px; border-top:1px solid var(--border); gap:12px; flex-wrap:wrap; }
+.cfp-save-btn { padding:9px 20px; background:var(--ink); color:var(--parch); border:none; border-radius:4px; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; cursor:pointer; transition:opacity .2s; display:none; }
+.cfp-save-btn.visible { display:inline-flex; align-items:center; gap:6px; }
+.cfp-save-btn:hover { opacity:.85; }
+.cfp-complete-btn { padding:12px 28px; border:none; border-radius:4px; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:500; cursor:pointer; transition:all .2s; }
+.cfp-complete-btn.todo { background:var(--sage); color:white; }
+.cfp-complete-btn.todo:hover { background:#3d5a48; }
+.cfp-complete-btn.done { background:rgba(74,107,88,.12); color:var(--sage); border:1.5px solid var(--sage); }
+.cfp-nav-btns { display:flex; gap:8px; }
+.cfp-nav-btn { padding:10px 18px; background:transparent; border:1px solid var(--border); border-radius:4px; font-family:'DM Sans',sans-serif; font-size:13px; color:var(--ink2); cursor:pointer; transition:all .2s; }
+.cfp-nav-btn:hover { border-color:var(--ink); color:var(--ink); }
+.cfp-nav-btn:disabled { opacity:.35; cursor:default; }
+
+/* Enroll gate */
+.cfp-enroll-gate { flex:1; display:flex; align-items:center; justify-content:center; padding:60px 28px; }
+.cfp-enroll-card { text-align:center; max-width:400px; }
+.cfp-enroll-icon { font-size:48px; margin-bottom:20px; }
+.cfp-enroll-title { font-family:'Playfair Display',serif; font-size:24px; font-weight:600; color:var(--ink); margin-bottom:10px; }
+.cfp-enroll-sub { font-size:14px; color:var(--ink3); line-height:1.65; margin-bottom:24px; }
+
+/* Save status */
+.cfp-save-status { font-size:12px; color:var(--ink3); font-style:italic; }
+.cfp-save-status.saved { color:var(--sage); }
+.cfp-save-status.saving { color:var(--gold); }
+
+/* Sidebar toggle mobile */
+.cfp-sidebar-toggle { display:none; }
+
+@media(max-width:768px) {
+  .cfp-sidebar { position:fixed; left:-280px; top:52px; bottom:0; z-index:10; transition:left .3s; }
+  .cfp-sidebar.mobile-open { left:0; box-shadow:4px 0 20px rgba(0,0,0,.15); }
+  .cfp-content-wrap { padding:28px 20px 60px; }
+  .cfp-sidebar-toggle { display:flex; align-items:center; padding:0 16px; height:100%; border:none; background:none; color:rgba(255,255,255,.5); cursor:pointer; border-right:1px solid rgba(255,255,255,.07); font-size:16px; }
+  .cfp-seance-title { font-size:24px; }
+}
 
 /* Course lessons — expandable */
 .cours-lesson-item{border:1px solid var(--border);border-radius:var(--r);margin-bottom:8px;background:var(--parch);transition:all .2s;overflow:hidden;}
@@ -1103,43 +1153,90 @@ select.creation-input{cursor:pointer;}
     </div>
     <button class="create-btn" style="margin-top:16px" onclick="requireAuth(openModalCours)">+ Proposer un cours</button>
   </div>
-  <!-- Vue détaillée d'un cours -->
-  <div class="cours-detail" id="cours-detail-view">
-    <button class="cours-detail-back" onclick="closeCoursDetail()">&#8592; Retour aux cours</button>
-    <div class="cours-detail-layout">
-      <div class="cours-detail-main">
-        <div class="cours-detail-banner" id="cours-detail-banner">
-          <div class="course-pillar" id="cd-pillar"></div>
-          <h3 id="cd-title"></h3>
-          <p id="cd-author"></p>
-        </div>
-        <div class="cours-detail-content">
-          <div class="cours-detail-desc" id="cd-desc"></div>
-          <div id="cd-edit-wrap" style="display:none"></div>
-          <div class="cours-lessons-title">Programme des séances</div>
-          <div id="cd-lessons-list"></div>
+  <footer><div class="footer-logo">Agora</div><div class="footer-copy">Plateforme communautaire · Transparente · Démocratique</div></footer>
+</div>
+
+<!-- COURS PLEINE PAGE -->
+<div class="cours-fullpage" id="cours-fullpage">
+  <!-- Top bar -->
+  <div class="cfp-topbar">
+    <button class="cfp-sidebar-toggle" id="cfp-sidebar-toggle" onclick="toggleCfpSidebar()">☰</button>
+    <button class="cfp-back" onclick="closeCoursFP()">← Retour aux cours</button>
+    <div class="cfp-course-title" id="cfp-course-title">—</div>
+    <div class="cfp-progress-pill">
+      <div class="cfp-progress-bar-mini"><div class="cfp-progress-bar-mini-fill" id="cfp-mini-fill" style="width:0%"></div></div>
+      <span class="cfp-progress-text" id="cfp-mini-text">0%</span>
+    </div>
+  </div>
+
+  <!-- Layout -->
+  <div class="cfp-layout">
+    <!-- Sidebar -->
+    <div class="cfp-sidebar" id="cfp-sidebar">
+      <div class="cfp-sidebar-header">
+        <div class="cfp-sidebar-label">Programme</div>
+        <div class="cfp-sidebar-progress"><div class="cfp-sidebar-progress-fill" id="cfp-sidebar-fill" style="width:0%"></div></div>
+      </div>
+      <div class="cfp-seances-list" id="cfp-seances-list"></div>
+    </div>
+
+    <!-- Main -->
+    <div class="cfp-main" id="cfp-main">
+      <!-- Enroll gate (shown when not enrolled) -->
+      <div class="cfp-enroll-gate" id="cfp-enroll-gate" style="display:none">
+        <div class="cfp-enroll-card">
+          <div class="cfp-enroll-icon">📖</div>
+          <div class="cfp-enroll-title">Inscris-toi pour accéder au contenu</div>
+          <p class="cfp-enroll-sub">Ce cours est gratuit. Il te suffit de t'inscrire pour lire les séances et suivre ta progression.</p>
+          <button class="btn-primary" style="margin-right:10px" onclick="toggleCoursEnrollFP()">S'inscrire au cours</button>
+          <button class="btn-ghost" style="background:transparent;color:var(--ink2);border-color:var(--border)" onclick="closeCoursFP()">Plus tard</button>
         </div>
       </div>
-      <div class="cours-sidebar">
-        <div class="cours-sidebar-card">
-          <div class="cours-sidebar-title">Informations</div>
-          <div class="cours-info-row"><span class="cours-info-key">Séances</span><span class="cours-info-val" id="cd-seances"></span></div>
-          <div class="cours-info-row"><span class="cours-info-key">Durée</span><span class="cours-info-val" id="cd-duree"></span></div>
-          <div class="cours-info-row"><span class="cours-info-key">Statut</span><span class="cours-info-val" id="cd-statut"></span></div>
-          <div class="cours-info-row"><span class="cours-info-key">Inscrits</span><span class="cours-info-val" id="cd-inscrits">0</span></div>
-          <button class="cours-enroll-btn enroll" id="cd-enroll-btn" onclick="toggleCoursEnroll()">S'inscrire au cours</button>
+
+      <!-- Séance content -->
+      <div class="cfp-content-wrap" id="cfp-seance-wrap" style="display:none">
+        <div class="cfp-seance-header">
+          <div class="cfp-seance-kicker" id="cfp-seance-kicker">Séance 1</div>
+          <div class="cfp-seance-title" id="cfp-seance-title" spellcheck="false"></div>
+          <div class="cfp-seance-duration" id="cfp-seance-duration"></div>
         </div>
-        <div class="cours-sidebar-card" id="cd-progress-card" style="display:none">
-          <div class="cours-sidebar-title">Ma progression</div>
-          <div class="cours-sidebar-progress">
-            <div class="cours-sidebar-progress-bar"><div class="cours-sidebar-progress-fill" id="cd-progress-fill"></div></div>
-            <div class="cours-sidebar-progress-text" id="cd-progress-text">0%</div>
+
+        <!-- Editor toolbar (author only) -->
+        <div class="cfp-editor-bar" id="cfp-editor-bar">
+          <button class="cfp-ed-btn" onclick="cfpExec('bold')" title="Gras"><b>B</b></button>
+          <button class="cfp-ed-btn" onclick="cfpExec('italic')" title="Italique"><i>I</i></button>
+          <div class="cfp-ed-sep"></div>
+          <button class="cfp-ed-btn" onclick="cfpFormatBlock('h2')">H2</button>
+          <button class="cfp-ed-btn" onclick="cfpFormatBlock('h3')">H3</button>
+          <button class="cfp-ed-btn" onclick="cfpExec('insertUnorderedList')">• Liste</button>
+          <button class="cfp-ed-btn" onclick="cfpInsertBlockquote()">❝</button>
+          <div class="cfp-ed-sep"></div>
+          <button class="cfp-ed-btn" onclick="cfpInsertImagePrompt()">🖼 Image</button>
+          <button class="cfp-ed-btn" onclick="cfpInsertVideoPrompt()">▶ Vidéo</button>
+          <div class="cfp-ed-sep"></div>
+          <span class="cfp-save-status" id="cfp-save-status"></span>
+        </div>
+
+        <!-- Body content -->
+        <div class="cfp-content-body" id="cfp-content-body"
+             data-placeholder="Le contenu de cette séance s'affichera ici…"></div>
+
+        <!-- Actions -->
+        <div class="cfp-seance-actions">
+          <div style="display:flex;align-items:center;gap:10px">
+            <button class="cfp-save-btn" id="cfp-save-btn" onclick="saveCfpContent()">💾 Enregistrer</button>
+            <div class="cfp-nav-btns">
+              <button class="cfp-nav-btn" id="cfp-prev-btn" onclick="cfpNavigate(-1)">← Précédente</button>
+              <button class="cfp-nav-btn" id="cfp-next-btn" onclick="cfpNavigate(1)">Suivante →</button>
+            </div>
           </div>
+          <button class="cfp-complete-btn todo" id="cfp-complete-btn" onclick="cfpToggleComplete()" style="display:none">
+            Marquer comme complétée ✓
+          </button>
         </div>
       </div>
     </div>
   </div>
-  <footer><div class="footer-logo">Agora</div><div class="footer-copy">Plateforme communautaire · Transparente · Démocratique</div></footer>
 </div>
 
 <!-- ═══════════════════════════════════════
@@ -1954,13 +2051,17 @@ function closeDefiDetail() {
   document.body.style.overflow = '';
 }
 
-// ──────────────────────────────────────────
-// COURS
-// ──────────────────────────────────────────
+// ────────────────────────────────────────────
+// COURS — FULL PAGE
+// ────────────────────────────────────────────
 let allCours = [];
 let currentCoursId = null;
+let currentSeanceNum = 1;
 let myCoursEnrollments = {};
 let myCoursProgress = {};
+let cfpIsAuthor = false;
+let cfpEditDirty = false;
+let cfpSaveTimer = null;
 const pilierColors = { '🔥': '#c4543a', '🧠': '#3a5278', '🌿': '#4a6b58', '🎨': '#b8903c', '⚡': '#b8903c' };
 
 async function loadCours() {
@@ -1977,17 +2078,15 @@ async function loadCours() {
   }
   const { data } = await sb.from('cours').select('*, piliers(nom,emoji), profiles(pseudo)').order('created_at', { ascending: false });
   allCours = data || [];
-  // Load enrollments & progress (graceful — tables may not exist yet)
-  myCoursEnrollments = {};
-  myCoursProgress = {};
+  myCoursEnrollments = {}; myCoursProgress = {};
   if (currentUser) {
     try {
-      const { data: enrolls, error: eErr } = await sb.from('cours_inscriptions').select('cours_id').eq('user_id', currentUser.id);
-      if (!eErr && enrolls) enrolls.forEach(e => { myCoursEnrollments[e.cours_id] = true; });
+      const { data: enrolls } = await sb.from('cours_inscriptions').select('cours_id').eq('user_id', currentUser.id);
+      (enrolls || []).forEach(e => { myCoursEnrollments[e.cours_id] = true; });
     } catch(e) {}
     try {
-      const { data: prog, error: pErr } = await sb.from('cours_progress').select('cours_id,seance_num').eq('user_id', currentUser.id);
-      if (!pErr && prog) prog.forEach(p => {
+      const { data: prog } = await sb.from('cours_progress').select('cours_id,seance_num').eq('user_id', currentUser.id);
+      (prog || []).forEach(p => {
         if (!myCoursProgress[p.cours_id]) myCoursProgress[p.cours_id] = new Set();
         myCoursProgress[p.cours_id].add(p.seance_num);
       });
@@ -2008,7 +2107,7 @@ function renderCours(cours) {
     const completedSeances = myCoursProgress[c.id]?.size || 0;
     const totalSeances = c.nb_seances || 1;
     const pct = Math.round((completedSeances / totalSeances) * 100);
-    return `<div class="course-card" onclick="openCoursDetail('${c.id}')">
+    return `<div class="course-card" onclick="openCoursFP('${c.id}')">
       <div class="course-thumb" style="background:${color}"></div>
       <div class="course-body">
         <div class="course-pillar" style="color:${color}">${c.piliers ? c.piliers.emoji + ' ' + c.piliers.nom : '—'}</div>
@@ -2030,289 +2129,243 @@ function filterCours(id, chip) {
   renderCours(id ? allCours.filter(c => c.pilier_id === id) : allCours);
 }
 
-async function openCoursDetail(id) {
+async function openCoursFP(id) {
   const c = allCours.find(x => x.id === id);
   if (!c) return;
   currentCoursId = id;
-  const color = pilierColors[c.piliers?.emoji] || '#8a8480';
-  const isAuthor = currentUser && c.auteur_id === currentUser.id;
-  // Hide grid, show detail
-  document.getElementById('cours-grid-view').style.display = 'none';
-  const dv = document.getElementById('cours-detail-view');
-  dv.classList.add('active');
-  // Banner
-  document.getElementById('cours-detail-banner').style.background = color;
-  document.getElementById('cd-pillar').textContent = c.piliers ? c.piliers.emoji + ' ' + c.piliers.nom : '—';
-  document.getElementById('cd-pillar').style.color = 'rgba(255,255,255,.7)';
-  document.getElementById('cd-title').textContent = c.titre;
-  document.getElementById('cd-author').textContent = 'par ' + (c.profiles?.pseudo || 'Anonyme');
-  // Description — show as readable content
-  const descEl = document.getElementById('cd-desc');
-  const descText = c.description || '';
-  descEl.innerHTML = descText ? descText.replace(/\n/g, '<br>') : '<span style="color:var(--ink3);font-style:italic">Aucune description pour ce cours.</span>';
-  // Edit button for author
-  const editWrap = document.getElementById('cd-edit-wrap');
-  if (isAuthor) {
-    editWrap.style.display = 'block';
-    editWrap.innerHTML = '<button class="btn-sm" onclick="startEditCours()" style="margin-top:10px;font-size:12px">✎ Modifier le cours</button>';
-  } else {
-    editWrap.style.display = 'none';
-    editWrap.innerHTML = '';
-  }
-  // Sidebar info
-  document.getElementById('cd-seances').textContent = c.nb_seances + ' séance' + (c.nb_seances > 1 ? 's' : '');
-  document.getElementById('cd-duree').textContent = c.duree_minutes + ' min';
-  const sl = { ouvert: 'Ouvert', a_venir: 'À venir', archive: 'Archivé' };
-  document.getElementById('cd-statut').textContent = sl[c.statut] || c.statut;
-  // Enrollment count (graceful)
-  let enrollCount = 0;
-  try {
-    const { count } = await sb.from('cours_inscriptions').select('*', { count: 'exact', head: true }).eq('cours_id', id);
-    enrollCount = count || 0;
-  } catch(e) {}
-  document.getElementById('cd-inscrits').textContent = enrollCount;
-  // Enrollment button
-  const isEnrolled = myCoursEnrollments[id];
-  const btn = document.getElementById('cd-enroll-btn');
-  updateCoursEnrollBtn(btn, isEnrolled);
-  // Progress card
-  const progCard = document.getElementById('cd-progress-card');
-  if (isEnrolled) {
-    progCard.style.display = 'block';
-    updateCoursProgressUI(c);
-  } else {
-    progCard.style.display = 'none';
-  }
+  cfpIsAuthor = !!(currentUser && c.auteur_id === currentUser.id);
   // Load lesson data
   try {
     const { data: lessonsData } = await sb.from('cours_lessons').select('*').eq('cours_id', id).order('seance_num');
     c.lessons_data = lessonsData || [];
   } catch(e) { c.lessons_data = []; }
-  renderCoursLessons(c);
-  // Scroll to top
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function startEditCours() {
-  const c = allCours.find(x => x.id === currentCoursId);
-  if (!c) return;
-  const descEl = document.getElementById('cd-desc');
-  const editWrap = document.getElementById('cd-edit-wrap');
-  descEl.innerHTML = `<textarea id="cd-edit-desc" class="cours-edit-textarea" placeholder="Décris le contenu de ton cours…">${c.description || ''}</textarea>`;
-  editWrap.innerHTML = `<div style="display:flex;gap:8px;margin-top:10px">
-    <button class="btn-sm" onclick="saveEditCours()" style="font-size:12px;background:var(--sage);color:white;border-color:var(--sage)">Enregistrer</button>
-    <button class="btn-sm" onclick="cancelEditCours()" style="font-size:12px">Annuler</button>
-  </div>
-  <div id="cd-edit-msg" style="margin-top:6px;font-size:12px"></div>`;
-}
-
-async function saveEditCours() {
-  const c = allCours.find(x => x.id === currentCoursId);
-  if (!c) return;
-  const desc = document.getElementById('cd-edit-desc').value.trim();
-  const msg = document.getElementById('cd-edit-msg');
-  const { error } = await sb.from('cours').update({ description: desc }).eq('id', currentCoursId);
-  if (error) { msg.textContent = 'Erreur : ' + error.message; msg.style.color = 'var(--ember)'; return; }
-  c.description = desc;
-  msg.textContent = '✓ Enregistré'; msg.style.color = 'var(--sage)';
-  setTimeout(() => openCoursDetail(currentCoursId), 600);
-}
-
-function cancelEditCours() {
-  openCoursDetail(currentCoursId);
-}
-
-function updateCoursEnrollBtn(btn, isEnrolled) {
-  if (isEnrolled) {
-    btn.textContent = '✓ Inscrit';
-    btn.className = 'cours-enroll-btn enrolled';
-  } else {
-    btn.textContent = "S'inscrire au cours";
-    btn.className = 'cours-enroll-btn enroll';
+  // Set title
+  document.getElementById('cfp-course-title').textContent = c.titre;
+  // Build sidebar
+  renderCfpSidebar(c);
+  // Show full page
+  document.getElementById('cours-fullpage').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  // Navigate to first incomplete or first
+  const completed = myCoursProgress[id] || new Set();
+  let startSeance = 1;
+  for (let i = 1; i <= (c.nb_seances || 1); i++) {
+    if (!completed.has(i)) { startSeance = i; break; }
   }
+  cfpLoadSeance(startSeance);
 }
 
-function updateCoursProgressUI(c) {
-  const completedSeances = myCoursProgress[c.id]?.size || 0;
-  const totalSeances = c.nb_seances || 1;
-  const pct = Math.round((completedSeances / totalSeances) * 100);
-  document.getElementById('cd-progress-fill').style.width = pct + '%';
-  document.getElementById('cd-progress-text').textContent = completedSeances + '/' + totalSeances + ' séances (' + pct + '%)';
+function closeCoursFP() {
+  document.getElementById('cours-fullpage').classList.remove('open');
+  document.body.style.overflow = '';
+  currentCoursId = null; cfpIsAuthor = false; cfpEditDirty = false;
+  renderCours(allCours);
 }
 
-function renderCoursLessons(c) {
-  const container = document.getElementById('cd-lessons-list');
-  const total = c.nb_seances || 0;
-  if (total === 0) {
-    container.innerHTML = '<div style="font-size:13px;color:var(--ink3);font-style:italic;padding:12px 0">Aucune séance définie.</div>';
-    return;
-  }
+function toggleCfpSidebar() {
+  document.getElementById('cfp-sidebar').classList.toggle('mobile-open');
+}
+
+function renderCfpSidebar(c) {
   const completed = myCoursProgress[c.id] || new Set();
-  const isEnrolled = myCoursEnrollments[c.id];
-  const isAuthor = currentUser && c.auteur_id === currentUser.id;
-
-  // Build lessons from cached data or defaults
-  const lessons = c.lessons_data || [];
-
+  const total = c.nb_seances || 0;
+  const doneCount = completed.size;
+  const pct = total > 0 ? Math.round((doneCount / total) * 100) : 0;
+  document.getElementById('cfp-sidebar-fill').style.width = pct + '%';
+  document.getElementById('cfp-mini-fill').style.width = pct + '%';
+  document.getElementById('cfp-mini-text').textContent = pct + '%';
+  const list = document.getElementById('cfp-seances-list');
+  const dureePerSeance = Math.round((c.duree_minutes || 0) / (total || 1));
   let html = '';
   for (let i = 1; i <= total; i++) {
     const isDone = completed.has(i);
-    const lessonData = lessons.find(l => l.seance_num === i) || {};
-    const lessonName = lessonData.nom || `Séance ${i}`;
-    const lessonContent = lessonData.contenu || '';
-    const dureePerSeance = Math.round((c.duree_minutes || 0) / total);
-
-    html += `<div class="cours-lesson-item${isDone ? ' completed' : ''}" id="lesson-item-${c.id}-${i}">
-      <div class="cours-lesson-header" onclick="toggleLesson('${c.id}',${i})">
-        <div class="cours-lesson-num">${isDone ? '✓' : i}</div>
-        <div class="cours-lesson-info">
-          <div class="cours-lesson-name" id="lesson-name-${c.id}-${i}">${lessonName}</div>
-          <div class="cours-lesson-meta">${dureePerSeance} min estimées</div>
-        </div>
-        <span class="cours-lesson-chevron">▼</span>
+    const isActive = i === currentSeanceNum;
+    const lesson = (c.lessons_data || []).find(l => l.seance_num === i);
+    const nom = lesson?.nom || `Séance ${i}`;
+    html += `<div class="cfp-seance-item${isDone ? ' completed' : ''}${isActive ? ' active' : ''}" id="cfp-si-${i}" onclick="cfpLoadSeance(${i})">
+      <div class="cfp-seance-num">${isDone ? '✓' : i}</div>
+      <div class="cfp-seance-info">
+        <div class="cfp-seance-name">${nom}</div>
+        <div class="cfp-seance-meta">${dureePerSeance} min</div>
       </div>
-      <div class="cours-lesson-body">
-        <div class="cours-lesson-content${lessonContent ? '' : '-empty'}" id="lesson-content-${c.id}-${i}">
-          ${lessonContent ? lessonContent.replace(/\n/g,'<br>') : 'Aucun contenu pour cette séance.'}
-        </div>
-        ${isAuthor ? `
-        <button class="cours-lesson-edit-btn" onclick="toggleLessonEdit('${c.id}',${i})">✎ Modifier cette séance</button>
-        <div class="cours-lesson-edit-area" id="lesson-edit-${c.id}-${i}">
-          <input class="cours-lesson-edit-name" id="lesson-edit-name-${c.id}-${i}" placeholder="Nom de la séance" value="${lessonName.replace(/"/g,'&quot;')}">
-          <textarea class="cours-lesson-edit-content" id="lesson-edit-content-${c.id}-${i}" placeholder="Décris le contenu de cette séance — objectifs, exercices, points clés…">${lessonContent}</textarea>
-          <div class="cours-lesson-edit-actions">
-            <button class="btn-sm sage" onclick="saveLessonEdit('${c.id}',${i})">Enregistrer</button>
-            <button class="btn-sm" onclick="toggleLessonEdit('${c.id}',${i})">Annuler</button>
-          </div>
-          <div id="lesson-edit-msg-${c.id}-${i}" style="font-size:11px;margin-top:6px;display:none"></div>
-        </div>` : ''}
-        ${isEnrolled ? `
-        <button class="cours-lesson-complete-btn${isDone ? ' done' : ''}" id="lesson-btn-${c.id}-${i}" onclick="toggleCoursLesson('${c.id}',${i},document.getElementById('lesson-item-${c.id}-${i}'))">
-          ${isDone ? '✓ Séance complétée' : 'Marquer comme complétée'}
-        </button>` : ''}
-      </div>
+      ${isDone ? '<span class="cfp-seance-check">✓</span>' : ''}
     </div>`;
   }
-  container.innerHTML = html;
+  list.innerHTML = html;
 }
 
-function toggleLesson(coursId, num) {
-  const item = document.getElementById(`lesson-item-${coursId}-${num}`);
-  if (!item) return;
-  item.classList.toggle('expanded');
-}
-
-function toggleLessonEdit(coursId, num) {
-  const editArea = document.getElementById(`lesson-edit-${coursId}-${num}`);
-  if (!editArea) return;
-  editArea.classList.toggle('open');
-  if (editArea.classList.contains('open')) {
-    editArea.querySelector('input')?.focus();
+function cfpLoadSeance(num) {
+  const c = allCours.find(x => x.id === currentCoursId);
+  if (!c) return;
+  currentSeanceNum = num;
+  const total = c.nb_seances || 1;
+  const completed = myCoursProgress[c.id] || new Set();
+  const isDone = completed.has(num);
+  const lesson = (c.lessons_data || []).find(l => l.seance_num === num);
+  const dureePerSeance = Math.round((c.duree_minutes || 0) / total);
+  const isEnrolled = myCoursEnrollments[c.id];
+  // Enroll gate
+  document.getElementById('cfp-enroll-gate').style.display = (!isEnrolled && !cfpIsAuthor) ? 'flex' : 'none';
+  document.getElementById('cfp-seance-wrap').style.display = (isEnrolled || cfpIsAuthor) ? 'block' : 'none';
+  if (!isEnrolled && !cfpIsAuthor) { renderCfpSidebar(c); return; }
+  // Populate header
+  document.getElementById('cfp-seance-kicker').textContent = `Séance ${num} / ${total}`;
+  document.getElementById('cfp-seance-title').textContent = lesson?.nom || `Séance ${num}`;
+  document.getElementById('cfp-seance-duration').textContent = `~${dureePerSeance} min`;
+  // Content
+  const body = document.getElementById('cfp-content-body');
+  body.innerHTML = lesson?.contenu || '';
+  if (cfpIsAuthor) {
+    body.contentEditable = 'true';
+    body.setAttribute('data-placeholder', 'Écris le contenu de cette séance… Utilise la barre d\'outils pour formater, ajouter des images et des vidéos.');
+    document.getElementById('cfp-editor-bar').classList.add('visible');
+    document.getElementById('cfp-save-btn').classList.add('visible');
+    // Make title editable
+    const titleEl = document.getElementById('cfp-seance-title');
+    titleEl.contentEditable = 'true';
+    titleEl.oninput = () => { cfpEditDirty = true; cfpAutoSave(); };
+    body.oninput = () => { cfpEditDirty = true; cfpAutoSave(); };
+    document.getElementById('cfp-save-status').textContent = '';
+  } else {
+    body.contentEditable = 'false';
+    body.removeAttribute('data-placeholder');
+    document.getElementById('cfp-editor-bar').classList.remove('visible');
+    document.getElementById('cfp-save-btn').classList.remove('visible');
+    const titleEl = document.getElementById('cfp-seance-title');
+    titleEl.contentEditable = 'false';
   }
+  // Complete button
+  const completeBtn = document.getElementById('cfp-complete-btn');
+  if (isEnrolled) {
+    completeBtn.style.display = 'block';
+    completeBtn.className = 'cfp-complete-btn ' + (isDone ? 'done' : 'todo');
+    completeBtn.textContent = isDone ? '✓ Séance complétée' : 'Marquer comme complétée ✓';
+  } else {
+    completeBtn.style.display = 'none';
+  }
+  // Nav buttons
+  document.getElementById('cfp-prev-btn').disabled = num <= 1;
+  document.getElementById('cfp-next-btn').disabled = num >= total;
+  // Sidebar active state
+  renderCfpSidebar(c);
+  // Scroll top
+  document.getElementById('cfp-main').scrollTo({ top: 0, behavior: 'smooth' });
+  // Mobile: close sidebar
+  document.getElementById('cfp-sidebar').classList.remove('mobile-open');
 }
 
-async function saveLessonEdit(coursId, num) {
-  const nameEl = document.getElementById(`lesson-edit-name-${coursId}-${num}`);
-  const contentEl = document.getElementById(`lesson-edit-content-${coursId}-${num}`);
-  const msgEl = document.getElementById(`lesson-edit-msg-${coursId}-${num}`);
-  const nom = nameEl?.value.trim() || `Séance ${num}`;
-  const contenu = contentEl?.value.trim() || '';
+function cfpNavigate(dir) {
+  const c = allCours.find(x => x.id === currentCoursId);
+  if (!c) return;
+  const next = currentSeanceNum + dir;
+  if (next < 1 || next > (c.nb_seances || 1)) return;
+  if (cfpEditDirty) saveCfpContent(true);
+  cfpLoadSeance(next);
+}
 
-  msgEl.textContent = 'Enregistrement…'; msgEl.style.color = 'var(--ink3)'; msgEl.style.display = 'block';
+// ── Editor helpers ──
+function cfpExec(cmd) { document.getElementById('cfp-content-body').focus(); document.execCommand(cmd, false, null); cfpEditDirty = true; }
+function cfpFormatBlock(tag) { document.getElementById('cfp-content-body').focus(); document.execCommand('formatBlock', false, '<' + tag + '>'); cfpEditDirty = true; }
+function cfpInsertBlockquote() { cfpFormatBlock('blockquote'); }
 
-  // Upsert into cours_lessons table
+function cfpInsertImagePrompt() {
+  const url = prompt('URL de l\'image (https://…) :');
+  if (!url) return;
+  document.getElementById('cfp-content-body').focus();
+  document.execCommand('insertHTML', false, `<img src="${url}" alt="image" style="max-width:100%;border-radius:6px;margin:16px 0">`);
+  cfpEditDirty = true;
+}
+
+function cfpInsertVideoPrompt() {
+  const url = prompt('URL YouTube ou Vimeo (ex: https://www.youtube.com/watch?v=…) :');
+  if (!url) return;
+  let embedUrl = '';
+  // YouTube
+  const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  if (ytMatch) embedUrl = `https://www.youtube.com/embed/${ytMatch[1]}`;
+  // Vimeo
+  const vmMatch = url.match(/vimeo\.com\/(\d+)/);
+  if (vmMatch) embedUrl = `https://player.vimeo.com/video/${vmMatch[1]}`;
+  if (!embedUrl) { alert('Format non reconnu. Utilise une URL YouTube ou Vimeo.'); return; }
+  document.getElementById('cfp-content-body').focus();
+  document.execCommand('insertHTML', false,
+    `<div class="embed-video"><iframe src="${embedUrl}" allowfullscreen></iframe></div>`);
+  cfpEditDirty = true;
+}
+
+// ── Auto-save ──
+function cfpAutoSave() {
+  clearTimeout(cfpSaveTimer);
+  document.getElementById('cfp-save-status').textContent = 'Modifications en cours…';
+  document.getElementById('cfp-save-status').className = 'cfp-save-status saving';
+  cfpSaveTimer = setTimeout(() => saveCfpContent(true), 2500);
+}
+
+async function saveCfpContent(silent = false) {
+  if (!cfpIsAuthor || !currentCoursId) return;
+  clearTimeout(cfpSaveTimer);
+  const c = allCours.find(x => x.id === currentCoursId);
+  if (!c) return;
+  const nom = document.getElementById('cfp-seance-title').textContent.trim() || `Séance ${currentSeanceNum}`;
+  const contenu = document.getElementById('cfp-content-body').innerHTML;
+  const statusEl = document.getElementById('cfp-save-status');
+  if (!silent) { statusEl.textContent = 'Enregistrement…'; statusEl.className = 'cfp-save-status saving'; }
   const { error } = await sb.from('cours_lessons').upsert(
-    { cours_id: coursId, seance_num: num, nom, contenu },
+    { cours_id: currentCoursId, seance_num: currentSeanceNum, nom, contenu },
     { onConflict: 'cours_id,seance_num' }
   );
-
-  if (error) {
-    msgEl.textContent = 'Erreur : ' + error.message; msgEl.style.color = 'var(--ember)'; return;
-  }
-
-  // Update cached data
-  const c = allCours.find(x => x.id === coursId);
-  if (c) {
-    if (!c.lessons_data) c.lessons_data = [];
-    const existing = c.lessons_data.find(l => l.seance_num === num);
-    if (existing) { existing.nom = nom; existing.contenu = contenu; }
-    else c.lessons_data.push({ seance_num: num, nom, contenu });
-  }
-
-  // Update UI in place
-  const nameDisplay = document.getElementById(`lesson-name-${coursId}-${num}`);
-  const contentDisplay = document.getElementById(`lesson-content-${coursId}-${num}`);
-  if (nameDisplay) nameDisplay.textContent = nom;
-  if (contentDisplay) {
-    contentDisplay.className = contenu ? 'cours-lesson-content' : 'cours-lesson-content-empty';
-    contentDisplay.innerHTML = contenu ? contenu.replace(/\n/g,'<br>') : 'Aucun contenu pour cette séance.';
-  }
-
-  msgEl.textContent = '✓ Enregistré !'; msgEl.style.color = 'var(--sage)';
-  setTimeout(() => {
-    msgEl.style.display = 'none';
-    toggleLessonEdit(coursId, num);
-  }, 800);
+  if (error) { statusEl.textContent = 'Erreur sauvegarde'; statusEl.className = 'cfp-save-status'; return; }
+  // Update cache
+  if (!c.lessons_data) c.lessons_data = [];
+  const existing = c.lessons_data.find(l => l.seance_num === currentSeanceNum);
+  if (existing) { existing.nom = nom; existing.contenu = contenu; }
+  else c.lessons_data.push({ seance_num: currentSeanceNum, nom, contenu });
+  cfpEditDirty = false;
+  statusEl.textContent = '✓ Enregistré'; statusEl.className = 'cfp-save-status saved';
+  setTimeout(() => { statusEl.textContent = ''; }, 2000);
+  // Refresh sidebar name
+  const sideEl = document.getElementById(`cfp-si-${currentSeanceNum}`);
+  if (sideEl) sideEl.querySelector('.cfp-seance-name').textContent = nom;
 }
 
-async function toggleCoursEnroll() {
-  if (!currentUser) { openAuthModal(); return; }
-  if (!currentCoursId) return;
-  const isEnrolled = myCoursEnrollments[currentCoursId];
-  const btn = document.getElementById('cd-enroll-btn');
-  try {
-    if (isEnrolled) {
-      await sb.from('cours_inscriptions').delete().eq('cours_id', currentCoursId).eq('user_id', currentUser.id);
-      delete myCoursEnrollments[currentCoursId];
-      updateCoursEnrollBtn(btn, false);
-      document.getElementById('cd-progress-card').style.display = 'none';
-    } else {
-      const { error } = await sb.from('cours_inscriptions').insert({ cours_id: currentCoursId, user_id: currentUser.id });
-      if (!error || error.code === '23505') {
-        myCoursEnrollments[currentCoursId] = true;
-        updateCoursEnrollBtn(btn, true);
-        document.getElementById('cd-progress-card').style.display = 'block';
-      }
-    }
-    const c = allCours.find(x => x.id === currentCoursId);
-    if (c) { updateCoursProgressUI(c); renderCoursLessons(c); }
-    const { count } = await sb.from('cours_inscriptions').select('*', { count: 'exact', head: true }).eq('cours_id', currentCoursId);
-    document.getElementById('cd-inscrits').textContent = count || 0;
-  } catch(e) { console.warn('Inscription tables not available yet'); }
-}
-
-async function toggleCoursLesson(coursId, seanceNum, el) {
-  if (!currentUser) return;
-  const isDone = el.classList.contains('completed');
+async function cfpToggleComplete() {
+  if (!currentUser || !currentCoursId) return;
+  const c = allCours.find(x => x.id === currentCoursId);
+  if (!c) return;
+  const completed = myCoursProgress[currentCoursId] || new Set();
+  const isDone = completed.has(currentSeanceNum);
   try {
     if (isDone) {
-      await sb.from('cours_progress').delete().eq('cours_id', coursId).eq('user_id', currentUser.id).eq('seance_num', seanceNum);
-      if (myCoursProgress[coursId]) myCoursProgress[coursId].delete(seanceNum);
+      await sb.from('cours_progress').delete().eq('cours_id', currentCoursId).eq('user_id', currentUser.id).eq('seance_num', currentSeanceNum);
+      completed.delete(currentSeanceNum);
     } else {
-      await sb.from('cours_progress').insert({ cours_id: coursId, user_id: currentUser.id, seance_num: seanceNum });
-      if (!myCoursProgress[coursId]) myCoursProgress[coursId] = new Set();
-      myCoursProgress[coursId].add(seanceNum);
+      await sb.from('cours_progress').insert({ cours_id: currentCoursId, user_id: currentUser.id, seance_num: currentSeanceNum });
+      completed.add(currentSeanceNum);
+      myCoursProgress[currentCoursId] = completed;
     }
-    el.classList.toggle('completed');
-    // Update num circle
-    const numCircle = el.querySelector('.cours-lesson-num');
-    if (numCircle) numCircle.textContent = isDone ? seanceNum : '✓';
-    // Update complete button
-    const btn = document.getElementById(`lesson-btn-${coursId}-${seanceNum}`);
-    if (btn) {
-      btn.classList.toggle('done', !isDone);
-      btn.textContent = isDone ? 'Marquer comme complétée' : '✓ Séance complétée';
+    if (!myCoursProgress[currentCoursId]) myCoursProgress[currentCoursId] = completed;
+    const btn = document.getElementById('cfp-complete-btn');
+    const nowDone = !isDone;
+    btn.className = 'cfp-complete-btn ' + (nowDone ? 'done' : 'todo');
+    btn.textContent = nowDone ? '✓ Séance complétée' : 'Marquer comme complétée ✓';
+    renderCfpSidebar(c);
+    // Auto-advance if completed and not last
+    if (nowDone && currentSeanceNum < (c.nb_seances || 1)) {
+      setTimeout(() => cfpNavigate(1), 600);
     }
-    const c = allCours.find(x => x.id === coursId);
-    if (c) updateCoursProgressUI(c);
-  } catch(e) { console.warn('Progress table not available yet'); }
+  } catch(e) { console.warn('Progress table not available:', e); }
 }
 
-function closeCoursDetail() {
-  document.getElementById('cours-detail-view').classList.remove('active');
-  document.getElementById('cours-grid-view').style.display = '';
-  currentCoursId = null;
-  renderCours(allCours);
+async function toggleCoursEnrollFP() {
+  if (!currentUser) { openAuthModal(); return; }
+  if (!currentCoursId) return;
+  try {
+    const { error } = await sb.from('cours_inscriptions').insert({ cours_id: currentCoursId, user_id: currentUser.id });
+    if (!error || error.code === '23505') {
+      myCoursEnrollments[currentCoursId] = true;
+      cfpLoadSeance(currentSeanceNum);
+    }
+  } catch(e) { console.warn('Inscription table not available:', e); }
 }
 
 // ──────────────────────────────────────────
