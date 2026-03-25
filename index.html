@@ -303,6 +303,14 @@ footer{background:var(--ink);padding:28px;display:flex;align-items:center;justif
 /* ─────────────────────────────────────────
    PAGE COURS
 ───────────────────────────────────────── */
+
+.cfp-quit-btn {
+  width:52px; height:52px; flex-shrink:0;
+  background:none; border:none; border-left:1px solid rgba(255,255,255,.07);
+  color:rgba(255,255,255,.35); font-size:18px; cursor:pointer;
+  transition:color .2s, background .2s; display:flex; align-items:center; justify-content:center;
+}
+.cfp-quit-btn:hover { color:var(--gold2); background:rgba(255,255,255,.04); }
 .course-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(245px,1fr));gap:14px;}
 .course-card{background:var(--parch);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;cursor:pointer;transition:all .2s;}
 .course-card:hover{border-color:rgba(184,144,60,.4);transform:translateY(-2px);}
@@ -1224,8 +1232,6 @@ select.creation-input{cursor:pointer;}
 <div class="cours-fullpage" id="cours-fullpage">
   <!-- Top bar -->
   <div class="cfp-topbar">
-    <button class="cfp-sidebar-toggle" id="cfp-sidebar-toggle" onclick="toggleCfpSidebar()">☰</button>
-    <div class="cfp-topbar">
   <button class="cfp-sidebar-toggle" id="cfp-sidebar-toggle" onclick="toggleCfpSidebar()">☰</button>
   <button class="cfp-back" onclick="closeCoursFP()">← Cours</button>
   <div class="cfp-course-title" id="cfp-course-title">—</div>
@@ -1233,14 +1239,8 @@ select.creation-input{cursor:pointer;}
     <div class="cfp-progress-bar-mini"><div class="cfp-progress-bar-mini-fill" id="cfp-mini-fill" style="width:0%"></div></div>
     <span class="cfp-progress-text" id="cfp-mini-text">0%</span>
   </div>
-  <button onclick="closeCoursFP()" style="padding:0 20px;height:100%;background:none;border:none;border-left:1px solid rgba(255,255,255,.07);color:rgba(255,255,255,.4);font-size:20px;cursor:pointer;transition:color .2s;flex-shrink:0" title="Quitter le cours" onmouseover="this.style.color='#e6b85a'" onmouseout="this.style.color='rgba(255,255,255,.4)'">✕</button>
+  <button class="cfp-quit-btn" onclick="closeCoursFP()" title="Quitter le cours">✕</button>
 </div>
-    <div class="cfp-course-title" id="cfp-course-title">—</div>
-    <div class="cfp-progress-pill">
-      <div class="cfp-progress-bar-mini"><div class="cfp-progress-bar-mini-fill" id="cfp-mini-fill" style="width:0%"></div></div>
-      <span class="cfp-progress-text" id="cfp-mini-text">0%</span>
-    </div>
-  </div>
 
   <!-- Layout -->
   <div class="cfp-layout">
@@ -1275,20 +1275,21 @@ select.creation-input{cursor:pointer;}
         </div>
 
         <!-- Editor toolbar (author only) -->
-        <div class="cfp-editor-bar" id="cfp-editor-bar">
-          <button class="cfp-ed-btn" onclick="cfpExec('bold')" title="Gras"><b>B</b></button>
-          <button class="cfp-ed-btn" onclick="cfpExec('italic')" title="Italique"><i>I</i></button>
-          <div class="cfp-ed-sep"></div>
-          <button class="cfp-ed-btn" onclick="cfpFormatBlock('h2')">H2</button>
-          <button class="cfp-ed-btn" onclick="cfpFormatBlock('h3')">H3</button>
-          <button class="cfp-ed-btn" onclick="cfpExec('insertUnorderedList')">• Liste</button>
-          <button class="cfp-ed-btn" onclick="cfpInsertBlockquote()">❝</button>
-          <div class="cfp-ed-sep"></div>
-          <button class="cfp-ed-btn" onclick="cfpInsertImagePrompt()">🖼 Image</button>
-          <button class="cfp-ed-btn" onclick="cfpInsertVideoPrompt()">▶ Vidéo</button>
-          <div class="cfp-ed-sep"></div>
-          <span class="cfp-save-status" id="cfp-save-status"></span>
-        </div>
+<div class="cfp-editor-bar" id="cfp-editor-bar">
+  <button class="cfp-ed-btn" onclick="cfpExec('bold')" title="Gras"><b>B</b></button>
+  <button class="cfp-ed-btn" onclick="cfpExec('italic')" title="Italique"><i>I</i></button>
+  <div class="cfp-ed-sep"></div>
+  <button class="cfp-ed-btn" onclick="cfpFormatBlock('h2')">H2</button>
+  <button class="cfp-ed-btn" onclick="cfpFormatBlock('h3')">H3</button>
+  <button class="cfp-ed-btn" onclick="cfpExec('insertUnorderedList')">• Liste</button>
+  <button class="cfp-ed-btn" onclick="cfpInsertBlockquote()">❝</button>
+  <div class="cfp-ed-sep"></div>
+  <button class="cfp-ed-btn" onclick="cfpInsertMedia('image')">🖼 Image</button>
+  <button class="cfp-ed-btn" onclick="cfpInsertMedia('video')">▶ Vidéo</button>
+  <div class="cfp-ed-sep"></div>
+  <button class="cfp-ed-btn" onclick="cfpDeleteSeance()" style="color:var(--ember);margin-left:auto" title="Supprimer cette séance">🗑 Supprimer séance</button>
+  <span class="cfp-save-status" id="cfp-save-status"></span>
+</div>
 
         <!-- Body content -->
         <div class="cfp-content-body" id="cfp-content-body"
@@ -1310,6 +1311,37 @@ select.creation-input{cursor:pointer;}
       </div>
     </div>
   </div>
+  <!-- Media picker panel -->
+<div id="cfp-media-panel" style="display:none;position:fixed;inset:0;z-index:300;background:rgba(26,23,20,.75);align-items:center;justify-content:center">
+  <div style="background:var(--parch);border-radius:var(--r);padding:32px;width:100%;max-width:480px;position:relative">
+    <button onclick="closeCfpMediaPanel()" style="position:absolute;top:14px;right:14px;background:none;border:none;font-size:18px;cursor:pointer;color:var(--ink3)">✕</button>
+    <div id="cfp-media-title" style="font-family:'Playfair Display',serif;font-size:20px;font-weight:600;color:var(--ink);margin-bottom:20px">Insérer un média</div>
+
+    <!-- Drop zone -->
+    <div id="cfp-drop-zone"
+      style="border:2px dashed var(--parch3);border-radius:var(--r);padding:36px 20px;text-align:center;transition:all .2s;cursor:pointer;margin-bottom:16px"
+      onclick="document.getElementById('cfp-file-input').click()"
+      ondragover="cfpDragOver(event)" ondragleave="cfpDragLeave(event)" ondrop="cfpDrop(event)">
+      <div style="font-size:32px;margin-bottom:10px" id="cfp-drop-icon">📁</div>
+      <div style="font-size:14px;font-weight:500;color:var(--ink);margin-bottom:4px">Glisse un fichier ici</div>
+      <div style="font-size:12px;color:var(--ink3)">ou clique pour parcourir</div>
+      <input type="file" id="cfp-file-input" style="display:none" onchange="cfpFileSelected(event)">
+    </div>
+
+    <!-- URL fallback (video only) -->
+    <div id="cfp-url-wrap" style="display:none">
+      <div style="font-size:12px;font-weight:500;color:var(--ink2);margin-bottom:6px">Ou colle une URL YouTube / Vimeo</div>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="cfp-video-url" placeholder="https://youtube.com/watch?v=…"
+          style="flex:1;padding:9px 12px;background:var(--parch2);border:1px solid var(--border);border-radius:4px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--ink);outline:none"
+          onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'">
+        <button onclick="cfpInsertVideoFromUrl()" style="padding:9px 16px;background:var(--ink);color:var(--parch);border:none;border-radius:4px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer">Insérer</button>
+      </div>
+    </div>
+
+    <div id="cfp-media-status" style="font-size:12px;margin-top:12px;color:var(--ink3);text-align:center;min-height:18px"></div>
+  </div>
+</div>
 </div>
 
 <!-- ═══════════════════════════════════════
@@ -2341,30 +2373,131 @@ function cfpExec(cmd) { document.getElementById('cfp-content-body').focus(); doc
 function cfpFormatBlock(tag) { document.getElementById('cfp-content-body').focus(); document.execCommand('formatBlock', false, '<' + tag + '>'); cfpEditDirty = true; }
 function cfpInsertBlockquote() { cfpFormatBlock('blockquote'); }
 
-function cfpInsertImagePrompt() {
-  const url = prompt('URL de l\'image (https://…) :');
-  if (!url) return;
-  document.getElementById('cfp-content-body').focus();
-  document.execCommand('insertHTML', false, `<img src="${url}" alt="image" style="max-width:100%;border-radius:6px;margin:16px 0">`);
-  cfpEditDirty = true;
+// ── Media panel ──
+let cfpMediaType = 'image';
+
+function cfpInsertMedia(type) {
+  cfpMediaType = type;
+  const panel = document.getElementById('cfp-media-panel');
+  const urlWrap = document.getElementById('cfp-url-wrap');
+  const icon = document.getElementById('cfp-drop-icon');
+  const title = document.getElementById('cfp-media-title');
+  const fileInput = document.getElementById('cfp-file-input');
+
+  if (type === 'image') {
+    title.textContent = 'Insérer une image';
+    icon.textContent = '🖼';
+    fileInput.accept = 'image/*';
+    urlWrap.style.display = 'none';
+  } else {
+    title.textContent = 'Insérer une vidéo';
+    icon.textContent = '▶';
+    fileInput.accept = 'video/*';
+    urlWrap.style.display = 'block';
+  }
+  document.getElementById('cfp-media-status').textContent = '';
+  document.getElementById('cfp-video-url').value = '';
+  panel.style.display = 'flex';
 }
 
-function cfpInsertVideoPrompt() {
-  const url = prompt('URL YouTube ou Vimeo (ex: https://www.youtube.com/watch?v=…) :');
+function closeCfpMediaPanel() {
+  document.getElementById('cfp-media-panel').style.display = 'none';
+}
+
+function cfpDragOver(e) {
+  e.preventDefault();
+  const dz = document.getElementById('cfp-drop-zone');
+  dz.style.borderColor = 'var(--gold)';
+  dz.style.background = 'rgba(184,144,60,.05)';
+}
+
+function cfpDragLeave(e) {
+  const dz = document.getElementById('cfp-drop-zone');
+  dz.style.borderColor = 'var(--parch3)';
+  dz.style.background = '';
+}
+
+function cfpDrop(e) {
+  e.preventDefault();
+  cfpDragLeave(e);
+  const file = e.dataTransfer.files[0];
+  if (file) cfpProcessFile(file);
+}
+
+function cfpFileSelected(e) {
+  const file = e.target.files[0];
+  if (file) cfpProcessFile(file);
+  e.target.value = '';
+}
+
+function cfpProcessFile(file) {
+  const status = document.getElementById('cfp-media-status');
+  const isImage = file.type.startsWith('image/');
+  const isVideo = file.type.startsWith('video/');
+
+  if (!isImage && !isVideo) {
+    status.textContent = 'Format non supporté. Utilise une image ou une vidéo.';
+    status.style.color = 'var(--ember)';
+    return;
+  }
+
+  status.textContent = 'Lecture du fichier…';
+  status.style.color = 'var(--ink3)';
+
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    const dataUrl = ev.target.result;
+    const body = document.getElementById('cfp-content-body');
+    body.focus();
+
+    if (isImage) {
+      document.execCommand('insertHTML', false,
+        `<img src="${dataUrl}" alt="${file.name}" style="max-width:100%;border-radius:6px;margin:16px 0;display:block">`);
+    } else {
+      document.execCommand('insertHTML', false,
+        `<video controls style="max-width:100%;border-radius:6px;margin:16px 0;display:block"><source src="${dataUrl}" type="${file.type}">Ton navigateur ne supporte pas la vidéo.</video>`);
+    }
+
+    cfpEditDirty = true;
+    closeCfpMediaPanel();
+    status.textContent = '';
+  };
+  reader.onerror = () => {
+    status.textContent = 'Erreur lors de la lecture du fichier.';
+    status.style.color = 'var(--ember)';
+  };
+  reader.readAsDataURL(file);
+}
+
+function cfpInsertVideoFromUrl() {
+  const url = document.getElementById('cfp-video-url').value.trim();
+  const status = document.getElementById('cfp-media-status');
   if (!url) return;
+
   let embedUrl = '';
-  // YouTube
   const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
   if (ytMatch) embedUrl = `https://www.youtube.com/embed/${ytMatch[1]}`;
-  // Vimeo
   const vmMatch = url.match(/vimeo\.com\/(\d+)/);
   if (vmMatch) embedUrl = `https://player.vimeo.com/video/${vmMatch[1]}`;
-  if (!embedUrl) { alert('Format non reconnu. Utilise une URL YouTube ou Vimeo.'); return; }
-  document.getElementById('cfp-content-body').focus();
+
+  if (!embedUrl) {
+    status.textContent = 'URL non reconnue. Utilise YouTube ou Vimeo.';
+    status.style.color = 'var(--ember)';
+    return;
+  }
+
+  const body = document.getElementById('cfp-content-body');
+  body.focus();
   document.execCommand('insertHTML', false,
     `<div class="embed-video"><iframe src="${embedUrl}" allowfullscreen></iframe></div>`);
   cfpEditDirty = true;
+  closeCfpMediaPanel();
 }
+
+// Close media panel on backdrop click
+document.getElementById('cfp-media-panel').addEventListener('click', function(e) {
+  if (e.target === this) closeCfpMediaPanel();
+});
 
 // ── Auto-save ──
 function cfpAutoSave() {
@@ -3290,6 +3423,31 @@ async function soumettreCours() {
   setTimeout(() => { closeModalCours(); loadCours(); }, 1000);
 }
 
+async function cfpDeleteSeance() {
+  const c = allCours.find(x => x.id === currentCoursId);
+  if (!c) return;
+  const nom = document.getElementById('cfp-seance-title').textContent || `Séance ${currentSeanceNum}`;
+  if (!confirm(`Supprimer "${nom}" ? Cette action est irréversible.`)) return;
+
+  // Delete from DB
+  await sb.from('cours_lessons')
+    .delete()
+    .eq('cours_id', currentCoursId)
+    .eq('seance_num', currentSeanceNum);
+
+  // Remove from cache
+  c.lessons_data = (c.lessons_data || []).filter(l => l.seance_num !== currentSeanceNum);
+
+  // Clear content in UI
+  document.getElementById('cfp-seance-title').textContent = `Séance ${currentSeanceNum}`;
+  document.getElementById('cfp-content-body').innerHTML = '';
+
+  const statusEl = document.getElementById('cfp-save-status');
+  statusEl.textContent = '✓ Séance supprimée'; statusEl.className = 'cfp-save-status saved';
+  setTimeout(() => { statusEl.textContent = ''; }, 2000);
+
+  renderCfpSidebar(c);
+}
 // ──────────────────────────────────────────
 // UTILS
 // ──────────────────────────────────────────
