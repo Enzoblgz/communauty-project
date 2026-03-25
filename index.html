@@ -1715,9 +1715,9 @@ function renderCours(cours) {
     return `<div class="course-card" onclick="openCoursDetail('${c.id}')">
       <div class="course-thumb" style="background:${color}"></div>
       <div class="course-body">
-        <div class="course-pillar" style="color:${color}">${c.piliers ? c.piliers.emoji + ' ' + c.piliers.nom : '—'}</div>
-        <div class="course-title">${c.titre}</div>
-        <div class="course-author">par ${c.profiles?.pseudo || 'Anonyme'} · ${c.nb_seances} séance${c.nb_seances > 1 ? 's' : ''}</div>
+        <div class="course-pillar" style="color:${color}">${c.piliers ? c.piliers.emoji + ' ' + escapeHtml(c.piliers.nom) : '—'}</div>
+        <div class="course-title">${escapeHtml(c.titre)}</div>
+        <div class="course-author">par ${escapeHtml(c.profiles?.pseudo || 'Anonyme')} · ${c.nb_seances} séance${c.nb_seances > 1 ? 's' : ''}</div>
         <div class="course-footer">
           <span class="course-stat">${c.duree_minutes} min · gratuit</span>
           <span class="badge" style="background:${statutBg[c.statut]};color:${statutColor[c.statut]}">${statutLabels[c.statut]}</span>
@@ -1803,9 +1803,9 @@ async function openCoursDetail(coursId) {
 function renderCoursDetail(c, inscCount, avgRating, ratingsCount) {
   const color = pilierColors[c.piliers?.emoji] || '#8a8480';
   // Header
-  document.getElementById('cd-pillar').innerHTML = `<span style="color:${color}">${c.piliers ? c.piliers.emoji + ' ' + c.piliers.nom : '—'}</span>`;
+  document.getElementById('cd-pillar').innerHTML = `<span style="color:${color}">${c.piliers ? c.piliers.emoji + ' ' + escapeHtml(c.piliers.nom) : '—'}</span>`;
   document.getElementById('cd-title').textContent = c.titre;
-  document.getElementById('cd-author').innerHTML = `par <strong>${c.profiles?.pseudo || 'Anonyme'}</strong> · publié le ${new Date(c.created_at).toLocaleDateString('fr')}`;
+  document.getElementById('cd-author').innerHTML = `par <strong>${escapeHtml(c.profiles?.pseudo || 'Anonyme')}</strong> · publié le ${new Date(c.created_at).toLocaleDateString('fr')}`;
   document.getElementById('cd-metas').innerHTML = `
     <div class="cours-detail-meta">📚 <strong>${c.nb_seances}</strong> séance${c.nb_seances > 1 ? 's' : ''}</div>
     <div class="cours-detail-meta">⏱ <strong>${c.duree_minutes}</strong> min</div>
