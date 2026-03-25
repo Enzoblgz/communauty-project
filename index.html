@@ -2330,6 +2330,7 @@ function cfpLoadSeance(num) {
     titleEl.contentEditable = 'true';
     titleEl.oninput = () => { cfpEditDirty = true; cfpAutoSave(); };
     body.oninput = () => { cfpEditDirty = true; cfpAutoSave(); };
+    cfpSavedRange = null;
     document.getElementById('cfp-save-status').textContent = '';
   } else {
     body.contentEditable = 'false';
@@ -2374,16 +2375,40 @@ function cfpFormatBlock(tag) { document.getElementById('cfp-content-body').focus
 function cfpInsertBlockquote() { cfpFormatBlock('blockquote'); }
 
 // ── Media panel ──
+// ── Sauvegarde position curseur ──
+let cfpSavedRange = null;
+
+function cfpSaveSelection() {
+  const sel = window.getSelection();
+  if (sel && sel.rangeCount > 0) {
+    cfpSavedRange = sel.getRangeAt(0).cloneRange();
+  }
+}
+
+function cfpRestoreSelection() {
+  const body = document.getElementById('cfp-content-body');
+  body.focus();
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  if (cfpSavedRange) {
+    sel.addRange(cfpSavedRange);
+  } else {
+    const range = document.createRange();
+    range.selectNodeContents(body);
+    range.collapse(false);
+    sel.addRange(range);
+  }
+}
 let cfpMediaType = 'image';
 
 function cfpInsertMedia(type) {
+  cfpSaveSelection(); // ← capture le curseur AVANT d'ouvrir le panneau
   cfpMediaType = type;
   const panel = document.getElementById('cfp-media-panel');
   const urlWrap = document.getElementById('cfp-url-wrap');
   const icon = document.getElementById('cfp-drop-icon');
   const title = document.getElementById('cfp-media-title');
   const fileInput = document.getElementById('cfp-file-input');
-
   if (type === 'image') {
     title.textContent = 'Insérer une image';
     icon.textContent = '🖼';
@@ -2434,52 +2459,34 @@ function cfpProcessFile(file) {
   const status = document.getElementById('cfp-media-status');
   const isImage = file.type.startsWith('image/');
   const isVideo = file.type.startsWith('video/');
-
   if (!isImage && !isVideo) {
     status.textContent = 'Format non supporté.';
-    status.style.color = 'var(--ember)';
-    return;
+    status.style.color = 'var(--ember)'; return;
   }
-
-  status.textContent = 'Insertion…';
-  status.style.color = 'var(--ink3)';
-
-  const body = document.getElementById('cfp-content-body');
-  body.focus();
-
+  status.textContent = 'Insertion…'; status.style.color = 'var(--ink3)';
   if (isVideo) {
-    // createObjectURL — jamais encodé en base64, pas de crash mémoire
     const objectUrl = URL.createObjectURL(file);
-    document.execCommand('insertHTML', false,
-      `<video controls style="max-width:100%;border-radius:6px;margin:16px 0;display:block" src="${objectUrl}">Ton navigateur ne supporte pas la vidéo.</video>`);
-    cfpEditDirty = true;
     closeCfpMediaPanel();
-
-    // Avertissement : objectURL ne survit pas à un rechargement
-    status.textContent = '';
-    const statusSave = document.getElementById('cfp-save-status');
-    statusSave.textContent = '⚠ Vidéo locale : enregistre maintenant';
-    statusSave.className = 'cfp-save-status saving';
+    cfpRestoreSelection();
+    document.execCommand('insertHTML', false,
+      `<video controls style="max-width:100%;border-radius:6px;margin:16px 0;display:block" src="${objectUrl}"></video>`);
+    cfpEditDirty = true;
+    document.getElementById('cfp-save-status').textContent = '⚠ Vidéo locale : enregistre vite';
+    document.getElementById('cfp-save-status').className = 'cfp-save-status saving';
   } else {
-    // Image : readAsDataURL OK (taille raisonnable)
-    const MAX = 5 * 1024 * 1024; // 5 MB
-    if (file.size > MAX) {
+    if (file.size > 5 * 1024 * 1024) {
       status.textContent = 'Image trop lourde (max 5 Mo).';
-      status.style.color = 'var(--ember)';
-      return;
+      status.style.color = 'var(--ember)'; return;
     }
     const reader = new FileReader();
     reader.onload = (ev) => {
+      closeCfpMediaPanel();
+      cfpRestoreSelection();
       document.execCommand('insertHTML', false,
         `<img src="${ev.target.result}" alt="${file.name}" style="max-width:100%;border-radius:6px;margin:16px 0;display:block">`);
       cfpEditDirty = true;
-      closeCfpMediaPanel();
-      status.textContent = '';
     };
-    reader.onerror = () => {
-      status.textContent = 'Erreur lecture fichier.';
-      status.style.color = 'var(--ember)';
-    };
+    reader.onerror = () => { status.textContent = 'Erreur.'; status.style.color = 'var(--ember)'; };
     reader.readAsDataURL(file);
   }
 }
@@ -2488,25 +2495,20 @@ function cfpInsertVideoFromUrl() {
   const url = document.getElementById('cfp-video-url').value.trim();
   const status = document.getElementById('cfp-media-status');
   if (!url) return;
-
   let embedUrl = '';
   const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
   if (ytMatch) embedUrl = `https://www.youtube.com/embed/${ytMatch[1]}`;
   const vmMatch = url.match(/vimeo\.com\/(\d+)/);
   if (vmMatch) embedUrl = `https://player.vimeo.com/video/${vmMatch[1]}`;
-
   if (!embedUrl) {
-    status.textContent = 'URL non reconnue. Utilise YouTube ou Vimeo.';
-    status.style.color = 'var(--ember)';
-    return;
+    status.textContent = 'URL non reconnue.';
+    status.style.color = 'var(--ember)'; return;
   }
-
-  const body = document.getElementById('cfp-content-body');
-  body.focus();
+  closeCfpMediaPanel();
+  cfpRestoreSelection();
   document.execCommand('insertHTML', false,
     `<div class="embed-video"><iframe src="${embedUrl}" allowfullscreen></iframe></div>`);
   cfpEditDirty = true;
-  closeCfpMediaPanel();
 }
 
 // Close media panel on backdrop click
