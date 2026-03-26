@@ -1753,34 +1753,7 @@ select.creation-input{cursor:pointer;}
      JAVASCRIPT
 ════════════════════════════════════════════════════ -->
 <script>
-async function cfpDeleteSeance() {
-  const c = allCours.find(x => x.id === currentCoursId);
-  if (!c) return;
-  const total = c.nb_seances || 1;
-  if (total <= 1) { alert('Un cours doit avoir au moins une séance.'); return; }
-  const nom = document.getElementById('cfp-seance-title').textContent.trim() || `Séance ${currentSeanceNum}`;
-  if (!confirm(`Supprimer "${nom}" ?`)) return;
 
-  const statusEl = document.getElementById('cfp-save-status');
-  statusEl.textContent = 'Suppression…'; statusEl.className = 'cfp-save-status saving';
-
-  const delNum = currentSeanceNum; }
-
-  // TEST — log avant suppression
-  console.log('Tentative suppression:', { cours_id: currentCoursId, seance_num: delNum });
-
-  const { error: delError } = await sb.from('cours_lessons')
-    .delete()
-    .eq('cours_id', currentCoursId)
-    .eq('seance_num', delNum);
-
-  console.log('Résultat delete cours_lessons:', delError);
-
-  const { error: updError } = await sb.from('cours')
-    .update({ nb_seances: total - 1 })
-    .eq('id', currentCoursId);
-
-  console.log('Résultat update nb_seances:', updError);
 
 // ──────────────────────────────────────────
 // SUPABASE INIT
